@@ -65,7 +65,7 @@ create table novel
    is_delete            tinyint(4) comment '0：否；1：是',
    primary key (novel_id)
 )
-type = InnoDB;
+ENGINE = InnoDB;
 
 alter table novel comment '小说表';
 
@@ -90,7 +90,7 @@ create table novel_chapter
    is_delete            tinyint(4) comment '0：否；1：是',
    primary key (chapter_id)
 )
-type = InnoDB;
+ENGINE = InnoDB;
 
 alter table novel_chapter comment '小说章节表';
 
@@ -115,7 +115,7 @@ create table novel_comment
    update_by            varchar(32) comment '更新人',
    is_delete            tinyint(4) comment '0：否；1：是'
 )
-type = InnoDB;
+ENGINE = InnoDB;
 
 alter table novel_comment comment '小说评论表';
 
@@ -151,7 +151,7 @@ create table novel_data
    is_delete            tinyint(4) comment '0：否；1：是',
    primary key (novel_data_id)
 )
-type = InnoDB;
+ENGINE = InnoDB;
 
 alter table novel_data comment '小说数据表';
 
@@ -173,7 +173,7 @@ create table novel_file
    is_delete            tinyint(4) comment '0：否；1：是',
    primary key (file_id)
 )
-type = InnoDB;
+ENGINE = InnoDB;
 
 alter table novel_file comment '小说文件表';
 
@@ -192,7 +192,7 @@ create table novel_type_rel
    is_delete            tinyint(4) comment '0：否；1：是',
    primary key (novel_type_rel_id)
 )
-type = InnoDB;
+ENGINE = InnoDB;
 
 alter table novel_type_rel comment '小说类型关联表';
 
@@ -218,7 +218,7 @@ create table novel_volume
    is_delete            tinyint(4) comment '0：否；1：是',
    primary key (volume_id)
 )
-type = InnoDB;
+ENGINE = InnoDB;
 
 alter table novel_volume comment '小说分卷表';
 
@@ -239,7 +239,7 @@ create table sys_dict
    is_delete            tinyint(4) comment '0：否；1：是',
    primary key (dict_id)
 )
-type = InnoDB;
+ENGINE = InnoDB;
 
 alter table sys_dict comment '字典表';
 
@@ -252,8 +252,8 @@ create table sys_dict_param
    dict_id              varchar(32) comment '父字典id',
    param_code           varchar(32) comment '参数编码',
    param_name           varchar(32) comment '参数名称',
-   param_desc           varchar(512 comment '参数描述',
-   param_order          int comment '参数排序',
+   param_desc           varchar(512) comment '参数描述',
+   param_order          int(10) comment '参数排序',
    create_time          datetime comment '创建时间',
    create_by            varchar(32) comment '创建人',
    update_time          datetime comment '更新时间',
@@ -261,7 +261,7 @@ create table sys_dict_param
    is_delete            tinyint(4) comment '0：否；1：是',
    primary key (dict_param_id)
 )
-type = InnoDB;
+ENGINE = InnoDB;
 
 alter table sys_dict_param comment '字段子类表';
 
@@ -287,7 +287,7 @@ create table sys_log
    is_delete            tinyint(4) comment '0：否；1：是',
    primary key (log_id)
 )
-type = InnoDB;
+ENGINE = InnoDB;
 
 alter table sys_log comment '日志表';
 
@@ -309,7 +309,7 @@ create table sys_notice
    update_by            varchar(32) comment '更新人',
    is_delete            tinyint(4) comment '0：否；1：是'
 )
-type = InnoDB;
+ENGINE = InnoDB;
 
 alter table sys_notice comment '系统公告表';
 
@@ -329,7 +329,7 @@ create table sys_permission
    is_delete            tinyint(4) comment '0：否；1：是',
    primary key (permission_id)
 )
-type = InnoDB;
+ENGINE = InnoDB;
 
 alter table sys_permission comment '权限表';
 
@@ -349,7 +349,7 @@ create table sys_role
    is_delete            tinyint(4) comment '0：否；1：是',
    primary key (role_id)
 )
-type = InnoDB;
+ENGINE = InnoDB;
 
 alter table sys_role comment '角色表';
 
@@ -368,7 +368,7 @@ create table sys_role_permission
    is_delete            tinyint(4) comment '0：否；1：是',
    primary key (role_permission_id)
 )
-type = InnoDB;
+ENGINE = InnoDB;
 
 alter table sys_role_permission comment '角色权限关联表';
 
@@ -395,7 +395,7 @@ create table sys_user
    is_delete            tinyint(4) comment '0：否；1：是',
    primary key (user_id)
 )
-type = InnoDB;
+ENGINE = InnoDB;
 
 alter table sys_user comment '用户表';
 
@@ -414,7 +414,7 @@ create table sys_user_role
    is_delete            tinyint(4) comment '0：否；1：是',
    primary key (user_role_id)
 )
-type = InnoDB;
+ENGINE = InnoDB;
 
 alter table sys_user_role comment '用户角色关联表';
 
@@ -435,7 +435,7 @@ create table user_collection
    update_by            varchar(32) comment '更新人',
    is_delete            tinyint(4) comment '0：否；1：是'
 )
-type = InnoDB;
+ENGINE = InnoDB;
 
 alter table user_collection comment '用户收藏表';
 
