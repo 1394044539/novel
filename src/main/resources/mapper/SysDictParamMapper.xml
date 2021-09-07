@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="wpy.personal.novel.novel.system.mapper.SysDictParamMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="wpy.personal.novel.pojo.entity.SysDictParam">
+        <id column="dict_param_id" property="dictParamId" />
+        <result column="dict_id" property="dictId" />
+        <result column="param_code" property="paramCode" />
+        <result column="param_name" property="paramName" />
+        <result column="param_desc" property="paramDesc" />
+        <result column="param_order" property="paramOrder" />
+        <result column="create_time" property="createTime" />
+        <result column="create_by" property="createBy" />
+        <result column="update_time" property="updateTime" />
+        <result column="update_by" property="updateBy" />
+        <result column="is_delete" property="isDelete" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        dict_param_id, dict_id, param_code, param_name, param_desc, param_order, create_time, create_by, update_time, update_by, is_delete
+    </sql>
+
+</mapper>

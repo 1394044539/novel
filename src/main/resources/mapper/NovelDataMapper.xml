@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="wpy.personal.novel.novel.novel.mapper.NovelDataMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="wpy.personal.novel.pojo.entity.NovelData">
+        <id column="novel_data_id" property="novelDataId" />
+        <result column="novel_id" property="novelId" />
+        <result column="total_hot" property="totalHot" />
+        <result column="total_up" property="totalUp" />
+        <result column="total_click" property="totalClick" />
+        <result column="total_comment" property="totalComment" />
+        <result column="total_collect" property="totalCollect" />
+        <result column="total_share" property="totalShare" />
+        <result column="month_hot" property="monthHot" />
+        <result column="month_up" property="monthUp" />
+        <result column="month_click" property="monthClick" />
+        <result column="month_comment" property="monthComment" />
+        <result column="month_collect" property="monthCollect" />
+        <result column="month_share" property="monthShare" />
+        <result column="week_hot" property="weekHot" />
+        <result column="week_up" property="weekUp" />
+        <result column="week_clike" property="weekClike" />
+        <result column="week_comment" property="weekComment" />
+        <result column="week_collect" property="weekCollect" />
+        <result column="week_share" property="weekShare" />
+        <result column="create_time" property="createTime" />
+        <result column="create_by" property="createBy" />
+        <result column="update_time" property="updateTime" />
+        <result column="update_by" property="updateBy" />
+        <result column="is_delete" property="isDelete" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        novel_data_id, novel_id, total_hot, total_up, total_click, total_comment, total_collect, total_share, month_hot, month_up, month_click, month_comment, month_collect, month_share, week_hot, week_up, week_clike, week_comment, week_collect, week_share, create_time, create_by, update_time, update_by, is_delete
+    </sql>
+
+</mapper>

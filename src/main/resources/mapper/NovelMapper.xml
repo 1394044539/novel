@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="wpy.personal.novel.novel.novel.mapper.NovelMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="wpy.personal.novel.pojo.entity.Novel">
+        <id column="novel_id" property="novelId" />
+        <result column="novel_author" property="novelAuthor" />
+        <result column="public_time" property="publicTime" />
+        <result column="novel_name" property="novelName" />
+        <result column="total_line" property="totalLine" />
+        <result column="total_word" property="totalWord" />
+        <result column="novel_img" property="novelImg" />
+        <result column="novel_desc" property="novelDesc" />
+        <result column="novel_introduce" property="novelIntroduce" />
+        <result column="novel_hot" property="novelHot" />
+        <result column="novel_up" property="novelUp" />
+        <result column="novel_click" property="novelClick" />
+        <result column="novel_comment" property="novelComment" />
+        <result column="novel_share" property="novelShare" />
+        <result column="novel_collect" property="novelCollect" />
+        <result column="create_time" property="createTime" />
+        <result column="create_by" property="createBy" />
+        <result column="update_time" property="updateTime" />
+        <result column="update_by" property="updateBy" />
+        <result column="is_delete" property="isDelete" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        novel_id, novel_author, public_time, novel_name, total_line, total_word, novel_img, novel_desc, novel_introduce, novel_hot, novel_up, novel_click, novel_comment, novel_share, novel_collect, create_time, create_by, update_time, update_by, is_delete
+    </sql>
+
+</mapper>

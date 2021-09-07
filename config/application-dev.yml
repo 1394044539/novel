@@ -1,0 +1,38 @@
+server:
+  port: 8080
+  servlet:
+    encoding:
+      force: true
+      charset: UTF-8
+      enabled: true
+spring:
+  servlet:
+    multipart:
+      max-file-size: 100MB
+      max-request-size: 100000MB
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    username: root
+    password: root
+    url: jdbc:mysql://localhost:3306/novel_db?useUnicode=true&characterEncoding=UTF-8&serverTimezone=UTC&allowMultiQueries=true
+    type: com.alibaba.druid.pool.DruidDataSource
+  redis:
+    database: 0
+    host: localhost
+    port: 6379
+    timeout: 6000
+mybatis-plus:
+  mapper-locations: classpath*:mapper/**/*.xml
+  type-aliases-package: wpy.personal.novel.pojo.entity
+  configuration:
+    map-underscore-to-camel-case: true
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+logging:
+  pattern:
+    console: '%d{yyyy-MM-dd HH:mm:ss} %-5level [%thread] %clr(%-40.40logger.%13.13M){cyan} %clr(%3.3L) : %msg%n'
+    file: '%d{yyyy-MM-dd HH:mm:ss} %-5level [%thread] %clr(%-40.40logger.%13.13M){cyan} %clr(%3.3L) :{faint} %msg%n'
+    rolling-file-name: ${LOG_FILE}.%d{yyyy-MM-dd}.%i.gz
+  level:
+    root: info
+  file:
+    name: logger/mylog.log

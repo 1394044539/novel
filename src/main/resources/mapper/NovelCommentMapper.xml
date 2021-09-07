@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="wpy.personal.novel.novel.novel.mapper.NovelCommentMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="wpy.personal.novel.pojo.entity.NovelComment">
+        <id column="comment_id" property="commentId" />
+        <result column="comment_type" property="commentType" />
+        <result column="novel_id" property="novelId" />
+        <result column="volume_id" property="volumeId" />
+        <result column="chapter_id" property="chapterId" />
+        <result column="comment_content" property="commentContent" />
+        <result column="comment_level" property="commentLevel" />
+        <result column="reply_id" property="replyId" />
+        <result column="comment_up" property="commentUp" />
+        <result column="comment_num" property="commentNum" />
+        <result column="create_time" property="createTime" />
+        <result column="create_by" property="createBy" />
+        <result column="update_time" property="updateTime" />
+        <result column="update_by" property="updateBy" />
+        <result column="is_delete" property="isDelete" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        comment_id, comment_type, novel_id, volume_id, chapter_id, comment_content, comment_level, reply_id, comment_up, comment_num, create_time, create_by, update_time, update_by, is_delete
+    </sql>
+
+</mapper>
