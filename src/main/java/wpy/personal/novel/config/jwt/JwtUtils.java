@@ -20,7 +20,7 @@ import java.util.Map;
 @Slf4j
 public class JwtUtils {
 
-    @Value("${jwt.expire-time}")
+    @Value("${jwt.expireTime}")
     private static long expireTime;
 
     /**

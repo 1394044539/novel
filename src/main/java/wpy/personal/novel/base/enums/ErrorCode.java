@@ -19,6 +19,7 @@ public enum ErrorCode {
     USER_NOT_EXISTS(-100,"用户不存在"),
     USER_PASSWORD_ERROR(-100,"用户名或密码错误"),
     NOT_AUTHORIZATION(-200,"未含授权标识，禁止访问"),
+    USER_NOT_AUTH(-100,"用户权不足"),
 
     ACCOUNT_NAME_NOT_EMPTY(-2,"用户名不能为空"),
     PASSWORD_NOT_EMPTY(-3,"密码不能为空"),

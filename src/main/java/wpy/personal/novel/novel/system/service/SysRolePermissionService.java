@@ -1,7 +1,10 @@
 package wpy.personal.novel.novel.system.service;
 
+import wpy.personal.novel.pojo.bo.UserPermissionBo;
 import wpy.personal.novel.pojo.entity.SysRolePermission;
 import com.baomidou.mybatisplus.extension.service.IService;
+
+import java.util.List;
 
 /**
  * <p>
@@ -13,4 +16,10 @@ import com.baomidou.mybatisplus.extension.service.IService;
  */
 public interface SysRolePermissionService extends IService<SysRolePermission> {
 
+    /**
+     * 通过roleCode获取全部的权限信息
+     * @param roleCodeList
+     * @return
+     */
+    List<UserPermissionBo> getPermissionByRoleCodeList(List<String> roleCodeList);
 }

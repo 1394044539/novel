@@ -1,5 +1,6 @@
 package wpy.personal.novel.novel.system.service;
 
+import wpy.personal.novel.pojo.bo.UserInfoBo;
 import wpy.personal.novel.pojo.dto.SysUserDto;
 import wpy.personal.novel.pojo.entity.SysUser;
 import com.baomidou.mybatisplus.extension.service.IService;
@@ -19,5 +20,19 @@ public interface SysUserService extends IService<SysUser> {
      * @param sysUserDto
      * @return
      */
-    SysUser loginByAccount(SysUserDto sysUserDto);
+    UserInfoBo loginByAccount(SysUserDto sysUserDto);
+
+    /**
+     * 添加用户
+     * @param sysUserDto
+     * @param sysUser
+     */
+    void addUser(SysUserDto sysUserDto, SysUser sysUser);
+
+    /**
+     * 拿到用户信息
+     * @param sysUser
+     * @return
+     */
+    UserInfoBo getUserInfo(SysUser sysUser);
 }

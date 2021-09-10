@@ -90,6 +90,12 @@ public class SysUser implements Serializable {
     private String wechatNumber;
 
     /**
+     * 用户状态(0：正常；1：禁用)
+     */
+    @TableField("user_status")
+    private String userStatus;
+
+    /**
      * 创建时间
      */
     @TableField("create_time")

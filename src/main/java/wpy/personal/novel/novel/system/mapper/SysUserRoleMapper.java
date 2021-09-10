@@ -1,7 +1,10 @@
 package wpy.personal.novel.novel.system.mapper;
 
-import wpy.personal.novel.pojo.entity.SysUserRole;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import wpy.personal.novel.pojo.entity.SysRole;
+import wpy.personal.novel.pojo.entity.SysUserRole;
+
+import java.util.List;
 
 /**
  * <p>
@@ -13,4 +16,10 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
  */
 public interface SysUserRoleMapper extends BaseMapper<SysUserRole> {
 
+    /**
+     * 通过userId拿到用户角色
+     * @param userId
+     * @return
+     */
+    List<SysRole> getRoleListByUserId(String userId);
 }

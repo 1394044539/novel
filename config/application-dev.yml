@@ -36,3 +36,6 @@ logging:
     root: info
   file:
     name: logger/mylog.log
+
+jwt:
+  expireTime: 7*24*3600*1000

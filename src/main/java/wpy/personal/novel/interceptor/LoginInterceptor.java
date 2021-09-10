@@ -7,11 +7,13 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
+import wpy.personal.novel.base.constant.RedisConstant;
 import wpy.personal.novel.base.constant.StrConstant;
 import wpy.personal.novel.base.enums.ResponseCode;
 import wpy.personal.novel.base.result.ResponseResult;
 import wpy.personal.novel.config.jwt.JwtToken;
 import wpy.personal.novel.config.jwt.JwtUtils;
+import wpy.personal.novel.utils.RedisUtils;
 import wpy.personal.novel.utils.StringUtils;
 
 import javax.servlet.http.HttpServletRequest;
@@ -38,18 +40,17 @@ public class LoginInterceptor implements HandlerInterceptor {
             return true;
         }
 
-        String token = request.getHeader(StrConstant.AUTHORIZATION);
-        if(StringUtils.isEmpty(token)){
+        String authorization = request.getHeader(StrConstant.AUTHORIZATION);
+        if(StringUtils.isEmpty(authorization)||!RedisUtils.hasKey(RedisConstant.TOKEN + authorization)){
+            this.notLogin(response);
+        }
+        JwtToken jwtInfo = JwtUtils.getJwtInfo(authorization);
+        if(!StringUtils.isEmpty(jwtInfo.getAccountName())){
             this.notLogin(response);
             return false;
         }
-        JwtToken jwtInfo = JwtUtils.getJwtInfo(token);
-        if(StringUtils.isNotEmpty(jwtInfo.getAccountName())){
-            log.info("拦截器认证已登录");
-            return true;
-        }
-        this.notLogin(response);
-        return false;
+        log.info("拦截器认证已登录");
+        return true;
     }
 
     /**

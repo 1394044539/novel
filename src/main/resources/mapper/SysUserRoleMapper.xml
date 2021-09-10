@@ -18,5 +18,11 @@
     <sql id="Base_Column_List">
         user_role_id, user_id, role_id, create_time, create_by, update_time, update_by, is_delete
     </sql>
+    <select id="getRoleListByUserId" resultType="wpy.personal.novel.pojo.entity.SysRole">
+        select sr*
+        from sys_user_role sur
+        left join sys_role sr on sur.role_id = sr.role_id
+        where sur = #{userId}
+    </select>
 
 </mapper>

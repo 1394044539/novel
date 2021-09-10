@@ -7,6 +7,8 @@ package wpy.personal.novel.base.enums;
  */
 public enum DictEnums {
 
+    SUPER_ADMIN("SUPER_ADMIN","超级管理员"),
+
     NOVEL_TYPE("NOVEL_TYPE","小说类型"),
     ADMIN_CHOSE_TYPE("ADMIN_CHOSE_TYPE","首页选择的分类"),
 

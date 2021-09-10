@@ -17,8 +17,8 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 @Configuration
 public class InterceptorConfig implements WebMvcConfigurer {
 
-    @Value("${upload.img.rootpath}")
-    private String rootPath;
+//    @Value("${upload.img.rootpath}")
+//    private String rootPath;
 
     @Bean
     public HandlerInterceptor getMyInterceptor(){
