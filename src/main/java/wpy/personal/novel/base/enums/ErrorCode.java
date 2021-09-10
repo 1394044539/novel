@@ -4,12 +4,11 @@ import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 
 /**
- * 响应码枚举
+ * 错误返回码
  */
-
 @NoArgsConstructor
 @AllArgsConstructor
-public enum ResponeseCode {
+public enum ErrorCode {
 
     SUCCESS(200,"操作成功"),
     FAIL(0,"操作失败"),
@@ -37,7 +36,7 @@ public enum ResponeseCode {
     public Integer code;
     public String msg;
 
-    public void ResponeseCode(int code) {
+    public void ErrorCode(int code) {
         this.code = code;
     }
 
@@ -45,7 +44,7 @@ public enum ResponeseCode {
         return code;
     }
 
-    public void ResponeseCode(String msg){
+    public void ErrorCode(String msg){
         this.msg=msg;
     }
 
@@ -53,7 +52,7 @@ public enum ResponeseCode {
         return msg;
     }
 
-    public void ResponeseCode(int code, String msg){
+    public void ErrorCode(int code, String msg){
         this.code=code;
         this.msg=msg;
     }

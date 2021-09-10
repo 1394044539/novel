@@ -1,14 +1,23 @@
-package wpy.personal.novel.interceptor.interceptor;
+package wpy.personal.novel.interceptor;
 
+import com.alibaba.fastjson.JSON;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
+import wpy.personal.novel.base.constant.StrConstant;
+import wpy.personal.novel.base.enums.ResponseCode;
+import wpy.personal.novel.base.result.ResponseResult;
+import wpy.personal.novel.config.jwt.JwtToken;
+import wpy.personal.novel.config.jwt.JwtUtils;
+import wpy.personal.novel.utils.StringUtils;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.io.OutputStream;
 
 /**
  * 拦截器
@@ -18,7 +27,7 @@ import java.io.IOException;
 @Slf4j
 @Controller
 @Component
-public class Loginlnterceptor extends HandlerInterceptorAdapter {
+public class LoginInterceptor implements HandlerInterceptor {
 
 
     @Override
@@ -29,16 +38,16 @@ public class Loginlnterceptor extends HandlerInterceptorAdapter {
             return true;
         }
 
-//        String token = request.getHeader(StrConstant.AUTHORIZATION);
-//        if(StringUtils.isEmpty(token)){
-//            this.notLogin(response);
-//            return false;
-//        }
-//        JwtToken jwtInfo = JwtUtils.getJwtInfo(token);
-//        if(StringUtils.isNotEmpty(jwtInfo.getAccountName())){
-//            log.info("拦截器认证已登录");
-//            return true;
-//        }
+        String token = request.getHeader(StrConstant.AUTHORIZATION);
+        if(StringUtils.isEmpty(token)){
+            this.notLogin(response);
+            return false;
+        }
+        JwtToken jwtInfo = JwtUtils.getJwtInfo(token);
+        if(StringUtils.isNotEmpty(jwtInfo.getAccountName())){
+            log.info("拦截器认证已登录");
+            return true;
+        }
         this.notLogin(response);
         return false;
     }
@@ -67,14 +76,14 @@ public class Loginlnterceptor extends HandlerInterceptorAdapter {
      */
     private void notLogin(HttpServletResponse response) throws IOException {
         log.info("用户未登录");
-//        response.setContentType(StrConstant.CONTENT_TYPE);
-//        response.setCharacterEncoding(StrConstant.DEFAULT_CHARTSET);
-//        response.setStatus(ResponeseCode.SUCCESS.code);
-//        OutputStream outputStream = response.getOutputStream();
-//        String resultStr = JsonUtils.ObjectToJsonStr(ResponseResult.error(CodeMsgEnums.USER_NOT_LOGIN));
-//        outputStream.write(resultStr.getBytes(StrConstant.DEFAULT_CHARTSET));
-//        outputStream.flush();
-//        outputStream.close();
+        response.setContentType(StrConstant.CONTENT_TYPE);
+        response.setCharacterEncoding(StrConstant.DEFAULT_CHARTSET);
+        response.setStatus(ResponseCode.SUCCESS.code);
+        OutputStream outputStream = response.getOutputStream();
+        String resultStr = JSON.toJSONString(ResponseResult.error(ResponseCode.USER_NOT_LOGIN));
+        outputStream.write(resultStr.getBytes(StrConstant.DEFAULT_CHARTSET));
+        outputStream.flush();
+        outputStream.close();
     }
 
     @Override

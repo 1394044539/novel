@@ -1,7 +1,7 @@
 package wpy.personal.novel.base.result;
 
 import lombok.Data;
-import wpy.personal.novel.base.enums.ResponeseCode;
+import wpy.personal.novel.base.enums.ResponseCode;
 
 import java.io.Serializable;
 
@@ -37,11 +37,19 @@ public class ResponseResult<T> implements Serializable {
 		return new ResponseResult<T>(code,msg,data);
 	}
 
+	public static  <T> ResponseResult<T> success(String msg,T data){
+		return new ResponseResult<T>(SUCCESS_CODE,msg,data);
+	}
+
+	public static  <T> ResponseResult<T> success(ResponseCode responseCode,T data){
+		return new ResponseResult<T>(responseCode.code,responseCode.msg,data);
+	}
+
 	/**
 	 *  失败时候的调用
 	 * */
 	public static  <T> ResponseResult<T> error(){
-		return new ResponseResult<T>(ResponeseCode.FAIL.getCode(),ResponeseCode.FAIL.getMsg());
+		return new ResponseResult<T>(ResponseCode.FAIL.getCode(), ResponseCode.FAIL.getMsg());
 	}
 
 	public static  <T> ResponseResult<T> error(int code,String msg){
@@ -52,7 +60,7 @@ public class ResponseResult<T> implements Serializable {
 		return new ResponseResult<T>(ERROR_CODE,msg);
 	}
 
-	public static  <T> ResponseResult<T> error(ResponeseCode responeseCode){
+	public static  <T> ResponseResult<T> error(ResponseCode responeseCode){
 		return new ResponseResult<T>(responeseCode);
 	}
 
@@ -97,7 +105,7 @@ public class ResponseResult<T> implements Serializable {
 		this.msg = msg;
 	}
 
-	private ResponseResult(ResponeseCode responeseCode) {
+	private ResponseResult(ResponseCode responeseCode) {
 		if(responeseCode != null) {
 			this.code = responeseCode.getCode();
 			this.msg = responeseCode.getMsg();

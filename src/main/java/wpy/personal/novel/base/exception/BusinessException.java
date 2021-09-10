@@ -2,7 +2,8 @@ package wpy.personal.novel.base.exception;
 
 import lombok.Builder;
 import lombok.Data;
-import wpy.personal.novel.base.enums.ResponeseCode;
+import wpy.personal.novel.base.enums.ErrorCode;
+import wpy.personal.novel.base.enums.ResponseCode;
 
 import java.io.Serializable;
 
@@ -19,12 +20,12 @@ public class BusinessException extends RuntimeException implements Serializable 
 
     /**
      * 自定义异常
-     * @param responeseCode
+     * @param errorCode
      * @param e
      */
-    public BusinessException(ResponeseCode responeseCode, Exception e) {
-        this.status=responeseCode.code;
-        this.msg=responeseCode.msg;
+    public BusinessException(ErrorCode errorCode, Exception e) {
+        this.status=errorCode.code;
+        this.msg=errorCode.msg;
         this.e = e;
     }
 
@@ -34,21 +35,21 @@ public class BusinessException extends RuntimeException implements Serializable 
         this.e = e;
     }
 
-    public BusinessException(ResponeseCode responeseCode) {
-        this.status=responeseCode.code;
-        this.msg=responeseCode.msg;
+    public BusinessException(ErrorCode errorCode) {
+        this.status=errorCode.code;
+        this.msg=errorCode.msg;
     }
 
     public static BusinessException fail(String msg){
         return BusinessException.builder()
-                .status(ResponeseCode.FAIL.getCode())
+                .status(ResponseCode.FAIL.getCode())
                 .msg(msg)
                 .build();
     }
 
     public static BusinessException fail(String msg,Exception e){
         return BusinessException.builder()
-                .status(ResponeseCode.FAIL.getCode())
+                .status(ResponseCode.FAIL.getCode())
                 .msg(msg)
                 .e(e)
                 .build();
@@ -69,10 +70,10 @@ public class BusinessException extends RuntimeException implements Serializable 
                 .build();
     }
 
-    public static BusinessException fail(ResponeseCode responeseCode){
+    public static BusinessException fail(ErrorCode errorCode){
         return BusinessException.builder()
-                .status(responeseCode.getCode())
-                .msg(responeseCode.getMsg())
+                .status(errorCode.getCode())
+                .msg(errorCode.getMsg())
                 .build();
     }
 

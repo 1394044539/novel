@@ -1,4 +1,4 @@
-package wpy.personal.novel.interceptor.interceptor;
+package wpy.personal.novel.interceptor;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -22,7 +22,7 @@ public class InterceptorConfig implements WebMvcConfigurer {
 
     @Bean
     public HandlerInterceptor getMyInterceptor(){
-        return new Loginlnterceptor();
+        return new LoginInterceptor();
     }
 
     @Override
