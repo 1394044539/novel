@@ -51,7 +51,7 @@ public class SysDict implements Serializable {
      * 字典类型
      */
     @TableField("dict_type")
-    private Integer dictType;
+    private String dictType;
 
     /**
      * 创建时间
@@ -81,7 +81,7 @@ public class SysDict implements Serializable {
      * 0：否；1：是
      */
     @TableField("is_delete")
-    private Integer isDelete;
+    private String isDelete;
 
 
 }

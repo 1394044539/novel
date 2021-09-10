@@ -28,27 +28,7 @@ public class InterceptorConfig implements WebMvcConfigurer {
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         InterceptorRegistration interceptorRegistration = registry.addInterceptor(getMyInterceptor());
-        interceptorRegistration.excludePathPatterns("/img/**");
-        interceptorRegistration.excludePathPatterns("/rest/**");
-        interceptorRegistration.excludePathPatterns("/error");
-
-        interceptorRegistration.excludePathPatterns("/sysNotice/list");
-        interceptorRegistration.excludePathPatterns("/sysNotice/openOrClose");
-        interceptorRegistration.excludePathPatterns("/novel/novelInfo");
-        interceptorRegistration.excludePathPatterns("/readHistory/history");
-        interceptorRegistration.excludePathPatterns("/readHistory/list");
-        interceptorRegistration.excludePathPatterns("/novelChapter/content");
-        interceptorRegistration.excludePathPatterns("/novelChapter/list");
-        interceptorRegistration.excludePathPatterns("/userCollection/collection");
-
-        interceptorRegistration.excludePathPatterns("/novel/download");
-        interceptorRegistration.excludePathPatterns("/sysUser/login");
-        interceptorRegistration.excludePathPatterns("/sysUser/reg");
-        interceptorRegistration.excludePathPatterns("/sysUser/getVerifyCode");
-        interceptorRegistration.excludePathPatterns("/sysUser/checkAccount");
-        interceptorRegistration.excludePathPatterns("/sysUser/checkPhone");
-        interceptorRegistration.excludePathPatterns("/sysUser/getVerifyCode");
-        interceptorRegistration.excludePathPatterns("/novel/list");
+        interceptorRegistration.addPathPatterns("/**");
 
 
     }

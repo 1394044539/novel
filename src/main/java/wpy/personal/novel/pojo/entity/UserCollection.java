@@ -33,7 +33,7 @@ public class UserCollection implements Serializable {
      * 收藏类型(0:分卷,1:小说,2:文件夹)
      */
     @TableField("collection_type")
-    private Integer collectionType;
+    private String collectionType;
 
     /**
      * 文件夹名称
@@ -87,7 +87,7 @@ public class UserCollection implements Serializable {
      * 0：否；1：是
      */
     @TableField("is_delete")
-    private Integer isDelete;
+    private String isDelete;
 
 
 }

@@ -45,13 +45,13 @@ public class SysNotice implements Serializable {
      * 是否首页打开(0:否,1:是)
      */
     @TableField("is_open")
-    private Integer isOpen;
+    private String isOpen;
 
     /**
      * 首页展示(0:不展示,1:展示)
      */
     @TableField("main_show")
-    private Integer mainShow;
+    private String mainShow;
 
     /**
      * 首页排序
@@ -63,7 +63,7 @@ public class SysNotice implements Serializable {
      * 是否发布(0:否,1:是)
      */
     @TableField("is_public")
-    private Integer isPublic;
+    private String isPublic;
 
     /**
      * 创建时间
@@ -93,7 +93,7 @@ public class SysNotice implements Serializable {
      * 0：否；1：是
      */
     @TableField("is_delete")
-    private Integer isDelete;
+    private String isDelete;
 
 
 }

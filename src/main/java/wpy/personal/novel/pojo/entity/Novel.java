@@ -141,7 +141,7 @@ public class Novel implements Serializable {
      * 0：否；1：是
      */
     @TableField("is_delete")
-    private Integer isDelete;
+    private String isDelete;
 
 
 }

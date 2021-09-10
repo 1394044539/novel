@@ -33,7 +33,7 @@ public class NovelComment implements Serializable {
      * 评论类型(0:小说,1:分卷,2:章节)
      */
     @TableField("comment_type")
-    private Integer commentType;
+    private String commentType;
 
     /**
      * 小说id
@@ -63,7 +63,7 @@ public class NovelComment implements Serializable {
      * 评论层级(0:第一个评论,1:回复第一层评论的人,2:回复第二层人的，剩下的都算第三层)
      */
     @TableField("comment_level")
-    private Integer commentLevel;
+    private String commentLevel;
 
     /**
      * 回复的主键id
@@ -111,7 +111,7 @@ public class NovelComment implements Serializable {
      * 0：否；1：是
      */
     @TableField("is_delete")
-    private Integer isDelete;
+    private String isDelete;
 
 
 }

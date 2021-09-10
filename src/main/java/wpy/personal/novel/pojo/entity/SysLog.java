@@ -81,7 +81,7 @@ public class SysLog implements Serializable {
      * 日志类型（通用类型0;其他为1）
      */
     @TableField("log_type")
-    private Integer logType;
+    private String logType;
 
     /**
      * 创建时间
@@ -111,7 +111,7 @@ public class SysLog implements Serializable {
      * 0：否；1：是
      */
     @TableField("is_delete")
-    private Integer isDelete;
+    private String isDelete;
 
 
 }
