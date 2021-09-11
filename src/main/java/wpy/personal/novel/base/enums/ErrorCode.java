@@ -32,7 +32,13 @@ public enum ErrorCode {
     VERIFY_CODE_NOT_EMPTY(-6,"验证码不能为空"),
     VERIFY_CODE_IS_INVALID(-7,"验证码已失效"),
     VERIFY_CODE_ERROR(-8,"验证码错误"),
-    PHONE_MESSAGE_SEND_FAIL(-100,"短信发送失败");
+    PHONE_MESSAGE_SEND_FAIL(-100,"短信发送失败"),
+
+    FILE_INPUT_ERROR(-101,"上传的文件流异常"),
+
+    ANALYSIS_TXT_ERROR(-102,"解析TXT文件生成章节异常")
+
+    ;
 
     public Integer code;
     public String msg;

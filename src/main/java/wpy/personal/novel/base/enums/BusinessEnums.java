@@ -8,8 +8,8 @@ public enum BusinessEnums {
     /**
      * 是否删除
      */
-    IS_DELETE("0","否"),
-    NOT_DELETE("1","是");
+    TXT("txt","TXT文件"),
+    EPUB("epub","EPUB文件");
 
     private String code;
     private String desc;

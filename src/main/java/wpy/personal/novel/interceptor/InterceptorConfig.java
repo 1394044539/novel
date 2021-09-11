@@ -29,12 +29,13 @@ public class InterceptorConfig implements WebMvcConfigurer {
     public void addInterceptors(InterceptorRegistry registry) {
         InterceptorRegistration interceptorRegistration = registry.addInterceptor(getMyInterceptor());
         interceptorRegistration.addPathPatterns("/**");
+        interceptorRegistration.excludePathPatterns("/sysUser/loginByAccount");
 
 
     }
 
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
-//        registry.addResourceHandler("/img/**").addResourceLocations("file:"+rootPath+ CharConstant.File_SEPARATOR);
+//        registry.addResourceHandler("/img/**").addResourceLocations("file:"+rootPath+ CharConstant.FILE_SEPARATOR);
     }
 }

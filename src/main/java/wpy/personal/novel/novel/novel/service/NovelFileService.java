@@ -1,5 +1,6 @@
 package wpy.personal.novel.novel.novel.service;
 
+import org.springframework.web.multipart.MultipartFile;
 import wpy.personal.novel.pojo.entity.NovelFile;
 import com.baomidou.mybatisplus.extension.service.IService;
 
@@ -13,4 +14,5 @@ import com.baomidou.mybatisplus.extension.service.IService;
  */
 public interface NovelFileService extends IService<NovelFile> {
 
+    NovelFile saveFile(MultipartFile volumeFile, String novelId, String userId);
 }

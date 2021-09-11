@@ -19,6 +19,6 @@ public class StrConstant {
     public final static String TEN="10";
     public static final String AUTHORIZATION = "authorization";
     public static final String CONTENT_TYPE = "application/json;charset=utf-8";
-    public static final String DEFAULT_CHARTSET = "utf-8";
+    public static final String DEFAULT_CHARSET = "utf-8";
     public static final String TXT = "txt";
 }

@@ -8,8 +8,8 @@ public enum SqlEnums {
     /**
      * 是否删除
      */
-    IS_DELETE("0","否"),
-    NOT_DELETE("1","是"),
+    NOT_DELETE("0","否"),
+    IS_DELETE("1","是"),
 
     /**
      * 日志类型

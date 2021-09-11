@@ -78,11 +78,11 @@ public class LoginInterceptor implements HandlerInterceptor {
     private void notLogin(HttpServletResponse response) throws IOException {
         log.info("用户未登录");
         response.setContentType(StrConstant.CONTENT_TYPE);
-        response.setCharacterEncoding(StrConstant.DEFAULT_CHARTSET);
+        response.setCharacterEncoding(StrConstant.DEFAULT_CHARSET);
         response.setStatus(ResponseCode.SUCCESS.code);
         OutputStream outputStream = response.getOutputStream();
         String resultStr = JSON.toJSONString(ResponseResult.error(ResponseCode.USER_NOT_LOGIN));
-        outputStream.write(resultStr.getBytes(StrConstant.DEFAULT_CHARTSET));
+        outputStream.write(resultStr.getBytes(StrConstant.DEFAULT_CHARSET));
         outputStream.flush();
         outputStream.close();
     }

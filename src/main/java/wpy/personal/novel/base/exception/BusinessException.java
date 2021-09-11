@@ -77,4 +77,12 @@ public class BusinessException extends RuntimeException implements Serializable 
                 .build();
     }
 
+    public static BusinessException fail(ErrorCode errorCode,Exception e){
+        return BusinessException.builder()
+                .status(errorCode.getCode())
+                .msg(errorCode.getMsg())
+                .e(e)
+                .build();
+    }
+
 }

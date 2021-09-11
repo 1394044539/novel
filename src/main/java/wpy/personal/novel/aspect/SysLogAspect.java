@@ -83,7 +83,7 @@ public class SysLogAspect {
         sysLog.setOperatorUserId(sysUser.getUserId());
         sysLog.setUpdateTime(new Date());
         sysLog.setLogDesc(sysLogs.fun());
-        sysLog.setIsDelete(SqlEnums.IS_DELETE.getCode());
+        sysLog.setIsDelete(SqlEnums.NOT_DELETE.getCode());
         sysLogService.save(sysLog);
     }
 

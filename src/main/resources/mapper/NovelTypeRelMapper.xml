@@ -18,5 +18,16 @@
     <sql id="Base_Column_List">
         novel_type_rel_id, novel_id, type_code, create_time, create_by, update_time, update_by, is_delete
     </sql>
+    <select id="getNovelTypeList" resultType="wpy.personal.novel.pojo.entity.SysDict">
+        select pa.param_code,pa.param_name
+        from novel_type_rel ntr
+        left join (
+            select sdp.param_code,sdp.param_name
+            from sys_dict_param sdp
+            left join sys_dict sd on sdp.dict_id = sd.dict_id
+            where sd.dict_code = 'NOVEL_TYPE'
+        ) pa on pa.param_code = ntr.type_code
+        where ntr.novel_id = #{novelId}
+    </select>
 
 </mapper>

@@ -39,3 +39,12 @@ logging:
 
 jwt:
   expireTime: 7*24*3600*1000
+
+
+novel:
+  filePath:
+    rootPath: D:\workOrStudy\program\fileData
+    novelFile: novelFile
+    novelImg: novelImg
+    volumeImg: volumeImg
+

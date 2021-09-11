@@ -88,6 +88,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
         insertUser.setCreateTime(new Date());
         insertUser.setUpdateBy(sysUser.getUserId());
         insertUser.setUpdateTime(new Date());
+        //加密
         insertUser.setPassword(EncryptionUtils.md5Encryption(insertUser.getPassword(),insertUser.getUserId()));
         this.save(insertUser);
     }
