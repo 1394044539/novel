@@ -79,7 +79,7 @@ public class NovelVolumeServiceImpl extends ServiceImpl<NovelVolumeMapper, Novel
         BeanUtils.copyProperties(novelVolume,novelVolumeBo);
 
         List<NovelChapter> chapterList = novelChapterService.getBaseMapper().selectList(
-                new QueryWrapper<NovelChapter>().eq("volume_id", volumeId));
+                new QueryWrapper<NovelChapter>().eq("volume_id", volumeId).orderByAsc("chapter_order"));
         novelVolumeBo.setChapterList(chapterList);
         return novelVolumeBo;
     }

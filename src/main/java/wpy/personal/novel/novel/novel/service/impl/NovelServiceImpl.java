@@ -59,12 +59,12 @@ public class NovelServiceImpl extends ServiceImpl<NovelMapper, Novel> implements
     @Override
     public Page<Novel> getNovelList(NovelDto novelDto, SysUser sysUser) {
         QueryWrapper<Novel> qw = new QueryWrapper<>();
-        qw.eq("is_delete",SqlEnums.NOT_DELETE.getCode());
-        List<String> roleList = sysUserRoleService.getRoleCodeListByUserId(sysUser.getUserId());
-        if(!roleList.contains(DictEnums.SUPER_ADMIN.getKey())){
-            //非管理员只能看自己的
-            qw.eq("create_by",sysUser.getUserId());
-        }
+//        qw.eq("is_delete",SqlEnums.NOT_DELETE.getCode());
+//        List<String> roleList = sysUserRoleService.getRoleCodeListByUserId(sysUser.getUserId());
+//        if(!roleList.contains(DictEnums.SUPER_ADMIN.getKey())){
+//            //非管理员只能看自己的
+//            qw.eq("create_by",sysUser.getUserId());
+//        }
         if(StringUtils.isNotEmpty(novelDto.getNovelName())){
             qw.like("novel_name",novelDto.getNovelName());
         }
@@ -122,7 +122,7 @@ public class NovelServiceImpl extends ServiceImpl<NovelMapper, Novel> implements
         novelBo.setTypeList(typeList);
         //3、取出小说的分卷信息
         List<NovelVolume> novelVolumeList = novelVolumeMapper.selectList(
-                new QueryWrapper<NovelVolume>().eq("novel_id", novelId));
+                new QueryWrapper<NovelVolume>().eq("novel_id", novelId).orderByAsc("volume_order"));
         novelBo.setNovelVolumeList(novelVolumeList);
         return novelBo;
     }

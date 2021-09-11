@@ -23,7 +23,8 @@ public class CodeGenerator {
         mpg.setDataSource(getDataSourceConfig());
 
         //2、数据库表配置
-        mpg.setStrategy(getStrategyConfig(null));
+        String[] table= new String[]{"novel_history"};
+        mpg.setStrategy(getStrategyConfig(table));
 
         //3.包配置
         mpg.setPackageInfo(getPackageConfig());
@@ -46,7 +47,7 @@ public class CodeGenerator {
         GlobalConfig globalConfig = new GlobalConfig();
         //输出路径
 
-        globalConfig.setOutputDir("E://Program//JAVA//IDEAProgram//novel//src//main//java");
+        globalConfig.setOutputDir("D:\\workOrStudy\\ideaworkspace\\NovelSystem\\src\\main\\java\\wpy\\personal\\novel\\config\\mybatisplus");
         //作者
         globalConfig.setAuthor("wangpanyin");
         //生成后是否打开
