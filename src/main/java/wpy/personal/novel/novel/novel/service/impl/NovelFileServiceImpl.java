@@ -34,12 +34,13 @@ public class NovelFileServiceImpl extends ServiceImpl<NovelFileMapper, NovelFile
         novelFile.setFileId(StringUtils.getUuid());
         novelFile.setFileSize(volumeFile.getSize());
         novelFile.setFileType(FileUtils.getFileType(volumeFile.getOriginalFilename()));
+        novelFile.setFileName(volumeFile.getOriginalFilename());
         //上传文件,用md5作为文件名，路径用配置+小说id表示
         String fileNamMd5 = FileUtils.getMd5(volumeFile);
         String uploadFilePath = rootPath + CharConstant.FILE_SEPARATOR+novelFilePath+CharConstant.FILE_SEPARATOR+novelId;
         FileUtils.upload(volumeFile,uploadFilePath,fileNamMd5);
         novelFile.setFileMd5(fileNamMd5);
-        novelFile.setFilePath(novelFilePath+CharConstant.FILE_SEPARATOR+novelId);
+        novelFile.setFilePath(uploadFilePath);
         this.save(novelFile);
         return novelFile;
     }

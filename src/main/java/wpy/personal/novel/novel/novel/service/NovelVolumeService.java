@@ -1,5 +1,6 @@
 package wpy.personal.novel.novel.novel.service;
 
+import wpy.personal.novel.pojo.bo.NovelVolumeBo;
 import wpy.personal.novel.pojo.dto.VolumeDto;
 import wpy.personal.novel.pojo.entity.NovelVolume;
 import com.baomidou.mybatisplus.extension.service.IService;
@@ -22,4 +23,12 @@ public interface NovelVolumeService extends IService<NovelVolume> {
      * @return
      */
     NovelVolume addVolume(VolumeDto volumeDto, SysUser sysUser);
+
+    /**
+     * 获取某一卷的信息
+     * @param volumeId
+     * @param sysUser
+     * @return
+     */
+    NovelVolumeBo getVolumeInfo(String volumeId, SysUser sysUser);
 }

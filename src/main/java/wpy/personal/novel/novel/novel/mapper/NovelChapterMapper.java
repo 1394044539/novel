@@ -1,7 +1,7 @@
 package wpy.personal.novel.novel.novel.mapper;
 
-import wpy.personal.novel.pojo.entity.NovelChapter;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import wpy.personal.novel.pojo.entity.NovelChapter;
 
 /**
  * <p>
@@ -13,4 +13,10 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
  */
 public interface NovelChapterMapper extends BaseMapper<NovelChapter> {
 
+    /**
+     * 查询信息
+     * @param chapterId
+     * @return
+     */
+    NovelChapter getChapterFileInfo(String chapterId);
 }

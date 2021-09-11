@@ -107,5 +107,21 @@ public class NovelChapter implements Serializable {
     @TableField("is_delete")
     private String isDelete;
 
+    /**
+     * 文件类型
+     */
+    @TableField(exist = false)
+    private String fileType;
 
+    /**
+     * 文件md5，基本上就是文件名
+     */
+    @TableField(exist = false)
+    private String fileMd5;
+
+    /**
+     * 文件路径
+     */
+    @TableField(exist = false)
+    private String filePath;
 }

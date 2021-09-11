@@ -1,29 +1,39 @@
 package wpy.personal.novel.novel.novel.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.google.common.collect.Lists;
 import nl.siegmann.epublib.domain.*;
 import org.apache.commons.io.IOUtils;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.multipart.MultipartFile;
+import wpy.personal.novel.base.constant.CharConstant;
 import wpy.personal.novel.base.constant.NumConstant;
 import wpy.personal.novel.base.constant.StrConstant;
+import wpy.personal.novel.base.enums.BusinessEnums;
 import wpy.personal.novel.base.enums.ErrorCode;
 import wpy.personal.novel.base.exception.BusinessException;
+import wpy.personal.novel.pojo.bo.ChapterBo;
 import wpy.personal.novel.pojo.bo.VolumeChapterBo;
+import wpy.personal.novel.pojo.dto.VolumeDto;
 import wpy.personal.novel.pojo.entity.NovelChapter;
 import wpy.personal.novel.novel.novel.mapper.NovelChapterMapper;
 import wpy.personal.novel.novel.novel.service.NovelChapterService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.stereotype.Service;
 import wpy.personal.novel.pojo.entity.NovelVolume;
+import wpy.personal.novel.pojo.entity.SysUser;
 import wpy.personal.novel.utils.FileUtils;
 import wpy.personal.novel.utils.ObjectUtils;
 import wpy.personal.novel.utils.StringUtils;
 import wpy.personal.novel.utils.dateUtils.DateUtils;
 
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
@@ -38,6 +48,9 @@ import java.util.regex.Pattern;
  */
 @Service
 public class NovelChapterServiceImpl extends ServiceImpl<NovelChapterMapper, NovelChapter> implements NovelChapterService {
+
+    @Autowired
+    private NovelChapterMapper novelChapterMapper;
 
     @Value("${novel.filePath.rootPath}")
     private String rootPath;
@@ -98,6 +111,7 @@ public class NovelChapterServiceImpl extends ServiceImpl<NovelChapterMapper, Nov
                 novelChapter.setChapterOrder(NumConstant.ZERO);
                 novelChapter.setTotalLine(allList.size());
                 novelChapter.setStartLine(NumConstant.ZERO);
+                novelChapter.setEndLine(allList.size());
                 novelChapter.setChapterName(novelVolume.getVolumeName());
                 chapterList.add(novelChapter);
             } else {
@@ -180,6 +194,94 @@ public class NovelChapterServiceImpl extends ServiceImpl<NovelChapterMapper, Nov
         volumeChapterBo.setTotalWord(wordNum);
         volumeChapterBo.setTotalLine(novelLine);
         return volumeChapterBo;
+    }
+
+    @Override
+    public ChapterBo getChapterContent(String chapterId, SysUser sysUser) {
+        ChapterBo chapterBo = new ChapterBo();
+        //1、拿到基本参数和文件类型
+        NovelChapter novelChapter = novelChapterMapper.getChapterFileInfo(chapterId);
+        chapterBo.setChapterName(novelChapter.getChapterName());
+        //2、拿到上一章和下一章
+        QueryWrapper<NovelChapter> qw = new QueryWrapper<>();
+        qw.eq("volume_id", novelChapter.getVolumeId());
+        qw.and(wrapper -> wrapper.eq("volume_order", novelChapter.getChapterOrder() - 1)
+                .or().eq("volume_order", novelChapter.getChapterOrder() + 1));
+        List<NovelChapter> novelChapterList = this.novelChapterMapper.selectList(qw);
+        for (NovelChapter chapter : novelChapterList) {
+            if(novelChapter.getChapterOrder().equals(chapter.getChapterOrder() - 1)){
+                chapterBo.setLastChapterId(chapter.getChapterId());
+                chapterBo.setLastChapterName(chapter.getChapterName());
+            }
+            if(novelChapter.getChapterOrder().equals(chapter.getChapterOrder() + 1)){
+                chapterBo.setNextChapterId(chapter.getChapterId());
+                chapterBo.setNextChapterName(chapter.getChapterName());
+            }
+        }
+        //3、取出内容
+        if(BusinessEnums.TXT.getCode().equalsIgnoreCase(novelChapter.getFileType())){
+            //txt
+            chapterBo.setContext(this.getTxtContent(novelChapter));
+        }else if(BusinessEnums.EPUB.getCode().equalsIgnoreCase(novelChapter.getFileType())){
+            //epub
+            chapterBo.setContext(this.getEpubContent(novelChapter));
+        }else {
+            throw BusinessException.fail(ErrorCode.FILE_TYPE_ERROR);
+        }
+        return chapterBo;
+    }
+
+    /**
+     * 获取epub的某一条内容
+     * @param novelChapter
+     * @return
+     */
+    private List<String> getEpubContent(NovelChapter novelChapter) {
+        List<String> list = Lists.newArrayList();
+        Book epubBook = FileUtils.getEpubBook(novelChapter.getFilePath()+ CharConstant.FILE_SEPARATOR+novelChapter.getFileMd5());
+        Resource resource = epubBook.getResources().getByHref(novelChapter.getEpubPath());
+        byte[] data = null;
+        try {
+            data = resource.getData();
+        } catch (IOException e) {
+            log.error(e.getMessage());
+        }
+        //html解析
+        if (data != null) {
+            String html = new String(data);
+            Document parse = Jsoup.parse(html);
+            Elements p = parse.getElementsByTag("p");
+            for (Element element : p) {
+                list.add(element.text());
+            }
+        }
+        return list;
+    }
+
+    /**
+     * 获取txt的某一张内容
+     * @param novelChapter
+     * @return
+     */
+    private List<String> getTxtContent(NovelChapter novelChapter) {
+        List<String> list=Lists.newArrayList();
+        File file = new File(novelChapter.getFilePath()+ CharConstant.FILE_SEPARATOR+novelChapter.getFileMd5());
+        try (InputStream is = new FileInputStream(file)){
+            //获取的时候编码也需要解析
+            String code=FileUtils.getTxtFileCode(is);
+            if(StringUtils.isEmpty(code)){
+                list=FileUtils.getLineByEnd(is,novelChapter.getStartLine(),novelChapter.getEndLine());
+            }else {
+                InputStreamReader isr = new InputStreamReader(is, code);
+                byte[] fileBytes = IOUtils.toByteArray(isr);
+                list = FileUtils.getLineByLimit(new ByteArrayInputStream(fileBytes),(long)novelChapter.getStartLine(),(long)novelChapter.getTotalLine());
+            }
+        }catch (Exception e){
+            log.error(e.getMessage());
+        }
+        //去空格处理
+        list.forEach(StringUtils::removeBlank);
+        return list;
     }
 
     /**

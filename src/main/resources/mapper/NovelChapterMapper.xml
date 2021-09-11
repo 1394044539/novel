@@ -24,5 +24,12 @@
     <sql id="Base_Column_List">
         chapter_id, volume_id, chapter_name, chapter_order, start_line, end_line, total_line, epub_path, parent_id, create_time, create_by, update_time, update_by, is_delete
     </sql>
+    <select id="getChapterFileInfo" resultType="wpy.personal.novel.pojo.entity.NovelChapter">
+        select nc.*,nf.file_type,nf.file_path,nf.file_md5
+        from novel_chapter nc
+        left join novel_volume nv on nv.volume_id = nc.volume_id
+        left join novel_file nf on nf.file_id = nv.file_id
+        where nc.id = #{chapterId}
+    </select>
 
 </mapper>

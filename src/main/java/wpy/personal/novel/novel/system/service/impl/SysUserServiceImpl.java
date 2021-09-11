@@ -23,9 +23,11 @@ import wpy.personal.novel.novel.system.service.SysUserService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.stereotype.Service;
 import wpy.personal.novel.utils.EncryptionUtils;
+import wpy.personal.novel.utils.ObjectUtils;
 import wpy.personal.novel.utils.RedisUtils;
 import wpy.personal.novel.utils.StringUtils;
 
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -81,13 +83,12 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
             throw BusinessException.fail(ErrorCode.USER_NOT_AUTH);
         }
         //2、添加用户
-        SysUser insertUser = new SysUser();
+        SysUser insertUser = ObjectUtils.newInstance(sysUser.getUserId(), SysUser.class);
         BeanUtils.copyProperties(sysUserDto,insertUser);
         insertUser.setUserId(StringUtils.getUuid());
-        insertUser.setCreateBy(sysUser.getUserId());
-        insertUser.setCreateTime(new Date());
-        insertUser.setUpdateBy(sysUser.getUserId());
-        insertUser.setUpdateTime(new Date());
+        //默认只有100M空间
+        insertUser.setFullMemory(new BigDecimal("100"));
+        insertUser.setFullMemory(new BigDecimal("0"));
         //加密
         insertUser.setPassword(EncryptionUtils.md5Encryption(insertUser.getPassword(),insertUser.getUserId()));
         this.save(insertUser);

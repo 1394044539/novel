@@ -1,6 +1,8 @@
 package wpy.personal.novel.pojo.entity;
 
 import com.baomidou.mybatisplus.annotation.TableName;
+
+import java.math.BigDecimal;
 import java.util.Date;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableField;
@@ -94,6 +96,18 @@ public class SysUser implements Serializable {
      */
     @TableField("user_status")
     private String userStatus;
+
+    /**
+     * 总空间，单位M
+     */
+    @TableField("full_memory")
+    private BigDecimal fullMemory;
+
+    /**
+     * 可用空间，单位M
+     */
+    @TableField("use_memory")
+    private BigDecimal useMemory;
 
     /**
      * 创建时间

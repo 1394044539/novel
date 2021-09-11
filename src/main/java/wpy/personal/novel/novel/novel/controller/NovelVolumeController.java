@@ -2,14 +2,12 @@ package wpy.personal.novel.novel.novel.controller;
 
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
-import org.springframework.web.bind.annotation.RestController;
 import wpy.personal.novel.base.annotation.SysLogs;
 import wpy.personal.novel.base.result.ResponseResult;
 import wpy.personal.novel.novel.novel.service.NovelVolumeService;
+import wpy.personal.novel.pojo.bo.NovelVolumeBo;
 import wpy.personal.novel.pojo.dto.VolumeDto;
 import wpy.personal.novel.pojo.entity.NovelVolume;
 import wpy.personal.novel.pojo.entity.SysUser;
@@ -40,4 +38,11 @@ public class NovelVolumeController {
         return ResponseResult.success(novelVolume);
     }
 
+    @GetMapping("/getVolumeInfo")
+    @SysLogs(fun = "获取分卷信息")
+    public ResponseResult getVolumeInfo(HttpServletRequest request,@RequestParam("volumeId")String volumeId){
+        SysUser sysUser = RequestUtils.getSysUser(request);
+        NovelVolumeBo novelVolumeBo = novelVolumeService.getVolumeInfo(volumeId,sysUser);
+        return ResponseResult.success(novelVolumeBo);
+    }
 }

@@ -16,6 +16,8 @@
         <result column="qq_number" property="qqNumber" />
         <result column="wechat_number" property="wechatNumber" />
         <result column="user_status" property="userStatus" />
+        <result column="full_memory" property="fullMemory" />
+        <result column="use_memory" property="useMemory" />
         <result column="create_time" property="createTime" />
         <result column="create_by" property="createBy" />
         <result column="update_time" property="updateTime" />
@@ -25,7 +27,7 @@
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        user_id, user_name, account_name, phone, email, password, identity_card, true_name, photo, qq_number, wechat_number, user_status, create_time, create_by, update_time, update_by, is_delete
+        user_id, user_name, account_name, phone, email, password, identity_card, true_name, photo, qq_number, wechat_number, user_status,full_memory,use_memory, create_time, create_by, update_time, update_by, is_delete
     </sql>
 
 </mapper>

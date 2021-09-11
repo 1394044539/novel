@@ -36,7 +36,9 @@ public enum ErrorCode {
 
     FILE_INPUT_ERROR(-101,"上传的文件流异常"),
 
-    ANALYSIS_TXT_ERROR(-102,"解析TXT文件生成章节异常")
+    ANALYSIS_TXT_ERROR(-102,"解析TXT文件生成章节异常"),
+
+    FILE_TYPE_ERROR(-103,"文件类型错误,暂不支持该类型文件")
 
     ;
 

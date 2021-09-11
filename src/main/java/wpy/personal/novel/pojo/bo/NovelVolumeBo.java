@@ -1,19 +1,19 @@
-package wpy.personal.novel.pojo.dto;
+package wpy.personal.novel.pojo.bo;
 
 import lombok.Data;
-import org.springframework.web.multipart.MultipartFile;
+import wpy.personal.novel.pojo.entity.NovelChapter;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 
 /**
- * 分卷表dto
+ * 分卷信息
  */
 @Data
-public class VolumeDto implements Serializable {
+public class NovelVolumeBo implements Serializable {
 
-    private static final long serialVersionUID = 1L;
-
+    private static final long serialVersionUID = -4158619597150055215L;
     /**
      * 主键id
      */
@@ -90,18 +90,7 @@ public class VolumeDto implements Serializable {
     private String isDelete;
 
     /**
-     * 分卷文件
+     * 章节列表
      */
-    private MultipartFile volumeFile;
-
-    /**
-     * 封面文件
-     */
-    private MultipartFile imgFile;
-
-    /**
-     * 文件类型
-     */
-    private String fileType;
-
+    private List<NovelChapter> chapterList;
 }

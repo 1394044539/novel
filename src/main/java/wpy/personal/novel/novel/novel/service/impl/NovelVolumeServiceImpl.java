@@ -1,5 +1,6 @@
 package wpy.personal.novel.novel.novel.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.apache.commons.io.IOUtils;
 import org.springframework.beans.BeanUtils;
@@ -15,8 +16,10 @@ import wpy.personal.novel.novel.novel.mapper.NovelVolumeMapper;
 import wpy.personal.novel.novel.novel.service.NovelChapterService;
 import wpy.personal.novel.novel.novel.service.NovelFileService;
 import wpy.personal.novel.novel.novel.service.NovelVolumeService;
+import wpy.personal.novel.pojo.bo.NovelVolumeBo;
 import wpy.personal.novel.pojo.bo.VolumeChapterBo;
 import wpy.personal.novel.pojo.dto.VolumeDto;
+import wpy.personal.novel.pojo.entity.NovelChapter;
 import wpy.personal.novel.pojo.entity.NovelFile;
 import wpy.personal.novel.pojo.entity.NovelVolume;
 import wpy.personal.novel.pojo.entity.SysUser;
@@ -25,6 +28,7 @@ import wpy.personal.novel.utils.StringUtils;
 
 import java.io.InputStreamReader;
 import java.util.Date;
+import java.util.List;
 
 /**
  * <p>
@@ -66,6 +70,18 @@ public class NovelVolumeServiceImpl extends ServiceImpl<NovelVolumeMapper, Novel
         this.fillParam(volumeChapterBo,novelVolume);
         this.save(novelVolume);
         return novelVolume;
+    }
+
+    @Override
+    public NovelVolumeBo getVolumeInfo(String volumeId, SysUser sysUser) {
+        NovelVolume novelVolume = this.getById(volumeId);
+        NovelVolumeBo novelVolumeBo = new NovelVolumeBo();
+        BeanUtils.copyProperties(novelVolume,novelVolumeBo);
+
+        List<NovelChapter> chapterList = novelChapterService.getBaseMapper().selectList(
+                new QueryWrapper<NovelChapter>().eq("volume_id", volumeId));
+        novelVolumeBo.setChapterList(chapterList);
+        return novelVolumeBo;
     }
 
     /**
@@ -127,7 +143,7 @@ public class NovelVolumeServiceImpl extends ServiceImpl<NovelVolumeMapper, Novel
             //epub
             return novelChapterService.analysisEpub(bytes,novelVolume,volumeFile,userId);
         }else {
-            throw BusinessException.fail("暂不支持该文件类型");
+            throw BusinessException.fail(ErrorCode.FILE_TYPE_ERROR);
         }
     }
 

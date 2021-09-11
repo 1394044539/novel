@@ -356,7 +356,7 @@ public class FileUtils {
     }
 
     /**
-     * 获取eppb文件
+     * 获取epub文件
      * @param inputStream
      * @return
      */
@@ -364,6 +364,22 @@ public class FileUtils {
         try {
             EpubReader reader = new EpubReader();
             return reader.readEpub(inputStream);
+        } catch (IOException e) {
+            log.error(e.getMessage());
+            throw UtilsException.fail(UtilsEnums.READ_EPUB_FAIL,e);
+        }
+    }
+
+    /**
+     * 获取epub文件
+     * @param path
+     * @return
+     */
+    public static Book getEpubBook(String path) {
+        File file = new File(path);
+        try (InputStream in = new FileInputStream(file)){
+            EpubReader reader = new EpubReader();
+            return reader.readEpub(in);
         } catch (IOException e) {
             log.error(e.getMessage());
             throw UtilsException.fail(UtilsEnums.READ_EPUB_FAIL,e);
