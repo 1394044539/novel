@@ -2,6 +2,9 @@ package wpy.personal.novel.novel.system.service;
 
 import wpy.personal.novel.pojo.entity.SysDictParam;
 import com.baomidou.mybatisplus.extension.service.IService;
+import wpy.personal.novel.pojo.entity.SysUser;
+
+import java.util.List;
 
 /**
  * <p>
@@ -13,4 +16,11 @@ import com.baomidou.mybatisplus.extension.service.IService;
  */
 public interface SysDictParamService extends IService<SysDictParam> {
 
+    /**
+     * 插入子项字典表
+     * @param paramList
+     * @param dictId
+     * @param sysUser
+     */
+    void addDictParam(List<SysDictParam> paramList, String dictId, SysUser sysUser);
 }

@@ -38,7 +38,7 @@ logging:
     name: logger/mylog.log
 
 jwt:
-  expireTime: 7*24*3600*1000
+  expireTime: 604800
 
 
 novel:

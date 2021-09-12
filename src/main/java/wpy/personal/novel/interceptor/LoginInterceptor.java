@@ -14,6 +14,7 @@ import wpy.personal.novel.base.result.ResponseResult;
 import wpy.personal.novel.config.jwt.JwtToken;
 import wpy.personal.novel.config.jwt.JwtUtils;
 import wpy.personal.novel.utils.RedisUtils;
+import wpy.personal.novel.utils.RequestUtils;
 import wpy.personal.novel.utils.StringUtils;
 
 import javax.servlet.http.HttpServletRequest;
@@ -40,12 +41,14 @@ public class LoginInterceptor implements HandlerInterceptor {
             return true;
         }
 
-        String authorization = request.getHeader(StrConstant.AUTHORIZATION);
+        String authorization = RequestUtils.getToken(request);
+
         if(StringUtils.isEmpty(authorization)||!RedisUtils.hasKey(RedisConstant.TOKEN + authorization)){
             this.notLogin(response);
+            return false;
         }
         JwtToken jwtInfo = JwtUtils.getJwtInfo(authorization);
-        if(!StringUtils.isEmpty(jwtInfo.getAccountName())){
+        if(StringUtils.isEmpty(jwtInfo.getAccountName())){
             this.notLogin(response);
             return false;
         }

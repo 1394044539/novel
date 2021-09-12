@@ -4,6 +4,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
+import wpy.personal.novel.base.enums.UtilsEnums;
+import wpy.personal.novel.base.exception.UtilsException;
 
 import javax.annotation.PostConstruct;
 import java.util.Map;
@@ -42,8 +44,8 @@ public class RedisUtils {
             return redisTemplateStatic.expire(key, time, TimeUnit.SECONDS);
         } catch (Exception e) {
             log.error(e.getMessage());
+            throw UtilsException.fail(UtilsEnums.REDIS_ERROR,e);
         }
-        return false;
     }
 
     /**
@@ -57,8 +59,8 @@ public class RedisUtils {
             return redisTemplateStatic.getExpire(key, TimeUnit.SECONDS);
         } catch (Exception e) {
             log.error(e.getMessage());
+            throw UtilsException.fail(UtilsEnums.REDIS_ERROR,e);
         }
-        return 0;
     }
 
     /**
@@ -72,8 +74,8 @@ public class RedisUtils {
             return redisTemplateStatic.hasKey(key);
         } catch (Exception e) {
             log.error(e.getMessage());
+            throw UtilsException.fail(UtilsEnums.REDIS_ERROR,e);
         }
-        return false;
     }
 
     /**
@@ -87,8 +89,8 @@ public class RedisUtils {
             return redisTemplateStatic.boundValueOps(key).persist();
         } catch (Exception e) {
             log.error(e.getMessage());
+            throw UtilsException.fail(UtilsEnums.REDIS_ERROR,e);
         }
-        return false;
     }
 
     /**
@@ -100,6 +102,7 @@ public class RedisUtils {
             redisTemplateStatic.delete(key);
         } catch (Exception e) {
             log.error(e.getMessage());
+            throw UtilsException.fail(UtilsEnums.REDIS_ERROR,e);
         }
     }
 
@@ -113,6 +116,7 @@ public class RedisUtils {
             redisTemplateStatic.opsForValue().set(key,object);
         } catch (Exception e) {
             log.error(e.getMessage());
+            throw UtilsException.fail(UtilsEnums.REDIS_ERROR,e);
         }
     }
 
@@ -127,6 +131,7 @@ public class RedisUtils {
             redisTemplateStatic.opsForValue().set(key,object,time,TimeUnit.SECONDS);
         } catch (Exception e) {
             log.error(e.getMessage());
+            throw UtilsException.fail(UtilsEnums.REDIS_ERROR,e);
         }
     }
 
@@ -139,8 +144,8 @@ public class RedisUtils {
             return redisTemplateStatic.opsForValue().get(key);
         } catch (Exception e) {
             log.error(e.getMessage());
+            throw UtilsException.fail(UtilsEnums.REDIS_ERROR,e);
         }
-        return null;
     }
 
     /**
@@ -153,6 +158,7 @@ public class RedisUtils {
             redisTemplateStatic.opsForValue().getAndSet(key,object);
         } catch (Exception e) {
             log.error(e.getMessage());
+            throw UtilsException.fail(UtilsEnums.REDIS_ERROR,e);
         }
     }
 
@@ -166,6 +172,7 @@ public class RedisUtils {
             redisTemplateStatic.opsForValue().setIfAbsent(key,object);
         } catch (Exception e) {
             log.error(e.getMessage());
+            throw UtilsException.fail(UtilsEnums.REDIS_ERROR,e);
         }
     }
 
@@ -178,6 +185,7 @@ public class RedisUtils {
             redisTemplateStatic.opsForValue().multiSet(map);
         } catch (Exception e) {
             log.error(e.getMessage());
+            throw UtilsException.fail(UtilsEnums.REDIS_ERROR,e);
         }
     }
 
@@ -191,8 +199,8 @@ public class RedisUtils {
             return redisTemplateStatic.opsForValue().get(key);
         } catch (Exception e) {
             log.error(e.getMessage());
+            throw UtilsException.fail(UtilsEnums.REDIS_ERROR,e);
         }
-        return null;
     }
 
     /**
@@ -205,6 +213,7 @@ public class RedisUtils {
             redisTemplateStatic.opsForHash().putAll(key,map);
         } catch (Exception e) {
             log.error(e.getMessage());
+            throw UtilsException.fail(UtilsEnums.REDIS_ERROR,e);
         }
     }
 
@@ -219,6 +228,7 @@ public class RedisUtils {
             redisTemplateStatic.opsForHash().put(key,mapKey,value);
         } catch (Exception e) {
             log.error(e.getMessage());
+            throw UtilsException.fail(UtilsEnums.REDIS_ERROR,e);
         }
     }
 
@@ -231,8 +241,8 @@ public class RedisUtils {
             return redisTemplateStatic.opsForHash().entries(key);
         } catch (Exception e) {
             log.error(e.getMessage());
+            throw UtilsException.fail(UtilsEnums.REDIS_ERROR,e);
         }
-        return null;
     }
 
     /**
@@ -245,8 +255,8 @@ public class RedisUtils {
             return redisTemplateStatic.opsForHash().get(keyName, mapKey);
         } catch (Exception e) {
             log.error(e.getMessage());
+            throw UtilsException.fail(UtilsEnums.REDIS_ERROR,e);
         }
-        return null;
     }
 
 

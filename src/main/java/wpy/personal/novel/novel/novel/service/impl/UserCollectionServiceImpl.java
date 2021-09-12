@@ -1,5 +1,6 @@
 package wpy.personal.novel.novel.novel.service.impl;
 
+import org.springframework.transaction.annotation.Transactional;
 import wpy.personal.novel.pojo.entity.UserCollection;
 import wpy.personal.novel.novel.novel.mapper.UserCollectionMapper;
 import wpy.personal.novel.novel.novel.service.UserCollectionService;
@@ -15,6 +16,7 @@ import org.springframework.stereotype.Service;
  * @since 2021-09-07
  */
 @Service
+@Transactional
 public class UserCollectionServiceImpl extends ServiceImpl<UserCollectionMapper, UserCollection> implements UserCollectionService {
 
 }

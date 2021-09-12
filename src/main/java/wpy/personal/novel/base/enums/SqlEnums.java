@@ -15,7 +15,14 @@ public enum SqlEnums {
      * 日志类型
      */
     CURRENCY_LOG("0","通用日志"),
-    OTHER_LOG("1","其他日志");
+    OTHER_LOG("1","其他日志"),
+
+    /**
+     * 字典选项
+     */
+    DICT_STRING("0","字符串"),
+    DICT_BOOL("1","开关"),
+    DICT_LIST("2","集合");
 
 
     private String code;

@@ -30,9 +30,9 @@ public class NovelVolumeController {
     @Autowired
     private NovelVolumeService novelVolumeService;
 
-    @PostMapping("/addVolume")
+    @PutMapping("/addVolume")
     @SysLogs(fun = "添加分卷内容")
-    public ResponseResult addVolume(HttpServletRequest request, @RequestBody VolumeDto volumeDto){
+    public ResponseResult addVolume(HttpServletRequest request, VolumeDto volumeDto){
         SysUser sysUser = RequestUtils.getSysUser(request);
         NovelVolume novelVolume = novelVolumeService.addVolume(volumeDto,sysUser);
         return ResponseResult.success(novelVolume);

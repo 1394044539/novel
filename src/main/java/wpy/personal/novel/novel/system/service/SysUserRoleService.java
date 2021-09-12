@@ -1,6 +1,8 @@
 package wpy.personal.novel.novel.system.service;
 
 import wpy.personal.novel.pojo.bo.UserRoleBo;
+import wpy.personal.novel.pojo.entity.SysRole;
+import wpy.personal.novel.pojo.entity.SysUser;
 import wpy.personal.novel.pojo.entity.SysUserRole;
 import com.baomidou.mybatisplus.extension.service.IService;
 
@@ -29,4 +31,11 @@ public interface SysUserRoleService extends IService<SysUserRole> {
      * @return
      */
     List<String> getRoleCodeListByUserId(String userId);
+
+    /**
+     * 根据角色查找用户
+     * @param roleId
+     * @return
+     */
+    List<SysUser> getUserListByRole(String roleId);
 }

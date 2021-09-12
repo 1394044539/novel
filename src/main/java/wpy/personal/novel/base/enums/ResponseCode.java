@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 public enum ResponseCode {
 
     SUCCESS(200,"操作成功"),
-    FAIL(0,"操作失败"),
+    FAIL(0,"服务器异常"),
     LOGIN_SUCCESS(201,"登录成功"),
 
     //用户模块

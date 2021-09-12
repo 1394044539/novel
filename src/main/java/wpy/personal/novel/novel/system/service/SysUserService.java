@@ -5,6 +5,8 @@ import wpy.personal.novel.pojo.dto.SysUserDto;
 import wpy.personal.novel.pojo.entity.SysUser;
 import com.baomidou.mybatisplus.extension.service.IService;
 
+import javax.servlet.http.HttpServletRequest;
+
 /**
  * <p>
  * 用户表 服务类
@@ -35,4 +37,17 @@ public interface SysUserService extends IService<SysUser> {
      * @return
      */
     UserInfoBo getUserInfo(SysUser sysUser);
+
+    /**
+     * 退出登录
+     * @param request
+     */
+    void logon(HttpServletRequest request);
+
+    /**
+     * 修改用户
+     * @param sysUserDto
+     * @param sysUser
+     */
+    SysUser updateUser(SysUserDto sysUserDto, SysUser sysUser);
 }

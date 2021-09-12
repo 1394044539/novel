@@ -19,10 +19,16 @@
         user_role_id, user_id, role_id, create_time, create_by, update_time, update_by, is_delete
     </sql>
     <select id="getRoleListByUserId" resultType="wpy.personal.novel.pojo.entity.SysRole">
-        select sr*
+        select sr.*
         from sys_user_role sur
         left join sys_role sr on sur.role_id = sr.role_id
-        where sur = #{userId}
+        where sur.user_id = #{userId}
+    </select>
+    <select id="getUserListByRole" resultType="wpy.personal.novel.pojo.entity.SysUser">
+        select su.*
+        from sys_user su
+        left join sys_user_role sur on sur.user_id = su.user_id
+        where sur.role_id = #{roleId}
     </select>
 
 </mapper>

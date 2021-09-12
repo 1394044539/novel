@@ -47,7 +47,7 @@ public class NovelController {
 
     @PutMapping("/addNovel")
     @SysLogs(fun = "新增小说")
-    public ResponseResult addNovel(HttpServletRequest request,@RequestBody NovelDto novelDto){
+    public ResponseResult addNovel(HttpServletRequest request, NovelDto novelDto){
         SysUser sysUser = RequestUtils.getSysUser(request);
         Novel  novel = novelService.addNovel(novelDto,sysUser);
         return ResponseResult.success(novel);

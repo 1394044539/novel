@@ -23,7 +23,6 @@ public class RequestException extends RuntimeException implements Serializable {
      * @param e
      */
     public RequestException(ErrorCode errorCode, Exception e) {
-        this.status=errorCode.code;
         this.msg=errorCode.msg;
         this.e = e;
     }
@@ -35,7 +34,6 @@ public class RequestException extends RuntimeException implements Serializable {
     }
 
     public RequestException(ErrorCode errorCode) {
-        this.status=errorCode.code;
         this.msg=errorCode.msg;
     }
 
@@ -71,8 +69,16 @@ public class RequestException extends RuntimeException implements Serializable {
 
     public static BusinessException fail(ErrorCode errorCode){
         return BusinessException.builder()
-                .status(errorCode.getCode())
+                .status(ResponseCode.FAIL.getCode())
                 .msg(errorCode.getMsg())
+                .build();
+    }
+
+    public static BusinessException fail(ErrorCode errorCode,Exception e){
+        return BusinessException.builder()
+                .status(ResponseCode.FAIL.getCode())
+                .msg(errorCode.getMsg())
+                .e(e)
                 .build();
     }
 

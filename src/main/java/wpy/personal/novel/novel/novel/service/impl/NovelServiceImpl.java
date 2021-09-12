@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.multipart.MultipartFile;
 import wpy.personal.novel.base.constant.CharConstant;
@@ -23,6 +24,7 @@ import wpy.personal.novel.novel.novel.service.NovelService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.stereotype.Service;
 import wpy.personal.novel.utils.FileUtils;
+import wpy.personal.novel.utils.ObjectUtils;
 import wpy.personal.novel.utils.StringUtils;
 
 import java.util.ArrayList;
@@ -38,6 +40,7 @@ import java.util.List;
  * @since 2021-09-07
  */
 @Service
+@Transactional
 public class NovelServiceImpl extends ServiceImpl<NovelMapper, Novel> implements NovelService {
 
     @Autowired
@@ -59,12 +62,12 @@ public class NovelServiceImpl extends ServiceImpl<NovelMapper, Novel> implements
     @Override
     public Page<Novel> getNovelList(NovelDto novelDto, SysUser sysUser) {
         QueryWrapper<Novel> qw = new QueryWrapper<>();
-//        qw.eq("is_delete",SqlEnums.NOT_DELETE.getCode());
-//        List<String> roleList = sysUserRoleService.getRoleCodeListByUserId(sysUser.getUserId());
-//        if(!roleList.contains(DictEnums.SUPER_ADMIN.getKey())){
-//            //非管理员只能看自己的
-//            qw.eq("create_by",sysUser.getUserId());
-//        }
+        qw.eq("is_delete",SqlEnums.NOT_DELETE.getCode());
+        List<String> roleList = sysUserRoleService.getRoleCodeListByUserId(sysUser.getUserId());
+        if(roleList.contains(DictEnums.ORDINARY_USER.getKey())){
+            //非管理员只能看自己的
+            qw.eq("create_by",sysUser.getUserId());
+        }
         if(StringUtils.isNotEmpty(novelDto.getNovelName())){
             qw.like("novel_name",novelDto.getNovelName());
         }
@@ -80,7 +83,7 @@ public class NovelServiceImpl extends ServiceImpl<NovelMapper, Novel> implements
         String operationUser=sysUser.getUserId();
         Date nowDate=new Date();
         BeanUtils.copyProperties(novelDto,novel);
-        novel.setNovelId(StringUtils.getUuid());
+        novel.setNovelId(StringUtils.getUuid32());
         novel.setCreateTime(nowDate);
         novel.setCreateBy(operationUser);
         novel.setUpdateTime(nowDate);
@@ -93,13 +96,8 @@ public class NovelServiceImpl extends ServiceImpl<NovelMapper, Novel> implements
         if(!CollectionUtils.isEmpty(novelDto.getTypeCodeList())){
             List<NovelTypeRel> typeList=new ArrayList<>();
             for (String typeCode : novelDto.getTypeCodeList()) {
-                NovelTypeRel novelTypeRel = new NovelTypeRel();
-                novelTypeRel.setCreateBy(operationUser);
-                novelTypeRel.setCreateTime(nowDate);
-                novelTypeRel.setUpdateBy(operationUser);
-                novelTypeRel.setUpdateTime(nowDate);
-                novelTypeRel.setIsDelete(SqlEnums.NOT_DELETE.getCode());
-                novelTypeRel.setNovelTypeRelId(StringUtils.getUuid());
+                NovelTypeRel novelTypeRel = ObjectUtils.newInstance(operationUser, NovelTypeRel.class);
+                novelTypeRel.setNovelTypeRelId(StringUtils.getUuid32());
                 novelTypeRel.setNovelId(novel.getNovelId());
                 novelTypeRel.setTypeCode(typeCode);
                 typeList.add(novelTypeRel);

@@ -2,6 +2,7 @@ package wpy.personal.novel.novel.system.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import wpy.personal.novel.pojo.entity.SysRole;
+import wpy.personal.novel.pojo.entity.SysUser;
 import wpy.personal.novel.pojo.entity.SysUserRole;
 
 import java.util.List;
@@ -22,4 +23,9 @@ public interface SysUserRoleMapper extends BaseMapper<SysUserRole> {
      * @return
      */
     List<SysRole> getRoleListByUserId(String userId);
+
+    /**
+     * 根据角色id查询用户
+     */
+    List<SysUser> getUserListByRole(String roleId);
 }

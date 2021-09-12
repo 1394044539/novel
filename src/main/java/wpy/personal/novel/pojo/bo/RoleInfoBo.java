@@ -1,71 +1,40 @@
-package wpy.personal.novel.pojo.dto;
+package wpy.personal.novel.pojo.bo;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 import org.springframework.format.annotation.DateTimeFormat;
+import wpy.personal.novel.pojo.entity.SysUser;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 
+/**
+ * 角色信息BO
+ */
 @Data
-public class SysUserDto implements Serializable {
+public class RoleInfoBo implements Serializable {
 
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = -3568636065618715440L;
+    /**
+     * 角色id
+     */
+    private String roleId;
 
     /**
-     * 主键id
+     * 角色编号
      */
-    private String userId;
+    private String roleCode;
 
     /**
-     * 用户名称
+     * 角色名称
      */
-    private String userName;
+    private String roleName;
 
     /**
-     * 用户账号
+     * 角色描述
      */
-    private String accountName;
-
-    /**
-     * 手机号
-     */
-    private String phone;
-
-    /**
-     * 邮箱
-     */
-    private String email;
-
-    /**
-     * 密码
-     */
-    private String password;
-
-    /**
-     * 身份证
-     */
-    private String identityCard;
-
-    /**
-     * 真实姓名
-     */
-    private String trueName;
-
-    /**
-     * 头像
-     */
-    private String photo;
-
-    /**
-     * QQ号
-     */
-    private String qqNumber;
-
-    /**
-     * 微信号
-     */
-    private String wechatNumber;
+    private String roleDesc;
 
     /**
      * 创建时间
@@ -97,7 +66,12 @@ public class SysUserDto implements Serializable {
     private String isDelete;
 
     /**
-     * 角色编码
+     * 用户列表
      */
-    private String roleCode;
+    List<SysUser> userList;
+
+    /**
+     * 权限表
+     */
+    List<UserPermissionBo> permissionList;
 }

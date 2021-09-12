@@ -1,6 +1,7 @@
 package wpy.personal.novel.novel.novel.service.impl;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 import wpy.personal.novel.base.constant.CharConstant;
 import wpy.personal.novel.pojo.entity.NovelFile;
@@ -21,6 +22,7 @@ import wpy.personal.novel.utils.StringUtils;
  * @since 2021-09-07
  */
 @Service
+@Transactional
 public class NovelFileServiceImpl extends ServiceImpl<NovelFileMapper, NovelFile> implements NovelFileService {
 
     @Value("${novel.filePath.rootPath}")
@@ -31,7 +33,7 @@ public class NovelFileServiceImpl extends ServiceImpl<NovelFileMapper, NovelFile
     @Override
     public NovelFile saveFile(MultipartFile volumeFile, String novelId, String userId) {
         NovelFile novelFile = ObjectUtils.newInstance(userId, NovelFile.class);
-        novelFile.setFileId(StringUtils.getUuid());
+        novelFile.setFileId(StringUtils.getUuid32());
         novelFile.setFileSize(volumeFile.getSize());
         novelFile.setFileType(FileUtils.getFileType(volumeFile.getOriginalFilename()));
         novelFile.setFileName(volumeFile.getOriginalFilename());

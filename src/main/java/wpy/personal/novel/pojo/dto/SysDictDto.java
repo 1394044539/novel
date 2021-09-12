@@ -3,69 +3,40 @@ package wpy.personal.novel.pojo.dto;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 import org.springframework.format.annotation.DateTimeFormat;
+import wpy.personal.novel.pojo.entity.SysDictParam;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 
 @Data
-public class SysUserDto implements Serializable {
+public class SysDictDto extends BasePageDto implements Serializable {
 
-    private static final long serialVersionUID = 1L;
-
+    private static final long serialVersionUID = 736280753028137043L;
     /**
      * 主键id
      */
-    private String userId;
+    private String dictId;
 
     /**
-     * 用户名称
+     * 字典编码
      */
-    private String userName;
+    private String dictCode;
 
     /**
-     * 用户账号
+     * 字典名称
      */
-    private String accountName;
+    private String dictName;
 
     /**
-     * 手机号
+     * 字段描述
      */
-    private String phone;
+    private String dictDesc;
 
     /**
-     * 邮箱
+     * 字典类型(0，字符串,1:开关,2:集合)
      */
-    private String email;
-
-    /**
-     * 密码
-     */
-    private String password;
-
-    /**
-     * 身份证
-     */
-    private String identityCard;
-
-    /**
-     * 真实姓名
-     */
-    private String trueName;
-
-    /**
-     * 头像
-     */
-    private String photo;
-
-    /**
-     * QQ号
-     */
-    private String qqNumber;
-
-    /**
-     * 微信号
-     */
-    private String wechatNumber;
+    private String dictType;
 
     /**
      * 创建时间
@@ -97,7 +68,7 @@ public class SysUserDto implements Serializable {
     private String isDelete;
 
     /**
-     * 角色编码
+     * 字典子项
      */
-    private String roleCode;
+    private List<SysDictParam> paramList;
 }

@@ -37,12 +37,26 @@ public class SysUserController {
         return ResponseResult.success(user);
     }
 
-
     @PutMapping("/addUser")
     @SysLogs(fun = "添加用户")
     public ResponseResult addUser(HttpServletRequest request, @RequestBody SysUserDto sysUserDto){
         SysUser sysUser = RequestUtils.getSysUser(request);
         sysUserService.addUser(sysUserDto,sysUser);
+        return ResponseResult.success();
+    }
+
+    @PostMapping("/updateUser")
+    @SysLogs(fun = "修改用户")
+    public ResponseResult updateUser(HttpServletRequest request, @RequestBody SysUserDto sysUserDto){
+        SysUser sysUser = RequestUtils.getSysUser(request);
+        sysUserService.updateUser(sysUserDto,sysUser);
+        return ResponseResult.success();
+    }
+
+    @PostMapping("/logon")
+    @SysLogs(fun = "退出登录")
+    public ResponseResult logon(HttpServletRequest request){
+        sysUserService.logon(request);
         return ResponseResult.success();
     }
 

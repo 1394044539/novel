@@ -1,32 +1,33 @@
 package wpy.personal.novel.novel.system.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import wpy.personal.novel.base.constant.RedisConstant;
 import wpy.personal.novel.base.enums.DictEnums;
 import wpy.personal.novel.base.enums.ErrorCode;
 import wpy.personal.novel.base.exception.BusinessException;
 import wpy.personal.novel.config.jwt.JwtUtils;
+import wpy.personal.novel.novel.system.mapper.SysUserMapper;
 import wpy.personal.novel.novel.system.service.SysRolePermissionService;
 import wpy.personal.novel.novel.system.service.SysRoleService;
 import wpy.personal.novel.novel.system.service.SysUserRoleService;
+import wpy.personal.novel.novel.system.service.SysUserService;
 import wpy.personal.novel.pojo.bo.UserInfoBo;
 import wpy.personal.novel.pojo.bo.UserPermissionBo;
 import wpy.personal.novel.pojo.bo.UserRoleBo;
 import wpy.personal.novel.pojo.dto.SysUserDto;
 import wpy.personal.novel.pojo.entity.SysRole;
 import wpy.personal.novel.pojo.entity.SysUser;
-import wpy.personal.novel.novel.system.mapper.SysUserMapper;
-import wpy.personal.novel.novel.system.service.SysUserService;
-import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import org.springframework.stereotype.Service;
-import wpy.personal.novel.utils.EncryptionUtils;
-import wpy.personal.novel.utils.ObjectUtils;
-import wpy.personal.novel.utils.RedisUtils;
-import wpy.personal.novel.utils.StringUtils;
+import wpy.personal.novel.pojo.entity.SysUserRole;
+import wpy.personal.novel.utils.*;
 
+import javax.servlet.http.HttpServletRequest;
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
@@ -41,10 +42,11 @@ import java.util.stream.Collectors;
  * @since 2021-09-07
  */
 @Service
+@Transactional
 public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> implements SysUserService {
 
     @Value("${jwt.expireTime}")
-    private static long expireTime;
+    private Long expireTime;
 
     @Autowired
     private SysRoleService sysRoleService;
@@ -83,20 +85,40 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
             throw BusinessException.fail(ErrorCode.USER_NOT_AUTH);
         }
         //2、添加用户
+        //判断账号或手机号或邮箱是否重复
+        QueryWrapper<SysUser> qw=new QueryWrapper<>();
+        qw.eq("account_name",sysUserDto.getAccountName());
+        if(StringUtils.isNotEmpty(sysUserDto.getPhone())){
+            qw.or();
+            qw.eq("phone",sysUserDto.getPhone());
+        }
+        if(StringUtils.isNotEmpty(sysUserDto.getEmail())){
+            qw.or();
+            qw.eq("email",sysUserDto.getEmail());
+        }
+        int count = this.count(qw);
+        if(count>0){
+            throw BusinessException.fail(ErrorCode.USER_INFO_REPEAT);
+        }
         SysUser insertUser = ObjectUtils.newInstance(sysUser.getUserId(), SysUser.class);
-        BeanUtils.copyProperties(sysUserDto,insertUser);
-        insertUser.setUserId(StringUtils.getUuid());
+        ObjectUtils.copyPropertiesIgnoreNull(sysUserDto,insertUser);
+        insertUser.setUserId(StringUtils.getUuid32());
         //默认只有100M空间
         insertUser.setFullMemory(new BigDecimal("100"));
-        insertUser.setFullMemory(new BigDecimal("0"));
+        insertUser.setUseMemory(new BigDecimal("0"));
         //加密
         insertUser.setPassword(EncryptionUtils.md5Encryption(insertUser.getPassword(),insertUser.getUserId()));
+
+        //赋予角色
+        sysRoleService.userAddRole(insertUser.getUserId(),sysUserDto.getRoleCode(),sysUser.getUserId());
         this.save(insertUser);
     }
 
     @Override
     public UserInfoBo getUserInfo(SysUser sysUser) {
         UserInfoBo userInfoBo = new UserInfoBo();
+        userInfoBo.setUserName(sysUser.getUserName());
+        userInfoBo.setAccountName(sysUser.getAccountName());
         //1、通过userId去查询关联表拿到角色
         List<UserRoleBo> roleList = sysUserRoleService.getRoleListByUserId(sysUser.getUserId());
         userInfoBo.setRoleList(roleList);
@@ -105,5 +127,29 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
         List<UserPermissionBo> permissionList = sysRolePermissionService.getPermissionByRoleCodeList(roleCodeList);
         userInfoBo.setPermissionList(permissionList);
         return userInfoBo;
+    }
+
+    @Override
+    public void logon(HttpServletRequest request) {
+        //删除redis缓存
+        String token = RequestUtils.getToken(request);
+        RedisUtils.delete(RedisConstant.TOKEN+token);
+    }
+
+    @Override
+    public SysUser updateUser(SysUserDto sysUserDto, SysUser sysUser) {
+        //账号啥的肯定不能修改
+        SysUser updateUser = new SysUser();
+        BeanUtils.copyProperties(sysUserDto,updateUser);
+        updateUser.setUpdateBy(sysUser.getUserId());
+        updateUser.setUpdateTime(new Date());
+        //权限修改没
+        if(StringUtils.isNotEmpty(sysUserDto.getRoleCode())){
+            //更新一下关联表
+            SysRole sysRole = sysRoleService.getOne(new QueryWrapper<SysRole>().eq("role_code", sysUserDto.getRoleCode()));
+            sysUserRoleService.update(new UpdateWrapper<SysUserRole>().eq("user_id",sysUserDto.getUserId()).set("role_id",sysRole.getRoleId()));
+        }
+        this.updateById(updateUser);
+        return null;
     }
 }

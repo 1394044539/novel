@@ -10,6 +10,7 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.multipart.MultipartFile;
 import wpy.personal.novel.base.constant.CharConstant;
@@ -47,6 +48,7 @@ import java.util.regex.Pattern;
  * @since 2021-09-07
  */
 @Service
+@Transactional
 public class NovelChapterServiceImpl extends ServiceImpl<NovelChapterMapper, NovelChapter> implements NovelChapterService {
 
     @Autowired
@@ -79,7 +81,7 @@ public class NovelChapterServiceImpl extends ServiceImpl<NovelChapterMapper, Nov
             //第一次循环，正则取到章节基本信息
             for (int i = 0; i < allList.size(); i++) {
                 NovelChapter novelChapter = ObjectUtils.newInstance(userId, NovelChapter.class);
-                novelChapter.setChapterId(StringUtils.getUuid());
+                novelChapter.setChapterId(StringUtils.getUuid32());
                 //分卷id
                 novelChapter.setVolumeId(novelVolume.getVolumeId());
                 //设置排序
@@ -205,8 +207,8 @@ public class NovelChapterServiceImpl extends ServiceImpl<NovelChapterMapper, Nov
         //2、拿到上一章和下一章
         QueryWrapper<NovelChapter> qw = new QueryWrapper<>();
         qw.eq("volume_id", novelChapter.getVolumeId());
-        qw.and(wrapper -> wrapper.eq("volume_order", novelChapter.getChapterOrder() - 1)
-                .or().eq("volume_order", novelChapter.getChapterOrder() + 1));
+        qw.and(wrapper -> wrapper.eq("chapter_order", novelChapter.getChapterOrder() - 1)
+                .or().eq("chapter_order", novelChapter.getChapterOrder() + 1));
         List<NovelChapter> novelChapterList = this.novelChapterMapper.selectList(qw);
         for (NovelChapter chapter : novelChapterList) {
             if(novelChapter.getChapterOrder().equals(chapter.getChapterOrder() - 1)){

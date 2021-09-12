@@ -1,7 +1,10 @@
 package wpy.personal.novel.novel.system.service;
 
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import wpy.personal.novel.pojo.dto.SysDictDto;
 import wpy.personal.novel.pojo.entity.SysDict;
 import com.baomidou.mybatisplus.extension.service.IService;
+import wpy.personal.novel.pojo.entity.SysUser;
 
 /**
  * <p>
@@ -13,4 +16,35 @@ import com.baomidou.mybatisplus.extension.service.IService;
  */
 public interface SysDictService extends IService<SysDict> {
 
+    /**
+     * 添加字典表
+     * @param sysDictDto
+     * @param sysUser
+     * @return
+     */
+    SysDict addDict(SysDictDto sysDictDto, SysUser sysUser);
+
+    /**
+     * 查询字典列表
+     * @param sysDictDto
+     * @param sysUser
+     * @return
+     */
+    Page<SysDict> getDictList(SysDictDto sysDictDto, SysUser sysUser);
+
+    /**
+     * 获得字典数据详情
+     * @param dictId
+     * @param sysUser
+     * @return
+     */
+    SysDictDto getDictInfo(String dictId, SysUser sysUser);
+
+    /**
+     * 修改字典
+     * @param sysDictDto
+     * @param sysUser
+     * @return
+     */
+    SysDict updateDict(SysDictDto sysDictDto, SysUser sysUser);
 }

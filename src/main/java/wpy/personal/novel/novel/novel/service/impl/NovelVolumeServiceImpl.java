@@ -7,6 +7,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 import wpy.personal.novel.base.enums.BusinessEnums;
 import wpy.personal.novel.base.enums.ErrorCode;
@@ -39,6 +40,7 @@ import java.util.List;
  * @since 2021-09-07
  */
 @Service
+@Transactional
 public class NovelVolumeServiceImpl extends ServiceImpl<NovelVolumeMapper, NovelVolume> implements NovelVolumeService {
 
     @Autowired
@@ -56,7 +58,7 @@ public class NovelVolumeServiceImpl extends ServiceImpl<NovelVolumeMapper, Novel
     public NovelVolume addVolume(VolumeDto volumeDto, SysUser sysUser) {
         NovelVolume novelVolume = new NovelVolume();
         BeanUtils.copyProperties(volumeDto,novelVolume);
-        novelVolume.setVolumeId(StringUtils.getUuid());
+        novelVolume.setVolumeId(StringUtils.getUuid32());
         novelVolume.setCreateBy(sysUser.getUserId());
         novelVolume.setCreateTime(new Date());
         novelVolume.setUpdateBy(sysUser.getUserId());
@@ -67,7 +69,7 @@ public class NovelVolumeServiceImpl extends ServiceImpl<NovelVolumeMapper, Novel
 
         //开始解析文件了
         VolumeChapterBo volumeChapterBo = this.analysisFile(novelVolume, volumeDto.getVolumeFile(), volumeDto.getImgFile(),sysUser.getUserId());
-        this.fillParam(volumeChapterBo,novelVolume);
+        this.fillParam(volumeChapterBo, novelVolume);
         this.save(novelVolume);
         return novelVolume;
     }
@@ -93,16 +95,16 @@ public class NovelVolumeServiceImpl extends ServiceImpl<NovelVolumeMapper, Novel
         novelVolume.setFileId(volumeChapterBo.getFileId());
         novelVolume.setTotalLine(volumeChapterBo.getTotalLine());
         novelVolume.setTotalWord(volumeChapterBo.getTotalWord());
-        if(StringUtils.isNotEmpty(novelVolume.getVolumeImg())){
+        if(StringUtils.isEmpty(novelVolume.getVolumeImg())){
             novelVolume.setVolumeImg(volumeChapterBo.getVolumeImg());
         }
-        if(StringUtils.isNotEmpty(novelVolume.getVolumeName())){
+        if(StringUtils.isEmpty(novelVolume.getVolumeName())){
             novelVolume.setVolumeName(volumeChapterBo.getVolumeName());
         }
-        if(StringUtils.isNotEmpty(novelVolume.getVolumeDesc())){
+        if(StringUtils.isEmpty(novelVolume.getVolumeDesc())){
             novelVolume.setVolumeDesc(volumeChapterBo.getVolumeDesc());
         }
-        if(novelVolume.getPublicTime()!=null){
+        if(novelVolume.getPublicTime()==null){
             novelVolume.setPublicTime(volumeChapterBo.getPublicTime());
         }
     }

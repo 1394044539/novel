@@ -3,9 +3,11 @@ package wpy.personal.novel.novel.system.service.impl;
 import com.google.common.collect.Lists;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 import wpy.personal.novel.pojo.bo.UserRoleBo;
 import wpy.personal.novel.pojo.entity.SysRole;
+import wpy.personal.novel.pojo.entity.SysUser;
 import wpy.personal.novel.pojo.entity.SysUserRole;
 import wpy.personal.novel.novel.system.mapper.SysUserRoleMapper;
 import wpy.personal.novel.novel.system.service.SysUserRoleService;
@@ -25,6 +27,7 @@ import java.util.stream.Collectors;
  * @since 2021-09-07
  */
 @Service
+@Transactional
 public class SysUserRoleServiceImpl extends ServiceImpl<SysUserRoleMapper, SysUserRole> implements SysUserRoleService {
 
     @Autowired
@@ -50,5 +53,10 @@ public class SysUserRoleServiceImpl extends ServiceImpl<SysUserRoleMapper, SysUs
             return new ArrayList<>();
         }
         return roleList.stream().map(SysRole::getRoleCode).collect(Collectors.toList());
+    }
+
+    @Override
+    public List<SysUser> getUserListByRole(String roleId) {
+        return this.sysUserRoleMapper.getUserListByRole(roleId);
     }
 }

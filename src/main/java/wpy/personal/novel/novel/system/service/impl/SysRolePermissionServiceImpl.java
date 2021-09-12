@@ -2,6 +2,7 @@ package wpy.personal.novel.novel.system.service.impl;
 
 import com.google.common.collect.Lists;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 import wpy.personal.novel.pojo.bo.UserPermissionBo;
 import wpy.personal.novel.pojo.entity.SysPermission;
 import wpy.personal.novel.pojo.entity.SysRolePermission;
@@ -24,6 +25,7 @@ import java.util.stream.Stream;
  * @since 2021-09-07
  */
 @Service
+@Transactional
 public class SysRolePermissionServiceImpl extends ServiceImpl<SysRolePermissionMapper, SysRolePermission> implements SysRolePermissionService {
 
     @Autowired

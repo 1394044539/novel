@@ -11,6 +11,14 @@ import wpy.personal.novel.base.result.ResponseResult;
 @RestControllerAdvice
 public class ExceptionHandlerAdvice {
 
+    @ExceptionHandler(value = RuntimeException.class)
+    public ResponseResult requestExceptionHander(RuntimeException exception){
+        if(exception!=null){
+            log.error(exception.getMessage(),exception);
+        }
+        return ResponseResult.error();
+    }
+
     @ExceptionHandler(value = RequestException.class)
     public ResponseResult requestExceptionHander(RequestException exception){
         if(exception.getE()!=null){

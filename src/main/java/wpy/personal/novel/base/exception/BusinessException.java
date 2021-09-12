@@ -24,7 +24,6 @@ public class BusinessException extends RuntimeException implements Serializable 
      * @param e
      */
     public BusinessException(ErrorCode errorCode, Exception e) {
-        this.status=errorCode.code;
         this.msg=errorCode.msg;
         this.e = e;
     }
@@ -36,7 +35,6 @@ public class BusinessException extends RuntimeException implements Serializable 
     }
 
     public BusinessException(ErrorCode errorCode) {
-        this.status=errorCode.code;
         this.msg=errorCode.msg;
     }
 
@@ -72,14 +70,14 @@ public class BusinessException extends RuntimeException implements Serializable 
 
     public static BusinessException fail(ErrorCode errorCode){
         return BusinessException.builder()
-                .status(errorCode.getCode())
+                .status(ResponseCode.FAIL.getCode())
                 .msg(errorCode.getMsg())
                 .build();
     }
 
     public static BusinessException fail(ErrorCode errorCode,Exception e){
         return BusinessException.builder()
-                .status(errorCode.getCode())
+                .status(ResponseCode.FAIL.getCode())
                 .msg(errorCode.getMsg())
                 .e(e)
                 .build();

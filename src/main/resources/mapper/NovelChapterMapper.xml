@@ -29,7 +29,7 @@
         from novel_chapter nc
         left join novel_volume nv on nv.volume_id = nc.volume_id
         left join novel_file nf on nf.file_id = nv.file_id
-        where nc.id = #{chapterId}
+        where nc.chapter_id = #{chapterId}
     </select>
 
 </mapper>

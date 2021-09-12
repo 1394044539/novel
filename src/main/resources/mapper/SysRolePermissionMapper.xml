@@ -19,11 +19,11 @@
         role_permission_id, role_id, permission_id, create_time, create_by, update_time, update_by, is_delete
     </sql>
     <select id="getPermissionByRoleCodeList" resultType="wpy.personal.novel.pojo.entity.SysPermission">
-        select *
+        select srp.*
         from sys_role_permission srp,sys_role sr,sys_permission sp
         where srp.role_id = sr.role_id
         and srp.permission_id = sp.permission_id
-        <foreach collection="list" open="where sr.role_code in (" close=")" item="item" separator=",">
+        <foreach collection="list" open="and sr.role_code in (" close=")" item="item" separator=",">
             #{item}
         </foreach>
     </select>

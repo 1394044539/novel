@@ -1,72 +1,65 @@
-package wpy.personal.novel.pojo.bo;
+package wpy.personal.novel.pojo.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 import org.springframework.format.annotation.DateTimeFormat;
-import wpy.personal.novel.pojo.entity.NovelChapter;
 
 import java.io.Serializable;
 import java.util.Date;
-import java.util.List;
 
-/**
- * 分卷信息
- */
 @Data
-public class NovelVolumeBo implements Serializable {
+public class SysLogDto extends BasePageDto implements Serializable {
+    private static final long serialVersionUID = -2446862471980493524L;
 
-    private static final long serialVersionUID = -4158619597150055215L;
     /**
      * 主键id
      */
-    private String volumeId;
+    private String logId;
 
     /**
-     * 小说id
+     * 操作人用户名
      */
-    private String novelId;
+    private String operatorUserName;
 
     /**
-     * 文件id
+     * 操作人账户
      */
-    private String fileId;
+    private String operatorAccountName;
 
     /**
-     * 分卷名
+     * 操作人id
      */
-    private String volumeName;
+    private String operatorUserId;
 
     /**
-     * 封面
+     * 请求方式
      */
-    private String volumeImg;
+    private String method;
 
     /**
-     * 发布时间
+     * 请求参数
      */
-    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    private Date publicTime;
+    private String param;
 
     /**
-     * 分卷描述
+     * 请求地址
      */
-    private String volumeDesc;
+    private String ip;
 
     /**
-     * 分卷排序
+     * 请求路径
      */
-    private Integer volumeOrder;
+    private String path;
 
     /**
-     * 总行数
+     * 日志描述
      */
-    private Integer totalLine;
+    private String logDesc;
 
     /**
-     * 总字数
+     * 日志类型（通用类型0;其他为1）
      */
-    private Long totalWord;
+    private String logType;
 
     /**
      * 创建时间
@@ -97,8 +90,4 @@ public class NovelVolumeBo implements Serializable {
      */
     private String isDelete;
 
-    /**
-     * 章节列表
-     */
-    private List<NovelChapter> chapterList;
 }

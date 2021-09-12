@@ -1,5 +1,6 @@
 package wpy.personal.novel.novel.novel.service.impl;
 
+import org.springframework.transaction.annotation.Transactional;
 import wpy.personal.novel.pojo.entity.NovelTypeRel;
 import wpy.personal.novel.novel.novel.mapper.NovelTypeRelMapper;
 import wpy.personal.novel.novel.novel.service.NovelTypeRelService;
@@ -15,6 +16,7 @@ import org.springframework.stereotype.Service;
  * @since 2021-09-07
  */
 @Service
+@Transactional
 public class NovelTypeRelServiceImpl extends ServiceImpl<NovelTypeRelMapper, NovelTypeRel> implements NovelTypeRelService {
 
 }

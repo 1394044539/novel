@@ -8,64 +8,28 @@ import java.io.Serializable;
 import java.util.Date;
 
 @Data
-public class SysUserDto implements Serializable {
-
-    private static final long serialVersionUID = 1L;
-
-    /**
-     * 主键id
-     */
-    private String userId;
+public class SysRoleDto extends BasePageDto implements Serializable {
+    private static final long serialVersionUID = -4900186939785039347L;
 
     /**
-     * 用户名称
+     * 角色id
      */
-    private String userName;
+    private String roleId;
 
     /**
-     * 用户账号
+     * 角色编号
      */
-    private String accountName;
+    private String roleCode;
 
     /**
-     * 手机号
+     * 角色名称
      */
-    private String phone;
+    private String roleName;
 
     /**
-     * 邮箱
+     * 角色描述
      */
-    private String email;
-
-    /**
-     * 密码
-     */
-    private String password;
-
-    /**
-     * 身份证
-     */
-    private String identityCard;
-
-    /**
-     * 真实姓名
-     */
-    private String trueName;
-
-    /**
-     * 头像
-     */
-    private String photo;
-
-    /**
-     * QQ号
-     */
-    private String qqNumber;
-
-    /**
-     * 微信号
-     */
-    private String wechatNumber;
+    private String roleDesc;
 
     /**
      * 创建时间
@@ -95,9 +59,4 @@ public class SysUserDto implements Serializable {
      * 0：否；1：是
      */
     private String isDelete;
-
-    /**
-     * 角色编码
-     */
-    private String roleCode;
 }
