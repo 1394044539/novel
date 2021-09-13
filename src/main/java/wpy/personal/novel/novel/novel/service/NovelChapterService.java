@@ -8,6 +8,8 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import wpy.personal.novel.pojo.entity.NovelVolume;
 import wpy.personal.novel.pojo.entity.SysUser;
 
+import java.util.List;
+
 /**
  * <p>
  * 小说章节表 服务类
@@ -44,4 +46,12 @@ public interface NovelChapterService extends IService<NovelChapter> {
      * @return
      */
     ChapterBo getChapterContent(String chapterId, SysUser sysUser);
+
+    /**
+     * 获取章节列表
+     * @param volumeId
+     * @param sysUser
+     * @return
+     */
+    List<NovelChapter> getChapterList(String volumeId, SysUser sysUser);
 }

@@ -1,6 +1,7 @@
 package wpy.personal.novel.novel.novel.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import org.springframework.stereotype.Repository;
 import wpy.personal.novel.pojo.entity.NovelChapter;
 
 /**

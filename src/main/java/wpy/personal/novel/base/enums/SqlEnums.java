@@ -22,7 +22,14 @@ public enum SqlEnums {
      */
     DICT_STRING("0","字符串"),
     DICT_BOOL("1","开关"),
-    DICT_LIST("2","集合");
+    DICT_LIST("2","集合"),
+
+    /**
+     * 历史还是书签
+     */
+    HISTORY_RECORD("0","历史记录"),
+    BOOK_MARK("1","书签")
+    ;
 
 
     private String code;

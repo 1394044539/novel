@@ -1,9 +1,19 @@
 package wpy.personal.novel.novel.novel.controller;
 
 
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
 
-import org.springframework.web.bind.annotation.RestController;
+import wpy.personal.novel.base.annotation.SysLogs;
+import wpy.personal.novel.base.result.ResponseResult;
+import wpy.personal.novel.novel.novel.service.NovelHistoryService;
+import wpy.personal.novel.pojo.dto.HistoryDto;
+import wpy.personal.novel.pojo.entity.NovelHistory;
+import wpy.personal.novel.pojo.entity.SysUser;
+import wpy.personal.novel.utils.RequestUtils;
+import wpy.personal.novel.utils.StringUtils;
+
+import javax.servlet.http.HttpServletRequest;
 
 /**
  * <p>
@@ -17,4 +27,31 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/novelHistory")
 public class NovelHistoryController {
 
+    @Autowired
+    private NovelHistoryService novelHistoryService;
+
+    @PostMapping("/getHistoryList")
+    @SysLogs(fun = "获取历史或书签列表记录")
+    public ResponseResult getHistoryList(HttpServletRequest request, HistoryDto dto){
+        SysUser sysUser = RequestUtils.getSysUser(request);
+        novelHistoryService.getHistoryList(dto,sysUser);
+        return ResponseResult.success();
+    }
+
+    @PutMapping("/saveHistory")
+    @SysLogs(fun = "记录历史记录")
+    public ResponseResult saveHistory(HttpServletRequest request,HistoryDto historyDto){
+        SysUser sysUser = RequestUtils.getSysUser(request);
+        String ip = RequestUtils.getIp(request);
+        NovelHistory novelHistory = novelHistoryService.saveHistory(historyDto,sysUser,ip);
+        return ResponseResult.success(novelHistory);
+    }
+
+    @GetMapping("/getHistory")
+    @SysLogs(fun = "获取历史记录")
+    public ResponseResult getHistory(HttpServletRequest request,@RequestParam("historyId")String historyId){
+        SysUser sysUser = RequestUtils.getSysUser(request);
+        NovelHistory novelHistory = novelHistoryService.getHistory(historyId,sysUser);
+        return ResponseResult.success(novelHistory);
+    }
 }

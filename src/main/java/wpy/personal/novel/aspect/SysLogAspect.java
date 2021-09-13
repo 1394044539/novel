@@ -6,8 +6,6 @@ import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
 import org.aspectj.lang.reflect.MethodSignature;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import wpy.personal.novel.base.annotation.SysLogs;
@@ -15,7 +13,6 @@ import wpy.personal.novel.base.enums.SqlEnums;
 import wpy.personal.novel.novel.system.service.SysLogService;
 import wpy.personal.novel.pojo.entity.SysLog;
 import wpy.personal.novel.pojo.entity.SysUser;
-import wpy.personal.novel.utils.HttpClientUtils;
 import wpy.personal.novel.utils.RequestUtils;
 import wpy.personal.novel.utils.StringUtils;
 
@@ -53,9 +50,9 @@ public class SysLogAspect {
         MethodSignature signature=(MethodSignature) point.getSignature();
         Method method=signature.getMethod();
         SysLogs sysLogs=method.getAnnotation(SysLogs.class);
-        HttpServletRequest request= HttpClientUtils.getHttpServletRequest();
+        HttpServletRequest request= RequestUtils.getHttpServletRequest();
         SysUser sysUser = RequestUtils.getSysUser(request);
-        String ip = HttpClientUtils.getIp(request);
+        String ip = RequestUtils.getIp(request);
         //名字
         String className=point.getTarget().getClass().getName();
         String methodName=point.getSignature().getName();

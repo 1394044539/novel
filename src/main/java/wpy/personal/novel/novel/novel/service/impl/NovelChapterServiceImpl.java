@@ -233,6 +233,12 @@ public class NovelChapterServiceImpl extends ServiceImpl<NovelChapterMapper, Nov
         return chapterBo;
     }
 
+    @Override
+    public List<NovelChapter> getChapterList(String volumeId, SysUser sysUser) {
+        return this.novelChapterMapper.selectList(new QueryWrapper<NovelChapter>().eq("volume_id", volumeId)
+            .orderByAsc("volume_order"));
+    }
+
     /**
      * 获取epub的某一条内容
      * @param novelChapter

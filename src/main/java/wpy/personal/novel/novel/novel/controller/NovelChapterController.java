@@ -8,10 +8,12 @@ import wpy.personal.novel.base.annotation.SysLogs;
 import wpy.personal.novel.base.result.ResponseResult;
 import wpy.personal.novel.novel.novel.service.NovelChapterService;
 import wpy.personal.novel.pojo.bo.ChapterBo;
+import wpy.personal.novel.pojo.entity.NovelChapter;
 import wpy.personal.novel.pojo.entity.SysUser;
 import wpy.personal.novel.utils.RequestUtils;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.List;
 
 /**
  * <p>
@@ -36,4 +38,11 @@ public class NovelChapterController {
         return ResponseResult.success(chapterBo);
     }
 
+    @GetMapping("/getChapterList")
+    @SysLogs(fun = "获得章节列表")
+    public ResponseResult getChapterList(HttpServletRequest request,@RequestParam("volume_id")String volumeId){
+        SysUser sysUser = RequestUtils.getSysUser(request);
+        List<NovelChapter> list = novelChapterService.getChapterList(volumeId,sysUser);
+        return ResponseResult.success(list);
+    }
 }
