@@ -25,7 +25,7 @@ public class CorsConfig{
         corsConfiguration.addAllowedMethod("*");
         corsConfiguration.setAllowedMethods(
                 Lists.newArrayList("GET","HEAD","POST","DELETE","PUT","OPTIONS"));
-        corsConfiguration.addAllowedOrigin("*");
+        corsConfiguration.addAllowedOriginPattern("*");
         corsConfiguration.setAllowCredentials(true);
 
         source.registerCorsConfiguration("/**",corsConfiguration);

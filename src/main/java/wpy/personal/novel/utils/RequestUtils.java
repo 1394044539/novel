@@ -29,13 +29,31 @@ public class RequestUtils {
      */
     public static SysUser getSysUser(HttpServletRequest request){
         String token = getToken(request);
-        if(StringUtils.isEmpty(token)){
+        if(StringUtils.isEmpty(token)||"null".equals(token)){
             throw UtilsException.fail(UtilsEnums.USER_ERROR);
         }
         JwtToken jwtInfo = JwtUtils.getJwtInfo(token);
         SysUser sysUser = SpringUtils.getBean(SysUserMapper.class).selectById(jwtInfo.getId());
         if(sysUser == null){
             throw UtilsException.fail(UtilsEnums.USER_ERROR);
+        }
+        return sysUser;
+    }
+
+    /**
+     * 获取当前登录用户信息
+     * @param request
+     * @return
+     */
+    public static SysUser getSysUserByNew(HttpServletRequest request){
+        String token = getToken(request);
+        if(StringUtils.isEmpty(token)||"null".equals(token)||"undefined".equals(token)){
+            return new SysUser();
+        }
+        JwtToken jwtInfo = JwtUtils.getJwtInfo(token);
+        SysUser sysUser = SpringUtils.getBean(SysUserMapper.class).selectById(jwtInfo.getId());
+        if(sysUser == null){
+            return new SysUser();
         }
         return sysUser;
     }

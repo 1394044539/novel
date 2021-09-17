@@ -51,7 +51,7 @@ public class SysLogAspect {
         Method method=signature.getMethod();
         SysLogs sysLogs=method.getAnnotation(SysLogs.class);
         HttpServletRequest request= RequestUtils.getHttpServletRequest();
-        SysUser sysUser = RequestUtils.getSysUser(request);
+        SysUser sysUser = RequestUtils.getSysUserByNew(request);
         String ip = RequestUtils.getIp(request);
         //名字
         String className=point.getTarget().getClass().getName();
