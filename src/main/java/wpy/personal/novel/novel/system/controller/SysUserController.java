@@ -5,7 +5,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import wpy.personal.novel.base.annotation.SysLogs;
-import wpy.personal.novel.base.enums.ResponseCode;
 import wpy.personal.novel.base.result.ResponseResult;
 import wpy.personal.novel.novel.system.service.SysUserService;
 import wpy.personal.novel.pojo.bo.UserInfoBo;
@@ -35,6 +34,19 @@ public class SysUserController {
     public ResponseResult loginByAccount(@RequestBody SysUserDto sysUserDto){
         UserInfoBo user = sysUserService.loginByAccount(sysUserDto);
         return ResponseResult.success(user);
+    }
+
+    @PostMapping("/loginByPhone")
+    @SysLogs(fun = "手机号登录")
+    public ResponseResult loginByPhone(@RequestBody SysUserDto sysUserDto){
+        UserInfoBo user = sysUserService.loginByPhone(sysUserDto);
+        return ResponseResult.success(user);
+    }
+
+    @GetMapping("/getVerifyCode")
+    @SysLogs(fun = "获取验证码")
+    public ResponseResult getVerifyCode(@RequestParam("phone")String phone){
+        return ResponseResult.success(sysUserService.getVerifyCode(phone));
     }
 
     @PutMapping("/addUser")

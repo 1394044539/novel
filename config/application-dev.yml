@@ -47,4 +47,11 @@ novel:
     novelFile: novelFile
     novelImg: novelImg
     volumeImg: volumeImg
+# 短信平台
+zhen-zi-message:
+  url: https://sms_developer.zhenzikj.com
+  appId: 104208
+  appSecret: 9c2dd645-a754-4d7d-a6fd-a7e3fbe2572a
+  templateId: 2603
+  expireTime: 5
 

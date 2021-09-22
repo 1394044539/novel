@@ -3,6 +3,7 @@ package wpy.personal.novel.novel.system.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import org.apache.commons.lang.RandomStringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -13,14 +14,13 @@ import wpy.personal.novel.base.enums.DictEnums;
 import wpy.personal.novel.base.enums.ErrorCode;
 import wpy.personal.novel.base.exception.BusinessException;
 import wpy.personal.novel.config.jwt.JwtUtils;
+import wpy.personal.novel.config.message.ZhenZiConfig;
 import wpy.personal.novel.novel.system.mapper.SysUserMapper;
-import wpy.personal.novel.novel.system.service.SysRolePermissionService;
-import wpy.personal.novel.novel.system.service.SysRoleService;
-import wpy.personal.novel.novel.system.service.SysUserRoleService;
-import wpy.personal.novel.novel.system.service.SysUserService;
+import wpy.personal.novel.novel.system.service.*;
 import wpy.personal.novel.pojo.bo.UserInfoBo;
 import wpy.personal.novel.pojo.bo.UserPermissionBo;
 import wpy.personal.novel.pojo.bo.UserRoleBo;
+import wpy.personal.novel.pojo.bo.ZhenZiResultBo;
 import wpy.personal.novel.pojo.dto.SysUserDto;
 import wpy.personal.novel.pojo.entity.SysRole;
 import wpy.personal.novel.pojo.entity.SysUser;
@@ -54,6 +54,9 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
     private SysUserRoleService sysUserRoleService;
     @Autowired
     private SysRolePermissionService sysRolePermissionService;
+    @Autowired
+    private SendMessageService sendMessageService;
+
 
     @Override
     public UserInfoBo loginByAccount(SysUserDto sysUserDto) {
@@ -151,5 +154,40 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
         }
         this.updateById(updateUser);
         return null;
+    }
+
+    @Override
+    public UserInfoBo loginByPhone(SysUserDto sysUserDto) {
+        //校验用户是否存在
+        SysUser sysUser = this.getOne(new QueryWrapper<SysUser>().eq("phone", sysUserDto.getPhone()));
+        if(sysUser==null){
+            throw BusinessException.fail(ErrorCode.USER_NOT_EXISTS);
+        }
+        //校验手机号验证码是否正确
+        if(StringUtils.isEmpty(sysUserDto.getVerifyCode())){
+            throw BusinessException.fail("验证码不能为空");
+        }
+        Object object = RedisUtils.getObject(RedisConstant.VCODE + sysUserDto.getPhone());
+        if(!sysUserDto.getVerifyCode().equals(object)){
+            throw BusinessException.fail("验证码错误或已过期");
+        }
+        //拿到用户信息
+        UserInfoBo userInfo = this.getUserInfo(sysUser);
+        //生成用户的token
+        String token = JwtUtils.createToken(sysUser.getUserId(), sysUser.getAccountName(), sysUser.getPassword(), sysUser.getUserName());
+        userInfo.setToken(token);
+        //往redis存入一个用户
+        RedisUtils.setObject(RedisConstant.TOKEN+token,userInfo,expireTime);
+        RedisUtils.delete(RedisConstant.VCODE + sysUserDto.getPhone());
+        return userInfo;
+    }
+
+    @Override
+    public ZhenZiResultBo getVerifyCode(String phone) {
+        //1、生成6位数字验证码，缓存时间300秒
+        String verifyCode = RandomStringUtils.randomNumeric(6);
+        RedisUtils.setObject(RedisConstant.VCODE+phone,verifyCode,300);
+        //发送短信
+        return sendMessageService.sendMessage(phone,verifyCode);
     }
 }

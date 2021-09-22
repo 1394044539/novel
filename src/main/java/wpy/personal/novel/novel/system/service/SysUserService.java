@@ -1,6 +1,7 @@
 package wpy.personal.novel.novel.system.service;
 
 import wpy.personal.novel.pojo.bo.UserInfoBo;
+import wpy.personal.novel.pojo.bo.ZhenZiResultBo;
 import wpy.personal.novel.pojo.dto.SysUserDto;
 import wpy.personal.novel.pojo.entity.SysUser;
 import com.baomidou.mybatisplus.extension.service.IService;
@@ -50,4 +51,18 @@ public interface SysUserService extends IService<SysUser> {
      * @param sysUser
      */
     SysUser updateUser(SysUserDto sysUserDto, SysUser sysUser);
+
+    /**
+     * 手机号登录
+     * @param sysUserDto
+     * @return
+     */
+    UserInfoBo loginByPhone(SysUserDto sysUserDto);
+
+    /**
+     * 获取验证码
+     * @param phone
+     * @return
+     */
+    ZhenZiResultBo getVerifyCode(String phone);
 }

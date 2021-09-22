@@ -100,4 +100,9 @@ public class SysUserDto implements Serializable {
      * 角色编码
      */
     private String roleCode;
+
+    /**
+     * 验证码
+     */
+    private String verifyCode;
 }

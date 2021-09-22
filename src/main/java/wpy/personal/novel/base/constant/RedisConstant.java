@@ -6,4 +6,6 @@ package wpy.personal.novel.base.constant;
 public class RedisConstant {
 
     public static String TOKEN = "TOKEN:";
+
+    public static String VCODE = "VCODE:";
 }
