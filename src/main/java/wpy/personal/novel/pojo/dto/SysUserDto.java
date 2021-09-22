@@ -105,4 +105,5 @@ public class SysUserDto implements Serializable {
      * 验证码
      */
     private String verifyCode;
+
 }

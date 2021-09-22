@@ -159,18 +159,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
     @Override
     public UserInfoBo loginByPhone(SysUserDto sysUserDto) {
         //校验用户是否存在
-        SysUser sysUser = this.getOne(new QueryWrapper<SysUser>().eq("phone", sysUserDto.getPhone()));
-        if(sysUser==null){
-            throw BusinessException.fail(ErrorCode.USER_NOT_EXISTS);
-        }
-        //校验手机号验证码是否正确
-        if(StringUtils.isEmpty(sysUserDto.getVerifyCode())){
-            throw BusinessException.fail("验证码不能为空");
-        }
-        Object object = RedisUtils.getObject(RedisConstant.VCODE + sysUserDto.getPhone());
-        if(!sysUserDto.getVerifyCode().equals(object)){
-            throw BusinessException.fail("验证码错误或已过期");
-        }
+        SysUser sysUser = this.checkVerifyCode(sysUserDto);
         //拿到用户信息
         UserInfoBo userInfo = this.getUserInfo(sysUser);
         //生成用户的token
@@ -184,10 +173,53 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
 
     @Override
     public ZhenZiResultBo getVerifyCode(String phone) {
+        if(RedisUtils.hasKey(RedisConstant.VCODE + phone)){
+            long time = RedisUtils.getTime(RedisConstant.VCODE + phone);
+            if(time>240){
+                throw BusinessException.fail("请勿频繁发送验证码，还需等待"+time+"秒钟");
+            }
+        }
         //1、生成6位数字验证码，缓存时间300秒
         String verifyCode = RandomStringUtils.randomNumeric(6);
         RedisUtils.setObject(RedisConstant.VCODE+phone,verifyCode,300);
         //发送短信
         return sendMessageService.sendMessage(phone,verifyCode);
+    }
+
+    @Override
+    public UserInfoBo checkPhone(SysUserDto sysUserDto) {
+        SysUser sysUser = this.checkVerifyCode(sysUserDto);
+        //只返回一个用户名信息
+        UserInfoBo userInfoBo = new UserInfoBo();
+        userInfoBo.setAccountName(sysUser.getAccountName());
+        return userInfoBo;
+    }
+
+    @Override
+    public void updatePassword(SysUserDto sysUserDto) {
+        SysUser sysUser = this.getOne(new QueryWrapper<SysUser>().eq("account_name", sysUserDto.getAccountName()));
+        if(StringUtils.isBlank(sysUser)){
+            throw BusinessException.fail("用户不存在");
+        }
+        String newPassword = EncryptionUtils.md5Encryption(sysUserDto.getPassword(), sysUser.getUserId());
+        sysUser.setPassword(newPassword);
+        this.updateById(sysUser);
+    }
+
+    private SysUser checkVerifyCode(SysUserDto sysUserDto) {
+        //校验用户是否存在
+        SysUser sysUser = this.getOne(new QueryWrapper<SysUser>().eq("phone", sysUserDto.getPhone()));
+        if(sysUser==null){
+            throw BusinessException.fail(ErrorCode.USER_NOT_EXISTS);
+        }
+        //校验手机号验证码是否正确
+        if(StringUtils.isEmpty(sysUserDto.getVerifyCode())){
+            throw BusinessException.fail("验证码不能为空");
+        }
+        Object object = RedisUtils.getObject(RedisConstant.VCODE + sysUserDto.getPhone());
+        if(!sysUserDto.getVerifyCode().equals(object)){
+            throw BusinessException.fail("验证码错误或已过期");
+        }
+        return sysUser;
     }
 }

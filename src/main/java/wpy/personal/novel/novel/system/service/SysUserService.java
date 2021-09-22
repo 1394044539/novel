@@ -65,4 +65,16 @@ public interface SysUserService extends IService<SysUser> {
      * @return
      */
     ZhenZiResultBo getVerifyCode(String phone);
+
+    /**
+     * 校验手机号
+     * @param sysUserDto
+     */
+    UserInfoBo checkPhone(SysUserDto sysUserDto);
+
+    /**
+     * 更新用户密码
+     * @param sysUserDto
+     */
+    void updatePassword(SysUserDto sysUserDto);
 }

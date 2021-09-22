@@ -43,13 +43,19 @@ public class SysUserController {
         return ResponseResult.success(user);
     }
 
+    @PostMapping("/checkPhone")
+    @SysLogs(fun = "校验手机号")
+    public ResponseResult checkPhone(@RequestBody SysUserDto sysUserDto){
+        return ResponseResult.success(sysUserService.checkPhone(sysUserDto));
+    }
+
     @GetMapping("/getVerifyCode")
     @SysLogs(fun = "获取验证码")
     public ResponseResult getVerifyCode(@RequestParam("phone")String phone){
         return ResponseResult.success(sysUserService.getVerifyCode(phone));
     }
 
-    @PutMapping("/addUser")
+    @PostMapping("/addUser")
     @SysLogs(fun = "添加用户")
     public ResponseResult addUser(HttpServletRequest request, @RequestBody SysUserDto sysUserDto){
         SysUser sysUser = RequestUtils.getSysUser(request);
@@ -57,7 +63,14 @@ public class SysUserController {
         return ResponseResult.success();
     }
 
-    @PostMapping("/updateUser")
+    @PutMapping("/updatePassword")
+    @SysLogs(fun = "修改密码")
+    public ResponseResult updatePassword(@RequestBody SysUserDto sysUserDto){
+        sysUserService.updatePassword(sysUserDto);
+        return ResponseResult.success();
+    }
+
+    @PutMapping("/updateUser")
     @SysLogs(fun = "修改用户")
     public ResponseResult updateUser(HttpServletRequest request, @RequestBody SysUserDto sysUserDto){
         SysUser sysUser = RequestUtils.getSysUser(request);

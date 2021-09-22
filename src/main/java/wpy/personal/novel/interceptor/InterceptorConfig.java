@@ -33,6 +33,8 @@ public class InterceptorConfig implements WebMvcConfigurer {
         interceptorRegistration.excludePathPatterns("/sysUser/loginByAccount");
         interceptorRegistration.excludePathPatterns("/sysUser/loginByPhone");
         interceptorRegistration.excludePathPatterns("/sysUser/getVerifyCode");
+        interceptorRegistration.excludePathPatterns("/sysUser/checkPhone");
+        interceptorRegistration.excludePathPatterns("/sysUser/updatePassword");
 
     }
 
