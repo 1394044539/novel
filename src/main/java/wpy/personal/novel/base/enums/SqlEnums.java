@@ -28,7 +28,15 @@ public enum SqlEnums {
      * 历史还是书签
      */
     HISTORY_RECORD("0","历史记录"),
-    BOOK_MARK("1","书签")
+    BOOK_MARK("1","书签"),
+
+    /**
+     * 注册申请状态(0：待审批，1：已发送，2：已注册；3：已作废)
+     */
+    WAIT_APPLY("0","待审批"),
+    ALREADY_SEND("1","已发送"),
+    ALREADY_REGISTER("2","已注册"),
+    ALREADY_CANCEL("3","已作废")
     ;
 
 

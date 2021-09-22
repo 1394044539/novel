@@ -22,3 +22,20 @@ CREATE TABLE `novel_history` (
   `update_time` datetime DEFAULT NULL COMMENT '修改时间',
   PRIMARY KEY (`history_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- 2021/09/22 用户注册申请表
+CREATE TABLE `sys_register` (
+  `register_id` char(32) NOT NULL COMMENT '主键id',
+  `phone` varchar(11) DEFAULT NULL COMMENT '手机号',
+  `remark` varchar(512) DEFAULT NULL COMMENT '备注',
+  `register_message` varchar(512) DEFAULT NULL COMMENT '申请消息',
+  `register_status` char(1) DEFAULT NULL COMMENT '注册状态(0：待审批，1：已发送，2：已注册；3：已作废)',
+  `register_user_id` char(32) DEFAULT NULL COMMENT '注册用户id',
+  `expire_time` datetime DEFAULT NULL COMMENT '过期时间',
+  `create_time` datetime DEFAULT NULL COMMENT '创建时间',
+  `create_by` char(32) DEFAULT NULL COMMENT '创建人',
+  `update_time` datetime DEFAULT NULL COMMENT '修改时间',
+  `update_by` char(32) DEFAULT NULL COMMENT '修改人',
+  `is_delete` char(1) DEFAULT NULL COMMENT '是否删除（0：否；1：是）',
+  PRIMARY KEY (`register_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;

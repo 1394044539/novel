@@ -1,0 +1,40 @@
+package wpy.personal.novel.novel.system.controller;
+
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+import org.springframework.web.bind.annotation.RestController;
+import wpy.personal.novel.base.annotation.SysLogs;
+import wpy.personal.novel.base.result.ResponseResult;
+import wpy.personal.novel.novel.system.service.SysRegisterService;
+import wpy.personal.novel.pojo.dto.SysRegisterDto;
+import wpy.personal.novel.pojo.dto.SysUserDto;
+
+import javax.servlet.http.HttpServletRequest;
+
+/**
+ * <p>
+ *  前端控制器
+ * </p>
+ *
+ * @author wangpanyin
+ * @since 2021-09-22
+ */
+@RestController
+@RequestMapping("/sysRegister")
+public class SysRegisterController {
+
+    @Autowired
+    private SysRegisterService sysRegisterService;
+
+    @PostMapping("/applyRegister")
+    @SysLogs(fun = "申请注册")
+    public ResponseResult applyRegister(@RequestBody SysRegisterDto registerDto){
+        sysRegisterService.applyRegister(registerDto);
+        return ResponseResult.success();
+    }
+
+}
