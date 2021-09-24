@@ -78,7 +78,7 @@ public class SysUserController {
         return ResponseResult.success();
     }
 
-    @PostMapping("/logon")
+    @PostMapping("/logout")
     @SysLogs(fun = "退出登录")
     public ResponseResult logon(HttpServletRequest request){
         sysUserService.logon(request);
