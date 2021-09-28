@@ -302,6 +302,24 @@ public class NovelChapterServiceImpl extends ServiceImpl<NovelChapterMapper, Nov
     private VolumeChapterBo checkVolumeParam(Book epubBook, NovelVolume novelVolume) {
         VolumeChapterBo volumeChapterBo = new VolumeChapterBo();
         Metadata metadata = epubBook.getMetadata();
+
+        //获得作者信息
+        String authorStr="";
+        List<Author> authors = metadata.getAuthors();
+        for (Author author : authors) {
+            String a=author.getFirstname();
+            if(StringUtils.isNotEmpty(a)){
+                a+="·" + author.getLastname();
+            }else{
+                a=author.getLastname();
+            }
+            if(StringUtils.isEmpty(authorStr)){
+                authorStr=a;
+            }else{
+                authorStr+=";"+a;
+            }
+        }
+        volumeChapterBo.setVolumeName(authorStr);
         //判断是否有发布时间
         if (novelVolume.getPublicTime() == null) {
             List<nl.siegmann.epublib.domain.Date> dates = metadata.getDates();

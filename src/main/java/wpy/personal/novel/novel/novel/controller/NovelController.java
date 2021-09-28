@@ -3,6 +3,7 @@ package wpy.personal.novel.novel.novel.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import wpy.personal.novel.base.annotation.SysLogs;
 import wpy.personal.novel.base.result.ResponseResult;
 import wpy.personal.novel.novel.novel.service.NovelService;
@@ -67,6 +68,14 @@ public class NovelController {
         SysUser sysUser = RequestUtils.getSysUser(request);
         novelService.deleteNovel(idList,sysUser);
         return ResponseResult.success();
+    }
+
+    @PostMapping("/quickUpload")
+    @SysLogs(fun = "快速上传")
+    public ResponseResult quickUpload(HttpServletRequest request,@RequestParam("file")MultipartFile file){
+        SysUser sysUser = RequestUtils.getSysUser(request);
+        Novel novel = novelService.quickUpload(file,sysUser);
+        return ResponseResult.success(novel);
     }
 
 

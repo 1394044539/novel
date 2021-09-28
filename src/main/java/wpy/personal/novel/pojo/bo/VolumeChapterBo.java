@@ -47,4 +47,9 @@ public class VolumeChapterBo implements Serializable {
      * 名称
      */
     private String volumeName;
+
+    /**
+     * 作者
+     */
+    private String volumeAuthor;
 }

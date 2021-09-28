@@ -122,5 +122,10 @@ public class NovelVolume implements Serializable {
     @TableField("is_delete")
     private String isDelete;
 
+    /**
+     * 作者信息
+     */
+    @TableField(exist = false)
+    private String volumeAuthor;
 
 }

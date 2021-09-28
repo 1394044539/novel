@@ -58,6 +58,11 @@ public class NovelVolumeServiceImpl extends ServiceImpl<NovelVolumeMapper, Novel
     public NovelVolume addVolume(VolumeDto volumeDto, SysUser sysUser) {
         NovelVolume novelVolume = new NovelVolume();
         BeanUtils.copyProperties(volumeDto,novelVolume);
+        if(novelVolume.getVolumeOrder()==null){
+            NovelVolume one = this.getOne(new QueryWrapper<NovelVolume>()
+                    .select("max(volume_order) as volumeOrder").eq("novel_id",volumeDto.getNovelId()));
+            novelVolume.setVolumeOrder(one==null? 0:one.getVolumeOrder());
+        }
         novelVolume.setVolumeId(StringUtils.getUuid32());
         novelVolume.setCreateBy(sysUser.getUserId());
         novelVolume.setCreateTime(new Date());
@@ -95,6 +100,7 @@ public class NovelVolumeServiceImpl extends ServiceImpl<NovelVolumeMapper, Novel
         novelVolume.setFileId(volumeChapterBo.getFileId());
         novelVolume.setTotalLine(volumeChapterBo.getTotalLine());
         novelVolume.setTotalWord(volumeChapterBo.getTotalWord());
+        novelVolume.setVolumeAuthor(volumeChapterBo.getVolumeAuthor());
         if(StringUtils.isEmpty(novelVolume.getVolumeImg())){
             novelVolume.setVolumeImg(volumeChapterBo.getVolumeImg());
         }

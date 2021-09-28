@@ -15,9 +15,11 @@ import wpy.personal.novel.base.enums.SqlEnums;
 import wpy.personal.novel.novel.novel.mapper.NovelTypeRelMapper;
 import wpy.personal.novel.novel.novel.mapper.NovelVolumeMapper;
 import wpy.personal.novel.novel.novel.service.NovelTypeRelService;
+import wpy.personal.novel.novel.novel.service.NovelVolumeService;
 import wpy.personal.novel.novel.system.service.SysUserRoleService;
 import wpy.personal.novel.pojo.bo.NovelBo;
 import wpy.personal.novel.pojo.dto.NovelDto;
+import wpy.personal.novel.pojo.dto.VolumeDto;
 import wpy.personal.novel.pojo.entity.*;
 import wpy.personal.novel.novel.novel.mapper.NovelMapper;
 import wpy.personal.novel.novel.novel.service.NovelService;
@@ -49,6 +51,8 @@ public class NovelServiceImpl extends ServiceImpl<NovelMapper, Novel> implements
     private NovelMapper novelMapper;
     @Autowired
     private NovelTypeRelMapper novelTypeRelMapper;
+    @Autowired
+    private NovelVolumeService novelVolumeService;
     @Autowired
     private NovelVolumeMapper novelVolumeMapper;
     @Autowired
@@ -159,6 +163,28 @@ public class NovelServiceImpl extends ServiceImpl<NovelMapper, Novel> implements
         this.update(new UpdateWrapper<Novel>().set("is_delete",SqlEnums.IS_DELETE.getCode())
                 .set("update_time",new Date()).set("update_by",sysUser.getUserId())
                 .in("novel_id",idList));
+    }
+
+    @Override
+    public Novel quickUpload(MultipartFile file, SysUser sysUser) {
+        //1、生成小说表内容
+        Novel novel = ObjectUtils.newInstance(sysUser.getUserId(), Novel.class);
+        novel.setNovelId(StringUtils.getUuid32());
+        VolumeDto volumeDto = new VolumeDto();
+        volumeDto.setNovelId(novel.getNovelId());
+        volumeDto.setVolumeFile(file);
+        //2、解析文件生成分卷信息
+        NovelVolume novelVolume = novelVolumeService.addVolume(volumeDto, sysUser);
+        //3、通过拿到的分卷信息反向赋值给小说
+        novel.setNovelImg(novelVolume.getVolumeImg());
+        novel.setNovelAuthor(novelVolume.getVolumeAuthor());
+        novel.setTotalLine(novelVolume.getTotalLine());
+        novel.setNovelIntroduce(novelVolume.getVolumeDesc());
+        novel.setPublicTime(novelVolume.getPublicTime());
+        novel.setTotalWord(novelVolume.getTotalWord());
+        //4、存入数据库
+        this.save(novel);
+        return novel;
     }
 
     /**

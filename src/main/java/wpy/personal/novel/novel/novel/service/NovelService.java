@@ -1,6 +1,7 @@
 package wpy.personal.novel.novel.novel.service;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import org.springframework.web.multipart.MultipartFile;
 import wpy.personal.novel.pojo.bo.NovelBo;
 import wpy.personal.novel.pojo.dto.NovelDto;
 import wpy.personal.novel.pojo.entity.Novel;
@@ -57,4 +58,12 @@ public interface NovelService extends IService<Novel> {
      * @param sysUser
      */
     void deleteNovel(List<String> idList, SysUser sysUser);
+
+    /**
+     * 快速上传
+     * @param file
+     * @param sysUser
+     * @return
+     */
+    Novel quickUpload(MultipartFile file, SysUser sysUser);
 }
