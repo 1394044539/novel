@@ -8,6 +8,7 @@ import org.springframework.web.servlet.config.annotation.InterceptorRegistration
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+import wpy.personal.novel.base.constant.CharConstant;
 
 /**
  * 自定义拦截器配置文件
@@ -17,8 +18,8 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 @Configuration
 public class InterceptorConfig implements WebMvcConfigurer {
 
-//    @Value("${upload.img.rootpath}")
-//    private String rootPath;
+    @Value("${novel.filePath.rootPath}")
+    private String rootPath;
 
     @Bean
     public HandlerInterceptor getMyInterceptor(){
@@ -30,6 +31,7 @@ public class InterceptorConfig implements WebMvcConfigurer {
         InterceptorRegistration interceptorRegistration = registry.addInterceptor(getMyInterceptor());
 //        interceptorRegistration.addPathPatterns("/**");
         interceptorRegistration.excludePathPatterns("/error");
+        interceptorRegistration.excludePathPatterns("/img/**");
         interceptorRegistration.excludePathPatterns("/sysUser/loginByAccount");
         interceptorRegistration.excludePathPatterns("/sysUser/loginByPhone");
         interceptorRegistration.excludePathPatterns("/sysUser/getVerifyCode");
@@ -41,6 +43,6 @@ public class InterceptorConfig implements WebMvcConfigurer {
 
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
-//        registry.addResourceHandler("/img/**").addResourceLocations("file:"+rootPath+ CharConstant.FILE_SEPARATOR);
+        registry.addResourceHandler("/img/**").addResourceLocations("file:"+rootPath+ CharConstant.FILE_SEPARATOR);
     }
 }
