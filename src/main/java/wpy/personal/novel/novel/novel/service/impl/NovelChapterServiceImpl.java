@@ -319,7 +319,7 @@ public class NovelChapterServiceImpl extends ServiceImpl<NovelChapterMapper, Nov
                 authorStr+=";"+a;
             }
         }
-        volumeChapterBo.setVolumeName(authorStr);
+        volumeChapterBo.setVolumeAuthor(authorStr);
         //判断是否有发布时间
         if (novelVolume.getPublicTime() == null) {
             List<nl.siegmann.epublib.domain.Date> dates = metadata.getDates();

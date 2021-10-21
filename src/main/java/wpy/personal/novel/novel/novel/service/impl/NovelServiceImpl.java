@@ -182,6 +182,7 @@ public class NovelServiceImpl extends ServiceImpl<NovelMapper, Novel> implements
         novel.setNovelIntroduce(novelVolume.getVolumeDesc());
         novel.setPublicTime(novelVolume.getPublicTime());
         novel.setTotalWord(novelVolume.getTotalWord());
+        novel.setNovelName(novelVolume.getVolumeName());
         //4、存入数据库
         this.save(novel);
         return novel;
