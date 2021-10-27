@@ -32,14 +32,13 @@ public class InterceptorConfig implements WebMvcConfigurer {
 //        interceptorRegistration.addPathPatterns("/**");
         interceptorRegistration.excludePathPatterns("/error");
         interceptorRegistration.excludePathPatterns("/img/**");
+        interceptorRegistration.excludePathPatterns("/sysUser/logout");
         interceptorRegistration.excludePathPatterns("/sysUser/loginByAccount");
         interceptorRegistration.excludePathPatterns("/sysUser/loginByPhone");
         interceptorRegistration.excludePathPatterns("/sysUser/getVerifyCode");
         interceptorRegistration.excludePathPatterns("/sysUser/checkPhone");
         interceptorRegistration.excludePathPatterns("/sysUser/updatePassword");
         interceptorRegistration.excludePathPatterns("/sysRegister/applyRegister");
-        interceptorRegistration.excludePathPatterns("/img/**");
-
     }
 
     @Override

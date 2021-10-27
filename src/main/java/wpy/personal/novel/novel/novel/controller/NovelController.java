@@ -46,15 +46,15 @@ public class NovelController {
         return ResponseResult.success(novelBo);
     }
 
-    @PutMapping("/addNovel")
+    @PostMapping("/addNovel")
     @SysLogs(fun = "新增小说")
     public ResponseResult addNovel(HttpServletRequest request, NovelDto novelDto){
         SysUser sysUser = RequestUtils.getSysUser(request);
-        Novel  novel = novelService.addNovel(novelDto,sysUser);
+        Novel novel = novelService.addNovel(novelDto,sysUser);
         return ResponseResult.success(novel);
     }
 
-    @PostMapping("/updateNovel")
+    @PutMapping("/updateNovel")
     @SysLogs(fun = "修改小说")
     public ResponseResult updateNovel(HttpServletRequest request,@RequestBody NovelDto novelDto){
         SysUser sysUser = RequestUtils.getSysUser(request);
