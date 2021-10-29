@@ -6,6 +6,8 @@ import wpy.personal.novel.pojo.entity.SysDict;
 import com.baomidou.mybatisplus.extension.service.IService;
 import wpy.personal.novel.pojo.entity.SysUser;
 
+import java.util.List;
+
 /**
  * <p>
  * 字典表 服务类
@@ -47,4 +49,11 @@ public interface SysDictService extends IService<SysDict> {
      * @return
      */
     SysDict updateDict(SysDictDto sysDictDto, SysUser sysUser);
+
+    /**
+     * 删除字典
+     * @param ids
+     * @param sysUser
+     */
+    void deleteDict(List<String> ids, SysUser sysUser);
 }

@@ -3,7 +3,6 @@ package wpy.personal.novel.novel.system.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-
 import wpy.personal.novel.base.annotation.SysLogs;
 import wpy.personal.novel.base.result.ResponseResult;
 import wpy.personal.novel.novel.system.service.SysDictService;
@@ -13,6 +12,7 @@ import wpy.personal.novel.pojo.entity.SysUser;
 import wpy.personal.novel.utils.RequestUtils;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.List;
 
 /**
  * <p>
@@ -57,6 +57,14 @@ public class SysDictController {
         SysUser sysUser = RequestUtils.getSysUser(request);
         SysDict sysDict = sysDictService.updateDict(sysDictDto,sysUser);
         return ResponseResult.success(sysDict);
+    }
+
+    @DeleteMapping("/deleteDict")
+    @SysLogs(fun = "删除字典")
+    public ResponseResult deleteDict(HttpServletRequest request, @RequestBody List<String> ids) {
+        SysUser sysUser = RequestUtils.getSysUser(request);
+        sysDictService.deleteDict(ids, sysUser);
+        return ResponseResult.success();
     }
 
 }

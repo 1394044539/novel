@@ -2,20 +2,18 @@ package wpy.personal.novel.novel.system.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.google.common.collect.Lists;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.CollectionUtils;
 import wpy.personal.novel.base.enums.SqlEnums;
 import wpy.personal.novel.base.exception.BusinessException;
+import wpy.personal.novel.novel.system.mapper.SysDictMapper;
 import wpy.personal.novel.novel.system.service.SysDictParamService;
+import wpy.personal.novel.novel.system.service.SysDictService;
 import wpy.personal.novel.pojo.dto.SysDictDto;
 import wpy.personal.novel.pojo.entity.SysDict;
-import wpy.personal.novel.novel.system.mapper.SysDictMapper;
-import wpy.personal.novel.novel.system.service.SysDictService;
-import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import org.springframework.stereotype.Service;
 import wpy.personal.novel.pojo.entity.SysDictParam;
 import wpy.personal.novel.pojo.entity.SysUser;
 import wpy.personal.novel.utils.ObjectUtils;
@@ -85,11 +83,19 @@ public class SysDictServiceImpl extends ServiceImpl<SysDictMapper, SysDict> impl
         BeanUtils.copyProperties(sysDictDto,sysDict);
         sysDict.setUpdateBy(sysUser.getUserId());
         sysDict.setUpdateTime(new Date());
+        // 先保存
+        this.updateById(sysDict);
+        //先删再增
+        sysDictParamService.remove(new QueryWrapper<SysDictParam>().eq("dict_id",sysDictDto.getDictId()));
         if(SqlEnums.DICT_LIST.getCode().equals(sysDictDto.getDictType())){
-            //先删再增
-            sysDictParamService.remove(new QueryWrapper<SysDictParam>().eq("dict_id",sysDictDto.getDictId()));
             sysDictParamService.addDictParam(sysDictDto.getParamList(),sysDict.getDictId(),sysUser);
         }
         return sysDict;
+    }
+
+    @Override
+    public void deleteDict(List<String> ids, SysUser sysUser) {
+        this.removeByIds(ids);
+        this.sysDictParamService.remove(new QueryWrapper<SysDictParam>().in("dict_id",ids));
     }
 }
