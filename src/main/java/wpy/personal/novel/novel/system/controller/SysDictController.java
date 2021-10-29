@@ -29,7 +29,7 @@ public class SysDictController {
     @Autowired
     private SysDictService sysDictService;
 
-    @PutMapping("/addDict")
+    @PostMapping("/addDict")
     @SysLogs(fun = "添加字典")
     public ResponseResult addDict(HttpServletRequest request, @RequestBody SysDictDto sysDictDto){
         SysUser sysUser = RequestUtils.getSysUser(request);
@@ -51,7 +51,7 @@ public class SysDictController {
         return ResponseResult.success(sysDictService.getDictInfo(dictId,sysUser));
     }
 
-    @PostMapping("/updateDict")
+    @PutMapping("/updateDict")
     @SysLogs(fun = "修改字典")
     public ResponseResult updateDict(HttpServletRequest request, @RequestBody SysDictDto sysDictDto){
         SysUser sysUser = RequestUtils.getSysUser(request);

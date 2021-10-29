@@ -39,3 +39,9 @@ CREATE TABLE `sys_register` (
   `is_delete` char(1) DEFAULT NULL COMMENT '是否删除（0：否；1：是）',
   PRIMARY KEY (`register_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- 2021/10/29 字典值
+ALTER TABLE `sys_dict`
+ADD COLUMN `dict_value` varchar(32) NULL COMMENT '参数值' AFTER `dict_name`;
+ALTER TABLE `sys_dict_param`
+ADD COLUMN `param_value` varchar(32) NULL COMMENT '参数值' AFTER `param_name`;

@@ -51,6 +51,12 @@ public class SysDictParam implements Serializable {
     private String paramName;
 
     /**
+     * 字典值
+     */
+    @TableField("param_value")
+    private String paramValue;
+
+    /**
      * 参数描述
      */
     @TableField("param_desc")

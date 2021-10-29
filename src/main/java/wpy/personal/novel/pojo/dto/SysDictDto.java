@@ -29,6 +29,11 @@ public class SysDictDto extends BasePageDto implements Serializable {
     private String dictName;
 
     /**
+     * 字典值
+     */
+    private String dictValue;
+
+    /**
      * 字段描述
      */
     private String dictDesc;

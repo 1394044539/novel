@@ -45,6 +45,12 @@ public class SysDict implements Serializable {
     private String dictName;
 
     /**
+     * 字典值
+     */
+    @TableField("dict_value")
+    private String dictValue;
+
+    /**
      * 字段描述
      */
     @TableField("dict_desc")
