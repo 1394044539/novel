@@ -2,6 +2,7 @@ package wpy.personal.novel.novel.system.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.apache.commons.lang.RandomStringUtils;
 import org.springframework.beans.BeanUtils;
@@ -12,9 +13,9 @@ import org.springframework.transaction.annotation.Transactional;
 import wpy.personal.novel.base.constant.RedisConstant;
 import wpy.personal.novel.base.enums.DictEnums;
 import wpy.personal.novel.base.enums.ErrorCode;
+import wpy.personal.novel.base.enums.SqlEnums;
 import wpy.personal.novel.base.exception.BusinessException;
 import wpy.personal.novel.config.jwt.JwtUtils;
-import wpy.personal.novel.config.message.ZhenZiConfig;
 import wpy.personal.novel.novel.system.mapper.SysUserMapper;
 import wpy.personal.novel.novel.system.service.*;
 import wpy.personal.novel.pojo.bo.UserInfoBo;
@@ -56,6 +57,8 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
     private SysRolePermissionService sysRolePermissionService;
     @Autowired
     private SendMessageService sendMessageService;
+    @Autowired
+    private SysUserMapper sysUserMapper;
 
 
     @Override
@@ -111,7 +114,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
         insertUser.setUseMemory(new BigDecimal("0"));
         //加密
         insertUser.setPassword(EncryptionUtils.md5Encryption(insertUser.getPassword(),insertUser.getUserId()));
-
+        insertUser.setUserStatus(SqlEnums.USER_NORMAL.getCode());
         //赋予角色
         sysRoleService.userAddRole(insertUser.getUserId(),sysUserDto.getRoleCode(),sysUser.getUserId());
         this.save(insertUser);
@@ -206,8 +209,20 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
         this.updateById(sysUser);
     }
 
+    @Override
+    public Page<SysUser> getUserList(SysUser sysUser, SysUserDto sysUserDto) {
+        Page<SysUser> page = new Page<>(sysUserDto.getPage(), sysUserDto.getPageSize());
+        List<SysUser> list = this.sysUserMapper.selectUserInfo(sysUserDto,page);
+        return page.setRecords(list);
+    }
+
+    /**
+     * 校验验证码
+     * @param sysUserDto
+     * @return
+     */
     private SysUser checkVerifyCode(SysUserDto sysUserDto) {
-        //校验用户是否存在
+        //校验手机号是否存在
         SysUser sysUser = this.getOne(new QueryWrapper<SysUser>().eq("phone", sysUserDto.getPhone()));
         if(sysUser==null){
             throw BusinessException.fail(ErrorCode.USER_NOT_EXISTS);

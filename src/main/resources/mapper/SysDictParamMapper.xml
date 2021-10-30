@@ -21,5 +21,23 @@
     <sql id="Base_Column_List">
         dict_param_id, dict_id, param_code, param_name, param_desc, param_order, create_time, create_by, update_time, update_by, is_delete
     </sql>
+    <select id="getDictParamList" resultType="wpy.personal.novel.pojo.entity.SysDictParam">
+        select
+            param_code AS paramCode,
+            param_name AS paramName
+            from sys_dict_param sdp
+            LEFT JOIN sys_dict sd on sd.dict_id = sdp.dict_id
+            <trim prefix="where" prefixOverrides="and">
+                <if test="dictCode != null and dictCode != ''">
+                    and sd.dict_code = #{dictCode}
+                </if>
+                <if test="paramCode != null and paramCode != ''">
+                    and sdp.param_code = #{paramCode}
+                </if>
+                <if test="paramName != null and paramName != ''">
+                    and sdp.param_name = #{paramName}
+                </if>
+            </trim>
+    </select>
 
 </mapper>

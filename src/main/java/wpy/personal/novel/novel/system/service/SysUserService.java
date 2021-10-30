@@ -1,5 +1,6 @@
 package wpy.personal.novel.novel.system.service;
 
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import wpy.personal.novel.pojo.bo.UserInfoBo;
 import wpy.personal.novel.pojo.bo.ZhenZiResultBo;
 import wpy.personal.novel.pojo.dto.SysUserDto;
@@ -77,4 +78,11 @@ public interface SysUserService extends IService<SysUser> {
      * @param sysUserDto
      */
     void updatePassword(SysUserDto sysUserDto);
+
+    /**
+     * 获取用户列表
+     * @param sysUser
+     * @param sysUserDto
+     */
+    Page<SysUser> getUserList(SysUser sysUser, SysUserDto sysUserDto);
 }

@@ -36,6 +36,13 @@ public class SysRoleController {
         return ResponseResult.success(sysRoleService.getRoleList(sysRoleDto,sysUser));
     }
 
+    @PostMapping("/getAllRoleList")
+    @SysLogs(fun = "查看角色列表")
+    public ResponseResult getAllRoleList(HttpServletRequest request, @RequestBody SysRoleDto sysRoleDto){
+        SysUser sysUser = RequestUtils.getSysUser(request);
+        return ResponseResult.success(sysRoleService.getAllRoleList(sysRoleDto,sysUser));
+    }
+
     @GetMapping("/geyRoleInfo")
     @SysLogs(fun = "获取角色详细信息")
     public ResponseResult getRoleInfo(HttpServletRequest request,@RequestParam("roleId")String roleId){

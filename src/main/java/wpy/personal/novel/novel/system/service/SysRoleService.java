@@ -1,11 +1,13 @@
 package wpy.personal.novel.novel.system.service;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.baomidou.mybatisplus.extension.service.IService;
 import wpy.personal.novel.pojo.bo.RoleInfoBo;
 import wpy.personal.novel.pojo.dto.SysRoleDto;
 import wpy.personal.novel.pojo.entity.SysRole;
-import com.baomidou.mybatisplus.extension.service.IService;
 import wpy.personal.novel.pojo.entity.SysUser;
+
+import java.util.List;
 
 /**
  * <p>
@@ -63,4 +65,12 @@ public interface SysRoleService extends IService<SysRole> {
      * @param operationUserId
      */
     void userAddRole(String userId, String roleCode, String operationUserId);
+
+    /**
+     * 获取全部角色列表
+     * @param sysRoleDto
+     * @param sysUser
+     * @return
+     */
+    List<SysRole> getAllRoleList(SysRoleDto sysRoleDto, SysUser sysUser);
 }

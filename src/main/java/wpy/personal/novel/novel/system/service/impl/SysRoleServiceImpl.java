@@ -144,4 +144,10 @@ public class SysRoleServiceImpl extends ServiceImpl<SysRoleMapper, SysRole> impl
         sysUserRoleService.save(sysUserRole);
 
     }
+
+    @Override
+    public List<SysRole> getAllRoleList(SysRoleDto sysRoleDto, SysUser sysUser) {
+        QueryWrapper<SysRole> qw = new QueryWrapper<>();
+        return this.sysRoleMapper.selectList(qw);
+    }
 }

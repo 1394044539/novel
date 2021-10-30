@@ -36,7 +36,13 @@ public enum SqlEnums {
     WAIT_APPLY("0","待审批"),
     ALREADY_SEND("1","已发送"),
     ALREADY_REGISTER("2","已注册"),
-    ALREADY_CANCEL("3","已作废")
+    ALREADY_CANCEL("3","已作废"),
+
+    /**
+     * 用户状态
+     */
+    USER_NORMAL("0","正常"),
+    USER_DISABLE("1","禁用")
     ;
 
 

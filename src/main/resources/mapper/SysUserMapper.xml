@@ -29,5 +29,35 @@
     <sql id="Base_Column_List">
         user_id, user_name, account_name, phone, email, password, identity_card, true_name, photo, qq_number, wechat_number, user_status,full_memory,use_memory, create_time, create_by, update_time, update_by, is_delete
     </sql>
+    <select id="selectUserInfo" resultType="wpy.personal.novel.pojo.entity.SysUser">
+        select
+            su.user_id AS userId,
+            su.user_name AS userName,
+            su.account_name AS accountName,
+            su.phone AS phone,
+            su.email AS email,
+            su.password AS password,
+            su.identity_card AS identityCard,
+            su.true_name AS trueName,
+            su.photo AS photo,
+            su.qq_number AS qqNumber,
+            su.wechat_number AS wechatNumber,
+            su.user_status AS userStatus,
+            su.full_memory AS fullMemory,
+            su.use_memory AS useMemory,
+            su.create_time AS createTime,
+            su.create_by AS createBy,
+            su.update_time AS updateTime,
+            su.update_by AS updateBy,
+            su.is_delete AS isDelete,
+            sr.role_name AS roleName,
+            sr.role_code AS roleCode
+        from sys_user su
+        LEFT JOIN sys_user_role sur on sur.user_id = su.user_id
+        LEFT JOIN sys_role sr on sr.role_id = sur.role_id
+        <trim prefix="where" prefixOverrides="and">
+
+        </trim>
+    </select>
 
 </mapper>

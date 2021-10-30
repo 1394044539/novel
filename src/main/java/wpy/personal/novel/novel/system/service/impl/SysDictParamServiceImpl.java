@@ -1,10 +1,12 @@
 package wpy.personal.novel.novel.system.service.impl;
 
 import com.google.common.collect.Lists;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 import wpy.personal.novel.base.enums.SqlEnums;
 import wpy.personal.novel.base.exception.BusinessException;
+import wpy.personal.novel.pojo.dto.SysDictParamDto;
 import wpy.personal.novel.pojo.entity.SysDictParam;
 import wpy.personal.novel.novel.system.mapper.SysDictParamMapper;
 import wpy.personal.novel.novel.system.service.SysDictParamService;
@@ -27,6 +29,9 @@ import java.util.List;
 @Service
 @Transactional
 public class SysDictParamServiceImpl extends ServiceImpl<SysDictParamMapper, SysDictParam> implements SysDictParamService {
+
+    @Autowired
+    private SysDictParamMapper sysDictParamMapper;
 
     @Override
     public void addDictParam(List<SysDictParam> paramList, String dictId, SysUser sysUser) {
@@ -52,5 +57,10 @@ public class SysDictParamServiceImpl extends ServiceImpl<SysDictParamMapper, Sys
             sysDictParam.setIsDelete(SqlEnums.NOT_DELETE.getCode());
         }
         this.saveBatch(paramList);
+    }
+
+    @Override
+    public List<SysDictParam> getDictParamList(SysDictParamDto sysDictParamDto, SysUser sysUser) {
+        return this.sysDictParamMapper.getDictParamList(sysDictParamDto);
     }
 }
