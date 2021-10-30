@@ -68,6 +68,9 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
         if(sysUser==null){
             throw BusinessException.fail(ErrorCode.USER_PASSWORD_ERROR);
         }
+        if(SqlEnums.USER_DISABLE.getCode().equals(sysUser.getUserStatus())){
+            throw BusinessException.fail("用户被禁用");
+        }
         //校验用户密码是否正确
         String encryptionPassword = EncryptionUtils.md5Encryption(sysUserDto.getPassword(), sysUser.getUserId());
         if(!encryptionPassword.equals(sysUser.getPassword())){
@@ -216,6 +219,16 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
         return page.setRecords(list);
     }
 
+    @Override
+    public void disableUser(SysUser sysUser, List<String> ids) {
+        UpdateWrapper<SysUser> uw = new UpdateWrapper<>();
+        uw.set("update_time",new Date());
+        uw.set("update_by",sysUser.getUserId());
+        uw.set("user_status",SqlEnums.USER_DISABLE.getCode());
+        uw.in("user_id",ids);
+        this.update(uw);
+    }
+
     /**
      * 校验验证码
      * @param sysUserDto
@@ -226,6 +239,9 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
         SysUser sysUser = this.getOne(new QueryWrapper<SysUser>().eq("phone", sysUserDto.getPhone()));
         if(sysUser==null){
             throw BusinessException.fail(ErrorCode.USER_NOT_EXISTS);
+        }
+        if(SqlEnums.USER_DISABLE.getCode().equals(sysUser.getUserStatus())){
+            throw BusinessException.fail("用户被禁用");
         }
         //校验手机号验证码是否正确
         if(StringUtils.isEmpty(sysUserDto.getVerifyCode())){

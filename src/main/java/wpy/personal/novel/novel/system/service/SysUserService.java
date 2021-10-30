@@ -8,6 +8,7 @@ import wpy.personal.novel.pojo.entity.SysUser;
 import com.baomidou.mybatisplus.extension.service.IService;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.List;
 
 /**
  * <p>
@@ -85,4 +86,11 @@ public interface SysUserService extends IService<SysUser> {
      * @param sysUserDto
      */
     Page<SysUser> getUserList(SysUser sysUser, SysUserDto sysUserDto);
+
+    /**
+     * 禁用用户
+     * @param sysUser
+     * @param ids
+     */
+    void disableUser(SysUser sysUser, List<String> ids);
 }

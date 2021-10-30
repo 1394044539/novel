@@ -1,6 +1,9 @@
 package wpy.personal.novel.novel.system.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import org.springframework.beans.factory.annotation.Autowired;
+import wpy.personal.novel.base.enums.BusinessEnums;
 import wpy.personal.novel.base.enums.SqlEnums;
 import wpy.personal.novel.base.exception.BusinessException;
 import wpy.personal.novel.pojo.dto.SysRegisterDto;
@@ -9,10 +12,13 @@ import wpy.personal.novel.novel.system.mapper.SysRegisterMapper;
 import wpy.personal.novel.novel.system.service.SysRegisterService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.stereotype.Service;
+import wpy.personal.novel.pojo.entity.SysUser;
 import wpy.personal.novel.utils.ObjectUtils;
 import wpy.personal.novel.utils.StringUtils;
+import wpy.personal.novel.utils.dateUtils.DateUtils;
 
 import java.util.Date;
+import java.util.List;
 
 /**
  * <p>
@@ -24,6 +30,9 @@ import java.util.Date;
  */
 @Service
 public class SysRegisterServiceImpl extends ServiceImpl<SysRegisterMapper, SysRegister> implements SysRegisterService {
+
+    @Autowired
+    private SysRegisterMapper sysRegisterMapper;
 
     @Override
     public void applyRegister(SysRegisterDto registerDto) {
@@ -50,5 +59,34 @@ public class SysRegisterServiceImpl extends ServiceImpl<SysRegisterMapper, SysRe
             sysRegister.setRegisterStatus(SqlEnums.WAIT_APPLY.getCode());
             this.save(sysRegister);
         }
+    }
+
+    @Override
+    public Page<SysRegister> getApplyRegisterList(SysUser sysUser, SysRegisterDto registerDto) {
+        Page<SysRegister> page = new Page<>(registerDto.getPage(), registerDto.getPageSize());
+        List<SysRegister> applyRegisterList = this.sysRegisterMapper.getApplyRegisterList(registerDto, page);
+        for (SysRegister register : applyRegisterList) {
+            // 如果失效时间小于当前时间，则失效了
+            if(SqlEnums.ALREADY_SEND.getCode().equals(register.getRegisterStatus())
+                    && DateUtils.beforeDateNow(register.getExpireTime(),false)){
+                register.setRegisterStatus(SqlEnums.ALREADY_CANCEL.getCode());
+            }
+        }
+        return page.setRecords(applyRegisterList);
+    }
+
+    @Override
+    public SysRegister createRegInfo(SysUser sysUser, SysRegisterDto registerDto) {
+        SysRegister sysRegister = this.getById(registerDto.getRegisterId());
+        sysRegister.setUpdateTime(new Date());
+        sysRegister.setUpdateBy(sysUser.getUserId());
+        sysRegister.setRegisterStatus(SqlEnums.ALREADY_SEND.getCode());
+        sysRegister.setExpireTime(DateUtils.getDateAfter(new Date(),3));
+        sysRegister.setRemark("您的注册申请已通过，请在三日内点击以下链接进行短信注册：http://192.168.1.12:8080/novel/reg?registerId="+sysRegister.getRegisterId());
+        this.updateById(sysRegister);
+        if(BusinessEnums.SEND_MESSAGE.getCode().equals(registerDto.getSendMessage())){
+            //todo 发短信
+        }
+        return sysRegister;
     }
 }

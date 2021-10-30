@@ -3,7 +3,6 @@ package wpy.personal.novel.novel.system.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-
 import wpy.personal.novel.base.annotation.SysLogs;
 import wpy.personal.novel.base.result.ResponseResult;
 import wpy.personal.novel.novel.system.service.SysUserService;
@@ -13,6 +12,7 @@ import wpy.personal.novel.pojo.entity.SysUser;
 import wpy.personal.novel.utils.RequestUtils;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.List;
 
 /**
  * <p>
@@ -82,6 +82,14 @@ public class SysUserController {
     @SysLogs(fun = "退出登录")
     public ResponseResult logon(HttpServletRequest request){
         sysUserService.logon(request);
+        return ResponseResult.success();
+    }
+
+    @PostMapping("/disableUser")
+    @SysLogs(fun = "禁用用户")
+    public ResponseResult disableUser(HttpServletRequest request,@RequestBody List<String> ids){
+        SysUser sysUser = RequestUtils.getSysUser(request);
+        sysUserService.disableUser(sysUser,ids);
         return ResponseResult.success();
     }
 

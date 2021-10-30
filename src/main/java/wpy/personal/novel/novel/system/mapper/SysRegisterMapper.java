@@ -1,7 +1,11 @@
 package wpy.personal.novel.novel.system.mapper;
 
-import wpy.personal.novel.pojo.entity.SysRegister;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import wpy.personal.novel.pojo.dto.SysRegisterDto;
+import wpy.personal.novel.pojo.entity.SysRegister;
+
+import java.util.List;
 
 /**
  * <p>
@@ -13,4 +17,11 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
  */
 public interface SysRegisterMapper extends BaseMapper<SysRegister> {
 
+    /**
+     * 获取注册信息
+     * @param registerDto
+     * @param page
+     * @return
+     */
+    List<SysRegister> getApplyRegisterList(SysRegisterDto registerDto, Page<SysRegister> page);
 }

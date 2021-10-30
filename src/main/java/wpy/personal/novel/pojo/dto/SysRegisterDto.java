@@ -1,6 +1,5 @@
 package wpy.personal.novel.pojo.dto;
 
-import com.baomidou.mybatisplus.annotation.TableField;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -9,9 +8,13 @@ import java.io.Serializable;
 import java.util.Date;
 
 @Data
-public class SysRegisterDto implements Serializable {
+public class SysRegisterDto extends BasePageDto implements Serializable {
     private static final long serialVersionUID = -7554506572912636850L;
 
+    /**
+     * 注册id
+     */
+    private String registerId;
     /**
      * 手机号
      */

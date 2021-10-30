@@ -9,7 +9,14 @@ public enum BusinessEnums {
      * 是否删除
      */
     TXT("txt","TXT文件"),
-    EPUB("epub","EPUB文件");
+    EPUB("epub","EPUB文件"),
+
+    /**
+     * 发送短信
+     */
+    SEND_MESSAGE("1","发送短信"),
+    NOT_SEND_MESSAGE("0","不发送短信")
+    ;
 
     private String code;
     private String desc;

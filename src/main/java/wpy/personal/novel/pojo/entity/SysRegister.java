@@ -1,15 +1,15 @@
 package wpy.personal.novel.pojo.entity;
 
-import com.baomidou.mybatisplus.annotation.TableName;
-import java.util.Date;
-import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableField;
-import java.io.Serializable;
-
+import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableName;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.springframework.format.annotation.DateTimeFormat;
+
+import java.io.Serializable;
+import java.util.Date;
 
 /**
  * <p>
@@ -61,6 +61,22 @@ public class SysRegister implements Serializable {
      */
     @TableField("register_user_id")
     private String registerUserId;
+
+    /**
+     * 注册账号
+     */
+    @TableField(exist = false)
+    private String accountName;
+    /**
+     * 用户姓名
+     */
+    @TableField(exist = false)
+    private String userName;
+    /**
+     * 用户注册时间
+     */
+    @TableField(exist = false)
+    private String userCreateTime;
 
     /**
      * 过期时间

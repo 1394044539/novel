@@ -68,6 +68,10 @@ public class SysUserDto extends BasePageDto implements Serializable {
     private String wechatNumber;
 
     /**
+     * 用户状态
+     */
+    private String userStatus;
+    /**
      * 创建时间
      */
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")

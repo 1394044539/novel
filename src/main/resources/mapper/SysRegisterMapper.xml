@@ -22,5 +22,25 @@
     <sql id="Base_Column_List">
         register_id, phone, remark, register_message, register_status, register_user_id, expire_time, create_time, create_by, update_time, update_by,is_delete
     </sql>
+    <select id="getApplyRegisterList" resultType="wpy.personal.novel.pojo.entity.SysRegister">
+        select
+            sr.register_id AS registerId,
+            sr.phone AS phone,
+            sr.remark AS remark,
+            sr.register_message AS registerMessage,
+            sr.register_status AS registerStatus,
+            sr.register_user_id AS registerUserId,
+            sr.expire_time AS expireTime,
+            sr.create_time AS createTime,
+            sr.create_by AS createBy,
+            sr.update_time AS updateTime,
+            sr.update_by AS updateBy,
+            sr.is_delete AS isDelete,
+            su.user_name AS userName,
+            su.account_name AS accountName,
+            su.create_time AS userCreateTime
+        from sys_register sr
+				left JOIN sys_user su on su.user_id = sr.register_user_id
+    </select>
 
 </mapper>

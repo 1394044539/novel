@@ -161,4 +161,23 @@ public class DateUtils {
         calendar.add(Calendar.DATE, 1);
         return calendar.getTime();
     }
+
+    /**
+     * 比较传入时间是否大于当前时间 a.after(b),a>b时返回true， 当a>=b , 则 !a<b
+     * @param date
+     * @return
+     */
+    public static boolean afterDateNow(Date date,boolean equals){
+        return equals? !date.before(new Date()): date.after(new Date());
+    }
+
+    /**
+     * 比较传入时间是否小于当前时间 a.before(b),a<b的时候返回true,当a<=b, 则 !a>b
+     * @param date
+     * @param equals
+     * @return
+     */
+    public static boolean beforeDateNow(Date date,boolean equals){
+        return equals? !date.after(new Date()):date.before(new Date());
+    }
 }
