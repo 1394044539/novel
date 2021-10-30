@@ -43,7 +43,7 @@ public class SysRoleController {
         return ResponseResult.success(sysRoleService.getAllRoleList(sysRoleDto,sysUser));
     }
 
-    @GetMapping("/geyRoleInfo")
+    @GetMapping("/getRoleInfo")
     @SysLogs(fun = "获取角色详细信息")
     public ResponseResult getRoleInfo(HttpServletRequest request,@RequestParam("roleId")String roleId){
         SysUser sysUser = RequestUtils.getSysUser(request);
@@ -51,7 +51,7 @@ public class SysRoleController {
         return ResponseResult.success(roleInfoBo);
     }
 
-    @PutMapping("/addRole")
+    @PostMapping("/addRole")
     @SysLogs(fun = "添加角色")
     public ResponseResult addRole(HttpServletRequest request,@RequestBody SysRoleDto sysRoleDto){
         SysUser sysUser = RequestUtils.getSysUser(request);
@@ -59,8 +59,8 @@ public class SysRoleController {
         return ResponseResult.success(sysRole);
     }
 
-    @PostMapping("/updateRole")
-    @SysLogs(fun = "添加角色")
+    @PutMapping("/updateRole")
+    @SysLogs(fun = "修改角色")
     public ResponseResult updateRole(HttpServletRequest request,@RequestBody SysRoleDto sysRoleDto){
         SysUser sysUser = RequestUtils.getSysUser(request);
         sysRoleService.updateRole(sysRoleDto,sysUser);
