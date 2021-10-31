@@ -41,7 +41,15 @@ public class SysRegisterServiceImpl extends ServiceImpl<SysRegisterMapper, SysRe
             if(SqlEnums.WAIT_APPLY.getCode().equals(register.getRegisterStatus())){
                 throw BusinessException.fail("该手机号已经提交过申请，请等待");
             }else if(SqlEnums.ALREADY_SEND.getCode().equals(register.getRegisterStatus())){
-                //todo 待编写
+                if(DateUtils.beforeDateNow(register.getExpireTime(),false)){
+                    // 若失效，重发
+                    register.setRegisterStatus(SqlEnums.WAIT_APPLY.getCode());
+                    register.setRegisterMessage(registerDto.getRegisterMessage());
+                    register.setUpdateTime(new Date());
+                    this.updateById(register);
+                }else {
+                    throw BusinessException.fail("已通过审核，请查看短信，或三日失效后重发");
+                }
             }else if(SqlEnums.ALREADY_REGISTER.getCode().equals(register.getRegisterStatus())){
                 throw BusinessException.fail("该手机号已注册，无需申请");
             }else if(SqlEnums.ALREADY_CANCEL.getCode().equals(register.getRegisterStatus())){

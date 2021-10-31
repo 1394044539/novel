@@ -24,7 +24,8 @@
     <select id="getDictParamList" resultType="wpy.personal.novel.pojo.entity.SysDictParam">
         select
             param_code AS paramCode,
-            param_name AS paramName
+            param_name AS paramName,
+            param_value AS paramValue
             from sys_dict_param sdp
             LEFT JOIN sys_dict sd on sd.dict_id = sdp.dict_id
             <trim prefix="where" prefixOverrides="and">
@@ -36,6 +37,9 @@
                 </if>
                 <if test="paramName != null and paramName != ''">
                     and sdp.param_name = #{paramName}
+                </if>
+                <if test="paramValue != null and paramValue !='' ">
+                    and sdp.param_value = #{paramValue}
                 </if>
             </trim>
     </select>

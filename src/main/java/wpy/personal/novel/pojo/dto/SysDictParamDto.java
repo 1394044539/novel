@@ -27,4 +27,9 @@ public class SysDictParamDto extends BasePageDto implements Serializable {
      * 参数名称
      */
     private String paramName;
+
+    /**
+     * 参数值
+     */
+    private String paramValue;
 }
