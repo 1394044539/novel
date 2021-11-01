@@ -139,9 +139,9 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
     }
 
     @Override
-    public void logon(HttpServletRequest request) {
+    public void logon() {
         //删除redis缓存
-        String token = RequestUtils.getToken(request);
+        String token = RequestUtils.getToken(null);
         RedisUtils.delete(RedisConstant.TOKEN+token);
     }
 

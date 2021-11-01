@@ -32,8 +32,8 @@ public class SysUserInfoController {
 
     @PostMapping("/getUserList")
     @SysLogs(fun = "获取用户列表")
-    public ResponseResult getUserList(HttpServletRequest request,@RequestBody SysUserDto sysUserDto){
-        SysUser sysUser = RequestUtils.getSysUser(request);
+    public ResponseResult getUserList(@RequestBody SysUserDto sysUserDto){
+        SysUser sysUser = RequestUtils.getSysUser();
         return ResponseResult.success(sysUserService.getUserList(sysUser,sysUserDto));
     }
 

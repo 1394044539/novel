@@ -32,25 +32,25 @@ public class NovelHistoryController {
 
     @PostMapping("/getHistoryList")
     @SysLogs(fun = "获取历史或书签列表记录")
-    public ResponseResult getHistoryList(HttpServletRequest request, HistoryDto dto){
-        SysUser sysUser = RequestUtils.getSysUser(request);
+    public ResponseResult getHistoryList( HistoryDto dto){
+        SysUser sysUser = RequestUtils.getSysUser();
         novelHistoryService.getHistoryList(dto,sysUser);
         return ResponseResult.success();
     }
 
     @PutMapping("/saveHistory")
     @SysLogs(fun = "记录历史记录")
-    public ResponseResult saveHistory(HttpServletRequest request,HistoryDto historyDto){
-        SysUser sysUser = RequestUtils.getSysUser(request);
-        String ip = RequestUtils.getIp(request);
+    public ResponseResult saveHistory(HistoryDto historyDto){
+        SysUser sysUser = RequestUtils.getSysUser();
+        String ip = RequestUtils.getIp(null);
         NovelHistory novelHistory = novelHistoryService.saveHistory(historyDto,sysUser,ip);
         return ResponseResult.success(novelHistory);
     }
 
     @GetMapping("/getHistory")
     @SysLogs(fun = "获取历史记录")
-    public ResponseResult getHistory(HttpServletRequest request,@RequestParam("historyId")String historyId){
-        SysUser sysUser = RequestUtils.getSysUser(request);
+    public ResponseResult getHistory(@RequestParam("historyId")String historyId){
+        SysUser sysUser = RequestUtils.getSysUser();
         NovelHistory novelHistory = novelHistoryService.getHistory(historyId,sysUser);
         return ResponseResult.success(novelHistory);
     }

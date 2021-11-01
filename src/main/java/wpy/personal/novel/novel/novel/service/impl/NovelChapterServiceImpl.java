@@ -82,6 +82,8 @@ public class NovelChapterServiceImpl extends ServiceImpl<NovelChapterMapper, Nov
             for (int i = 0; i < allList.size(); i++) {
                 NovelChapter novelChapter = ObjectUtils.newInstance(userId, NovelChapter.class);
                 novelChapter.setChapterId(StringUtils.getUuid32());
+                // 小说id
+                novelChapter.setNovelId(novelVolume.getNovelId());
                 //分卷id
                 novelChapter.setVolumeId(novelVolume.getVolumeId());
                 //设置排序
@@ -109,6 +111,7 @@ public class NovelChapterServiceImpl extends ServiceImpl<NovelChapterMapper, Nov
             if (CollectionUtils.isEmpty(chapterList)) {
                 //说明未解析到任何章节名数据，则整本为一个章节，章节名为小说名
                 NovelChapter novelChapter = ObjectUtils.newInstance(userId, NovelChapter.class);
+                novelChapter.setNovelId(novelVolume.getNovelId());
                 novelChapter.setVolumeId(novelVolume.getVolumeId());
                 novelChapter.setChapterOrder(NumConstant.ZERO);
                 novelChapter.setTotalLine(allList.size());
@@ -162,6 +165,7 @@ public class NovelChapterServiceImpl extends ServiceImpl<NovelChapterMapper, Nov
                 continue;
             }
             NovelChapter novelChapter = ObjectUtils.newInstance(userId, NovelChapter.class);
+            novelChapter.setNovelId(novelVolume.getNovelId());
             novelChapter.setVolumeId(novelVolume.getVolumeId());
             novelChapter.setEpubPath(resource.getHref());
             novelChapter.setChapterName(StringUtils.isNotEmpty(resource.getTitle())?resource.getTitle():tocReference.getTitle());

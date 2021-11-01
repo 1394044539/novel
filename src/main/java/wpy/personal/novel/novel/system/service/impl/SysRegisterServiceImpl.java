@@ -3,9 +3,11 @@ package wpy.personal.novel.novel.system.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.springframework.beans.factory.annotation.Autowired;
+import wpy.personal.novel.base.constant.NumConstant;
 import wpy.personal.novel.base.enums.BusinessEnums;
 import wpy.personal.novel.base.enums.SqlEnums;
 import wpy.personal.novel.base.exception.BusinessException;
+import wpy.personal.novel.novel.system.service.SysUserService;
 import wpy.personal.novel.pojo.dto.SysRegisterDto;
 import wpy.personal.novel.pojo.entity.SysRegister;
 import wpy.personal.novel.novel.system.mapper.SysRegisterMapper;
@@ -33,9 +35,15 @@ public class SysRegisterServiceImpl extends ServiceImpl<SysRegisterMapper, SysRe
 
     @Autowired
     private SysRegisterMapper sysRegisterMapper;
+    @Autowired
+    private SysUserService sysUserService;
 
     @Override
     public void applyRegister(SysRegisterDto registerDto) {
+        int result = sysUserService.count(new QueryWrapper<SysUser>().eq("phone", registerDto.getPhone()));
+        if(result> NumConstant.ZERO){
+            throw BusinessException.fail("该手机号已被注册");
+        }
         SysRegister register = this.getOne(new QueryWrapper<SysRegister>().eq("phone", registerDto.getPhone()));
         if(register!=null){
             if(SqlEnums.WAIT_APPLY.getCode().equals(register.getRegisterStatus())){

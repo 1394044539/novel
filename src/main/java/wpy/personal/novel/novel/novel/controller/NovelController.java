@@ -33,47 +33,47 @@ public class NovelController {
 
     @PostMapping("/getNovelList")
     @SysLogs(fun = "获取小说列表")
-    public ResponseResult getNovelList(HttpServletRequest request, @RequestBody NovelDto novelDto){
-        SysUser sysUser = RequestUtils.getSysUser(request);
+    public ResponseResult getNovelList( @RequestBody NovelDto novelDto){
+        SysUser sysUser = RequestUtils.getSysUser();
         return ResponseResult.success(novelService.getNovelList(novelDto,sysUser));
     }
 
     @GetMapping("/getNovelInfo")
     @SysLogs(fun = "获取小说信息")
-    public ResponseResult getNovelInfo(HttpServletRequest request,@RequestParam("novelId") String novelId){
-        SysUser sysUser = RequestUtils.getSysUser(request);
+    public ResponseResult getNovelInfo(@RequestParam("novelId") String novelId){
+        SysUser sysUser = RequestUtils.getSysUser();
         NovelBo novelBo = novelService.getNovelInfo(novelId,sysUser);
         return ResponseResult.success(novelBo);
     }
 
     @PostMapping("/addNovel")
     @SysLogs(fun = "新增小说")
-    public ResponseResult addNovel(HttpServletRequest request, NovelDto novelDto){
-        SysUser sysUser = RequestUtils.getSysUser(request);
+    public ResponseResult addNovel( NovelDto novelDto){
+        SysUser sysUser = RequestUtils.getSysUser();
         Novel novel = novelService.addNovel(novelDto,sysUser);
         return ResponseResult.success(novel);
     }
 
     @PutMapping("/updateNovel")
     @SysLogs(fun = "修改小说")
-    public ResponseResult updateNovel(HttpServletRequest request,@RequestBody NovelDto novelDto){
-        SysUser sysUser = RequestUtils.getSysUser(request);
+    public ResponseResult updateNovel(@RequestBody NovelDto novelDto){
+        SysUser sysUser = RequestUtils.getSysUser();
         Novel  novel = novelService.updateNovel(novelDto,sysUser);
         return ResponseResult.success(novel);
     }
 
     @DeleteMapping("/deleteNovel")
     @SysLogs(fun = "删除小说")
-    public ResponseResult deleteNovel(HttpServletRequest request,@RequestBody List<String> idList){
-        SysUser sysUser = RequestUtils.getSysUser(request);
+    public ResponseResult deleteNovel(@RequestBody List<String> idList){
+        SysUser sysUser = RequestUtils.getSysUser();
         novelService.deleteNovel(idList,sysUser);
         return ResponseResult.success();
     }
 
     @PostMapping("/quickUpload")
     @SysLogs(fun = "快速上传")
-    public ResponseResult quickUpload(HttpServletRequest request,@RequestParam("file")MultipartFile file){
-        SysUser sysUser = RequestUtils.getSysUser(request);
+    public ResponseResult quickUpload(@RequestParam("file")MultipartFile file){
+        SysUser sysUser = RequestUtils.getSysUser();
         Novel novel = novelService.quickUpload(file,sysUser);
         return ResponseResult.success(novel);
     }

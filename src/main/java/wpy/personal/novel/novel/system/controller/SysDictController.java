@@ -31,38 +31,38 @@ public class SysDictController {
 
     @PostMapping("/addDict")
     @SysLogs(fun = "添加字典")
-    public ResponseResult addDict(HttpServletRequest request, @RequestBody SysDictDto sysDictDto){
-        SysUser sysUser = RequestUtils.getSysUser(request);
+    public ResponseResult addDict( @RequestBody SysDictDto sysDictDto){
+        SysUser sysUser = RequestUtils.getSysUser();
         SysDict sysDict = sysDictService.addDict(sysDictDto,sysUser);
         return ResponseResult.success(sysDict);
     }
 
     @PostMapping("/getDictList")
     @SysLogs(fun = "获取字典信息")
-    public ResponseResult getDictList(HttpServletRequest request,@RequestBody SysDictDto sysDictDto){
-        SysUser sysUser = RequestUtils.getSysUser(request);
+    public ResponseResult getDictList(@RequestBody SysDictDto sysDictDto){
+        SysUser sysUser = RequestUtils.getSysUser();
         return ResponseResult.success(sysDictService.getDictList(sysDictDto,sysUser));
     }
 
     @GetMapping("/getDictInfo")
     @SysLogs(fun = "获取字典详情")
-    public ResponseResult getDictInfo(HttpServletRequest request,@RequestParam("dictId")String dictId){
-        SysUser sysUser = RequestUtils.getSysUser(request);
+    public ResponseResult getDictInfo(@RequestParam("dictId")String dictId){
+        SysUser sysUser = RequestUtils.getSysUser();
         return ResponseResult.success(sysDictService.getDictInfo(dictId,sysUser));
     }
 
     @PutMapping("/updateDict")
     @SysLogs(fun = "修改字典")
-    public ResponseResult updateDict(HttpServletRequest request, @RequestBody SysDictDto sysDictDto){
-        SysUser sysUser = RequestUtils.getSysUser(request);
+    public ResponseResult updateDict( @RequestBody SysDictDto sysDictDto){
+        SysUser sysUser = RequestUtils.getSysUser();
         SysDict sysDict = sysDictService.updateDict(sysDictDto,sysUser);
         return ResponseResult.success(sysDict);
     }
 
     @DeleteMapping("/deleteDict")
     @SysLogs(fun = "删除字典")
-    public ResponseResult deleteDict(HttpServletRequest request, @RequestBody List<String> ids) {
-        SysUser sysUser = RequestUtils.getSysUser(request);
+    public ResponseResult deleteDict( @RequestBody List<String> ids) {
+        SysUser sysUser = RequestUtils.getSysUser();
         sysDictService.deleteDict(ids, sysUser);
         return ResponseResult.success();
     }

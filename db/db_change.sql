@@ -45,3 +45,7 @@ ALTER TABLE `sys_dict`
 ADD COLUMN `dict_value` varchar(32) NULL COMMENT '参数值' AFTER `dict_name`;
 ALTER TABLE `sys_dict_param`
 ADD COLUMN `param_value` varchar(32) NULL COMMENT '参数值' AFTER `param_name`;
+
+-- 2021/11/1 章节表增加小说id
+ALTER TABLE `novel_chapter`
+ADD COLUMN `novel_id` char(32) NULL COMMENT '小说id' AFTER `chapter_id`;

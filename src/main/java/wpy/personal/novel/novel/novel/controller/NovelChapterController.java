@@ -32,16 +32,16 @@ public class NovelChapterController {
 
     @GetMapping("/getChapterContent")
     @SysLogs(fun = "获取章节内容")
-    public ResponseResult getChapterContent(HttpServletRequest request, @RequestParam("chapterId")String chapterId){
-        SysUser sysUser = RequestUtils.getSysUser(request);
+    public ResponseResult getChapterContent( @RequestParam("chapterId")String chapterId){
+        SysUser sysUser = RequestUtils.getSysUser();
         ChapterBo chapterBo = novelChapterService.getChapterContent(chapterId,sysUser);
         return ResponseResult.success(chapterBo);
     }
 
     @GetMapping("/getChapterList")
     @SysLogs(fun = "获得章节列表")
-    public ResponseResult getChapterList(HttpServletRequest request,@RequestParam("volume_id")String volumeId){
-        SysUser sysUser = RequestUtils.getSysUser(request);
+    public ResponseResult getChapterList(@RequestParam("volume_id")String volumeId){
+        SysUser sysUser = RequestUtils.getSysUser();
         List<NovelChapter> list = novelChapterService.getChapterList(volumeId,sysUser);
         return ResponseResult.success(list);
     }

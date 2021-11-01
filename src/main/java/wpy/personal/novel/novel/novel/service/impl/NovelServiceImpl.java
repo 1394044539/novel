@@ -3,6 +3,7 @@ package wpy.personal.novel.novel.novel.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.google.common.collect.Lists;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -12,17 +13,16 @@ import org.springframework.web.multipart.MultipartFile;
 import wpy.personal.novel.base.constant.CharConstant;
 import wpy.personal.novel.base.enums.DictEnums;
 import wpy.personal.novel.base.enums.SqlEnums;
+import wpy.personal.novel.novel.novel.mapper.NovelFileMapper;
 import wpy.personal.novel.novel.novel.mapper.NovelTypeRelMapper;
 import wpy.personal.novel.novel.novel.mapper.NovelVolumeMapper;
-import wpy.personal.novel.novel.novel.service.NovelTypeRelService;
-import wpy.personal.novel.novel.novel.service.NovelVolumeService;
+import wpy.personal.novel.novel.novel.service.*;
 import wpy.personal.novel.novel.system.service.SysUserRoleService;
 import wpy.personal.novel.pojo.bo.NovelBo;
 import wpy.personal.novel.pojo.dto.NovelDto;
 import wpy.personal.novel.pojo.dto.VolumeDto;
 import wpy.personal.novel.pojo.entity.*;
 import wpy.personal.novel.novel.novel.mapper.NovelMapper;
-import wpy.personal.novel.novel.novel.service.NovelService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.stereotype.Service;
 import wpy.personal.novel.utils.FileUtils;
@@ -32,6 +32,8 @@ import wpy.personal.novel.utils.StringUtils;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * <p>
@@ -57,6 +59,10 @@ public class NovelServiceImpl extends ServiceImpl<NovelMapper, Novel> implements
     private NovelVolumeMapper novelVolumeMapper;
     @Autowired
     private NovelTypeRelService novelTypeRelService;
+    @Autowired
+    private NovelChapterService novelChapterService;
+    @Autowired
+    private NovelFileService novelFileService;
 
     @Value("${novel.filePath.rootPath}")
     private String rootPath;
@@ -142,27 +148,60 @@ public class NovelServiceImpl extends ServiceImpl<NovelMapper, Novel> implements
     }
 
     @Override
+    @Transactional
     public void deleteNovel(List<String> idList, SysUser sysUser) {
+        //查询每一个文件是否有其他小说在使用他
+        List<String> deleteFileIdList = Lists.newArrayList();
+        List<NovelVolume> novelVolumeList = this.novelVolumeMapper.selectList(new QueryWrapper<NovelVolume>().in("novel_id", idList));
+        if(!CollectionUtils.isEmpty(novelVolumeList)){
+            //1)查询小说的全部文件id
+            List<String> fileIdList = novelVolumeList.stream().map(NovelVolume::getFileId).collect(Collectors.toList());
+            //2)查询文件id是否有多个小说在使用
+            List<NovelVolume> volumeFileList = this.novelVolumeMapper.selectList(new QueryWrapper<NovelVolume>().in("file_id", fileIdList));
+            // 按照文件id分组
+            Map<String, List<NovelVolume>> fileIdMap = volumeFileList.stream().collect(Collectors.groupingBy(NovelVolume::getFileId));
+            for (String fileId : fileIdMap.keySet()) {
+                List<NovelVolume> novelVolumes = fileIdMap.get(fileId);
+                if(novelVolumes.size()==1){
+                    // 等于1，说明这个文件只被一个分卷使用过
+                    deleteFileIdList.add(fileId);
+                }else {
+                    // 说明被多个分卷使用过，此时需要判断这几个分卷是否在本次批量删除的小说内
+                    int exitsNum = 0;
+                    for (NovelVolume novelVolume : novelVolumes) {
+                        // 存在则+1
+                        if(idList.contains(novelVolume.getNovelId())){
+                            exitsNum++;
+                        }
+                    }
+                    // 如果相等，则说明都要删除
+                    if(exitsNum==novelVolumes.size()){
+                        deleteFileIdList.add(fileId);
+                    }
+                }
+            }
+        }
+
         //1、删除小说表
-
+        this.removeByIds(idList);
         //2、删除分卷表
-
+        this.novelVolumeService.remove(new QueryWrapper<NovelVolume>().in("novel_id",idList));
         //3、删除章节表
-
+        this.novelChapterService.remove(new QueryWrapper<NovelChapter>().in("novel_id",idList));
         //4、删除文件表
-
+        this.novelFileService.deleteFiles(deleteFileIdList);
         //5、删除评论表
 
         //6、删除数据表
 
         //7、删除类型关联表
-
+        this.novelTypeRelService.remove(new QueryWrapper<NovelTypeRel>().eq("novel_id",idList));
         //8、删除收藏表（待定）
 
-        //太麻烦了，还是逻辑删除吧
-        this.update(new UpdateWrapper<Novel>().set("is_delete",SqlEnums.IS_DELETE.getCode())
-                .set("update_time",new Date()).set("update_by",sysUser.getUserId())
-                .in("novel_id",idList));
+//        //太麻烦了，还是逻辑删除吧
+//        this.update(new UpdateWrapper<Novel>().set("is_delete",SqlEnums.IS_DELETE.getCode())
+//                .set("update_time",new Date()).set("update_by",sysUser.getUserId())
+//                .in("novel_id",idList));
     }
 
     @Override

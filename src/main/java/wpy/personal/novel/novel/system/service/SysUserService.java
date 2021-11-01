@@ -45,7 +45,7 @@ public interface SysUserService extends IService<SysUser> {
      * 退出登录
      * @param request
      */
-    void logon(HttpServletRequest request);
+    void logon();
 
     /**
      * 修改用户

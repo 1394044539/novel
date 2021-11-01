@@ -27,7 +27,8 @@ public class RequestUtils {
      * @param request
      * @return
      */
-    public static SysUser getSysUser(HttpServletRequest request){
+    public static SysUser getSysUser(){
+        HttpServletRequest request = getHttpServletRequest();
         String token = getToken(request);
         if(StringUtils.isEmpty(token)||"null".equals(token)){
             throw UtilsException.fail(UtilsEnums.USER_ERROR);
@@ -46,6 +47,9 @@ public class RequestUtils {
      * @return
      */
     public static SysUser getSysUserByNew(HttpServletRequest request){
+        if(request==null){
+            request = getHttpServletRequest();
+        }
         String token = getToken(request);
         if(StringUtils.isEmpty(token)||"null".equals(token)||"undefined".equals(token)){
             return new SysUser();
@@ -64,6 +68,9 @@ public class RequestUtils {
      * @return
      */
     public static String getToken(HttpServletRequest request){
+        if(request==null){
+            request = getHttpServletRequest();
+        }
         String authorization=request.getHeader("authorization");
         if(authorization==null){
             authorization=request.getHeader("Authorization");
@@ -88,6 +95,9 @@ public class RequestUtils {
      * @return
      */
     public static String getIp(HttpServletRequest request){
+        if(request==null){
+            request = getHttpServletRequest();
+        }
         String ip = "";
         try{
             ip = request.getHeader("x forwarded for");

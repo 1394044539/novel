@@ -4,6 +4,7 @@ package wpy.personal.novel.novel.novel.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import org.springframework.web.multipart.MultipartFile;
 import wpy.personal.novel.base.annotation.SysLogs;
 import wpy.personal.novel.base.result.ResponseResult;
 import wpy.personal.novel.novel.novel.service.NovelVolumeService;
@@ -32,17 +33,26 @@ public class NovelVolumeController {
 
     @PutMapping("/addVolume")
     @SysLogs(fun = "添加分卷内容")
-    public ResponseResult addVolume(HttpServletRequest request, VolumeDto volumeDto){
-        SysUser sysUser = RequestUtils.getSysUser(request);
+    public ResponseResult addVolume(VolumeDto volumeDto){
+        SysUser sysUser = RequestUtils.getSysUser();
         NovelVolume novelVolume = novelVolumeService.addVolume(volumeDto,sysUser);
         return ResponseResult.success(novelVolume);
     }
 
     @GetMapping("/getVolumeInfo")
     @SysLogs(fun = "获取分卷信息")
-    public ResponseResult getVolumeInfo(HttpServletRequest request,@RequestParam("volumeId")String volumeId){
-        SysUser sysUser = RequestUtils.getSysUser(request);
+    public ResponseResult getVolumeInfo(@RequestParam("volumeId")String volumeId){
+        SysUser sysUser = RequestUtils.getSysUser();
         NovelVolumeBo novelVolumeBo = novelVolumeService.getVolumeInfo(volumeId,sysUser);
         return ResponseResult.success(novelVolumeBo);
+    }
+
+    @PostMapping("/batchUploadVolume")
+    @SysLogs(fun = "批量上传分卷信息")
+    public ResponseResult batchUploadVolume(@RequestParam("files") MultipartFile[] files
+            ,@RequestParam("novelId")String novelId){
+        SysUser sysUser = RequestUtils.getSysUser();
+        novelVolumeService.batchUploadVolume(files,novelId,sysUser);
+        return ResponseResult.success();
     }
 }

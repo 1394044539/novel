@@ -91,6 +91,16 @@ public class NovelVolumeServiceImpl extends ServiceImpl<NovelVolumeMapper, Novel
         return novelVolumeBo;
     }
 
+    @Override
+    public void batchUploadVolume(MultipartFile[] files, String novelId, SysUser sysUser) {
+        for (MultipartFile file : files) {
+            VolumeDto volumeDto = new VolumeDto();
+            volumeDto.setVolumeFile(file);
+            volumeDto.setNovelId(novelId);
+            addVolume(volumeDto,sysUser);
+        }
+    }
+
     /**
      * 填充参数
      * @param volumeChapterBo

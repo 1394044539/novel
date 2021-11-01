@@ -57,8 +57,8 @@ public class SysUserController {
 
     @PostMapping("/addUser")
     @SysLogs(fun = "添加用户")
-    public ResponseResult addUser(HttpServletRequest request, @RequestBody SysUserDto sysUserDto){
-        SysUser sysUser = RequestUtils.getSysUser(request);
+    public ResponseResult addUser( @RequestBody SysUserDto sysUserDto){
+        SysUser sysUser = RequestUtils.getSysUser();
         sysUserService.addUser(sysUserDto,sysUser);
         return ResponseResult.success();
     }
@@ -72,23 +72,23 @@ public class SysUserController {
 
     @PutMapping("/updateUser")
     @SysLogs(fun = "修改用户")
-    public ResponseResult updateUser(HttpServletRequest request, @RequestBody SysUserDto sysUserDto){
-        SysUser sysUser = RequestUtils.getSysUser(request);
+    public ResponseResult updateUser( @RequestBody SysUserDto sysUserDto){
+        SysUser sysUser = RequestUtils.getSysUser();
         sysUserService.updateUser(sysUserDto,sysUser);
         return ResponseResult.success();
     }
 
     @PostMapping("/logout")
     @SysLogs(fun = "退出登录")
-    public ResponseResult logon(HttpServletRequest request){
-        sysUserService.logon(request);
+    public ResponseResult logon(){
+        sysUserService.logon();
         return ResponseResult.success();
     }
 
     @PostMapping("/disableUser")
     @SysLogs(fun = "禁用用户")
-    public ResponseResult disableUser(HttpServletRequest request,@RequestBody List<String> ids){
-        SysUser sysUser = RequestUtils.getSysUser(request);
+    public ResponseResult disableUser(@RequestBody List<String> ids){
+        SysUser sysUser = RequestUtils.getSysUser();
         sysUserService.disableUser(sysUser,ids);
         return ResponseResult.success();
     }

@@ -35,8 +35,8 @@ public class SysDictParamController {
 
     @PostMapping("/getDictParamList")
     @SysLogs(fun = "获得字典参数列表")
-    public ResponseResult getDictParamList(HttpServletRequest request, @RequestBody SysDictParamDto sysDictParamDto){
-        SysUser sysUser = RequestUtils.getSysUser(request);
+    public ResponseResult getDictParamList( @RequestBody SysDictParamDto sysDictParamDto){
+        SysUser sysUser = RequestUtils.getSysUser();
         List<SysDictParam> list = sysDictParamService.getDictParamList(sysDictParamDto,sysUser);
         return ResponseResult.success(list);
     }

@@ -1,7 +1,9 @@
 package wpy.personal.novel.novel.novel.service.impl;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.CollectionUtils;
 import org.springframework.web.multipart.MultipartFile;
 import wpy.personal.novel.base.constant.CharConstant;
 import wpy.personal.novel.pojo.entity.NovelFile;
@@ -12,6 +14,8 @@ import org.springframework.stereotype.Service;
 import wpy.personal.novel.utils.FileUtils;
 import wpy.personal.novel.utils.ObjectUtils;
 import wpy.personal.novel.utils.StringUtils;
+
+import java.util.List;
 
 /**
  * <p>
@@ -24,6 +28,9 @@ import wpy.personal.novel.utils.StringUtils;
 @Service
 @Transactional
 public class NovelFileServiceImpl extends ServiceImpl<NovelFileMapper, NovelFile> implements NovelFileService {
+
+    @Autowired
+    private NovelFileMapper novelFileMapper;
 
     @Value("${novel.filePath.rootPath}")
     private String rootPath;
@@ -45,5 +52,19 @@ public class NovelFileServiceImpl extends ServiceImpl<NovelFileMapper, NovelFile
         novelFile.setFilePath(uploadFilePath);
         this.save(novelFile);
         return novelFile;
+    }
+
+    @Override
+    public void deleteFiles(List<String> deleteFileIdList) {
+        if(CollectionUtils.isEmpty(deleteFileIdList)){
+            return;
+        }
+        //1、删除文件信息
+        List<NovelFile> novelFiles = this.novelFileMapper.selectBatchIds(deleteFileIdList);
+        for (NovelFile novelFile : novelFiles) {
+            FileUtils.deleteFile(novelFile.getFilePath()+CharConstant.FILE_SEPARATOR+novelFile.getFileMd5());
+        }
+        //2、删除数据库
+        this.removeByIds(deleteFileIdList);
     }
 }

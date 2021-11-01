@@ -33,6 +33,12 @@ public class NovelChapter implements Serializable {
     private String chapterId;
 
     /**
+     * 小说id
+     */
+    @TableField("novel_id")
+    private String novelId;
+
+    /**
      * 分卷id
      */
     @TableField("volume_id")

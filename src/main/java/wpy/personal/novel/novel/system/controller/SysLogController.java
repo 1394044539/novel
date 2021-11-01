@@ -30,8 +30,8 @@ public class SysLogController {
 
     @PostMapping("/getLogList")
     @SysLogs(fun = "查看日志")
-    public ResponseResult getLogList(HttpServletRequest request, @RequestBody SysLogDto sysLogDto){
-        SysUser sysUser = RequestUtils.getSysUser(request);
+    public ResponseResult getLogList( @RequestBody SysLogDto sysLogDto){
+        SysUser sysUser = RequestUtils.getSysUser();
         return ResponseResult.success(sysLogService.getLogList(sysLogDto,sysUser));
     }
 }

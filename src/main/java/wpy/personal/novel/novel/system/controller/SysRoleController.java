@@ -31,46 +31,46 @@ public class SysRoleController {
 
     @PostMapping("/getRoleList")
     @SysLogs(fun = "查看角色列表")
-    public ResponseResult getRoleList(HttpServletRequest request, @RequestBody SysRoleDto sysRoleDto){
-        SysUser sysUser = RequestUtils.getSysUser(request);
+    public ResponseResult getRoleList( @RequestBody SysRoleDto sysRoleDto){
+        SysUser sysUser = RequestUtils.getSysUser();
         return ResponseResult.success(sysRoleService.getRoleList(sysRoleDto,sysUser));
     }
 
     @PostMapping("/getAllRoleList")
     @SysLogs(fun = "查看角色列表")
-    public ResponseResult getAllRoleList(HttpServletRequest request, @RequestBody SysRoleDto sysRoleDto){
-        SysUser sysUser = RequestUtils.getSysUser(request);
+    public ResponseResult getAllRoleList( @RequestBody SysRoleDto sysRoleDto){
+        SysUser sysUser = RequestUtils.getSysUser();
         return ResponseResult.success(sysRoleService.getAllRoleList(sysRoleDto,sysUser));
     }
 
     @GetMapping("/getRoleInfo")
     @SysLogs(fun = "获取角色详细信息")
-    public ResponseResult getRoleInfo(HttpServletRequest request,@RequestParam("roleId")String roleId){
-        SysUser sysUser = RequestUtils.getSysUser(request);
+    public ResponseResult getRoleInfo(@RequestParam("roleId")String roleId){
+        SysUser sysUser = RequestUtils.getSysUser();
         RoleInfoBo roleInfoBo = sysRoleService.getRoleInfo(roleId,sysUser);
         return ResponseResult.success(roleInfoBo);
     }
 
     @PostMapping("/addRole")
     @SysLogs(fun = "添加角色")
-    public ResponseResult addRole(HttpServletRequest request,@RequestBody SysRoleDto sysRoleDto){
-        SysUser sysUser = RequestUtils.getSysUser(request);
+    public ResponseResult addRole(@RequestBody SysRoleDto sysRoleDto){
+        SysUser sysUser = RequestUtils.getSysUser();
         SysRole sysRole = sysRoleService.addRole(sysRoleDto,sysUser);
         return ResponseResult.success(sysRole);
     }
 
     @PutMapping("/updateRole")
     @SysLogs(fun = "修改角色")
-    public ResponseResult updateRole(HttpServletRequest request,@RequestBody SysRoleDto sysRoleDto){
-        SysUser sysUser = RequestUtils.getSysUser(request);
+    public ResponseResult updateRole(@RequestBody SysRoleDto sysRoleDto){
+        SysUser sysUser = RequestUtils.getSysUser();
         sysRoleService.updateRole(sysRoleDto,sysUser);
         return ResponseResult.success();
     }
 
     @DeleteMapping("/deleteRole")
     @SysLogs(fun = "删除角色")
-    public ResponseResult deleteRole(HttpServletRequest request, @RequestParam("roleId") String roleId){
-        SysUser sysUser = RequestUtils.getSysUser(request);
+    public ResponseResult deleteRole( @RequestParam("roleId") String roleId){
+        SysUser sysUser = RequestUtils.getSysUser();
         sysRoleService.deleteRole(roleId,sysUser);
         return ResponseResult.success();
     }

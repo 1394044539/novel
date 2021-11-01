@@ -39,15 +39,15 @@ public class SysRegisterController {
 
     @PostMapping("/getApplyRegisterList")
     @SysLogs(fun = "获取申请列表")
-    public ResponseResult getApplyRegisterList(HttpServletRequest request, @RequestBody SysRegisterDto registerDto){
-        SysUser sysUser = RequestUtils.getSysUser(request);
+    public ResponseResult getApplyRegisterList( @RequestBody SysRegisterDto registerDto){
+        SysUser sysUser = RequestUtils.getSysUser();
         return ResponseResult.success(sysRegisterService.getApplyRegisterList(sysUser,registerDto));
     }
 
     @PostMapping("/createRegInfo")
     @SysLogs(fun = "生成注册信息")
-    public ResponseResult createRegInfo(HttpServletRequest request, @RequestBody SysRegisterDto registerDto){
-        SysUser sysUser = RequestUtils.getSysUser(request);
+    public ResponseResult createRegInfo( @RequestBody SysRegisterDto registerDto){
+        SysUser sysUser = RequestUtils.getSysUser();
         return ResponseResult.success(sysRegisterService.createRegInfo(sysUser,registerDto));
     }
 
