@@ -66,4 +66,11 @@ public interface NovelService extends IService<Novel> {
      * @return
      */
     Novel quickUpload(MultipartFile file, SysUser sysUser);
+
+    /**
+     * 更新小说总数
+     * @param novelId
+     * @param sysUser
+     */
+    void updateTotal(String novelId,SysUser sysUser);
 }

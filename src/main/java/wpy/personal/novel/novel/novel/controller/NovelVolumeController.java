@@ -37,7 +37,7 @@ public class NovelVolumeController {
     @SysLogs(fun = "添加分卷内容")
     public ResponseResult addVolume(VolumeDto volumeDto){
         SysUser sysUser = RequestUtils.getSysUser();
-        NovelVolume novelVolume = novelVolumeService.addVolume(volumeDto,sysUser);
+        NovelVolume novelVolume = novelVolumeService.addVolumeUpdateNovel(volumeDto,sysUser);
         return ResponseResult.success(novelVolume);
     }
 
@@ -47,6 +47,13 @@ public class NovelVolumeController {
         SysUser sysUser = RequestUtils.getSysUser();
         NovelVolumeBo novelVolumeBo = novelVolumeService.getVolumeInfo(volumeId,sysUser);
         return ResponseResult.success(novelVolumeBo);
+    }
+
+    @GetMapping("/getVolumeList")
+    @SysLogs(fun = "获取分卷信息")
+    public ResponseResult getVolumeList(@RequestParam("novelId")String novelId){
+        SysUser sysUser = RequestUtils.getSysUser();
+        return ResponseResult.success(novelVolumeService.getVolumeList(novelId,sysUser));
     }
 
     @PostMapping("/batchUploadVolume")

@@ -1,11 +1,11 @@
 package wpy.personal.novel.novel.novel.service;
 
+import com.baomidou.mybatisplus.extension.service.IService;
 import org.springframework.web.multipart.MultipartFile;
 import wpy.personal.novel.pojo.bo.NovelVolumeBo;
 import wpy.personal.novel.pojo.dto.VolumeDto;
 import wpy.personal.novel.pojo.dto.VolumeOrderDto;
 import wpy.personal.novel.pojo.entity.NovelVolume;
-import com.baomidou.mybatisplus.extension.service.IService;
 import wpy.personal.novel.pojo.entity.SysUser;
 
 import java.util.List;
@@ -65,4 +65,20 @@ public interface NovelVolumeService extends IService<NovelVolume> {
      * @return
      */
     List<String> getDeleteFileIds(List<NovelVolume> novelVolumeList, List<String> idList);
+
+    /**
+     * 上传正常单个上传小说
+     * @param volumeDto
+     * @param sysUser
+     * @return
+     */
+    NovelVolume addVolumeUpdateNovel(VolumeDto volumeDto, SysUser sysUser);
+
+    /**
+     * 获取分卷列表
+     * @param novelId
+     * @param sysUser
+     * @return
+     */
+    List<NovelVolume> getVolumeList(String novelId, SysUser sysUser);
 }

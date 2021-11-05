@@ -18,6 +18,7 @@ import wpy.personal.novel.base.exception.BusinessException;
 import wpy.personal.novel.novel.novel.mapper.NovelVolumeMapper;
 import wpy.personal.novel.novel.novel.service.NovelChapterService;
 import wpy.personal.novel.novel.novel.service.NovelFileService;
+import wpy.personal.novel.novel.novel.service.NovelService;
 import wpy.personal.novel.novel.novel.service.NovelVolumeService;
 import wpy.personal.novel.pojo.bo.NovelVolumeBo;
 import wpy.personal.novel.pojo.bo.VolumeChapterBo;
@@ -54,6 +55,8 @@ public class NovelVolumeServiceImpl extends ServiceImpl<NovelVolumeMapper, Novel
     private NovelFileService novelFileService;
     @Autowired
     private NovelChapterService novelChapterService;
+    @Autowired
+    private NovelService novelService;
 
     @Value("${novel.filePath.rootPath}")
     private String rootPath;
@@ -104,8 +107,10 @@ public class NovelVolumeServiceImpl extends ServiceImpl<NovelVolumeMapper, Novel
             VolumeDto volumeDto = new VolumeDto();
             volumeDto.setVolumeFile(file);
             volumeDto.setNovelId(novelId);
-            addVolume(volumeDto,sysUser);
+            addVolume(volumeDto, sysUser);
         }
+        // 更新小说字数
+        novelService.updateTotal(novelId,sysUser);
     }
 
     @Override
@@ -169,6 +174,21 @@ public class NovelVolumeServiceImpl extends ServiceImpl<NovelVolumeMapper, Novel
             }
         }
         return deleteFileIdList;
+    }
+
+    @Override
+    public NovelVolume addVolumeUpdateNovel(VolumeDto volumeDto, SysUser sysUser) {
+        NovelVolume novelVolume = this.addVolume(volumeDto, sysUser);
+        // 更新小说字数
+        novelService.updateTotal(novelVolume.getNovelId(),sysUser);
+        return novelVolume;
+    }
+
+    @Override
+    public List<NovelVolume> getVolumeList(String novelId, SysUser sysUser) {
+        List<NovelVolume> novelVolumeList = novelVolumeMapper.selectList(
+                new QueryWrapper<NovelVolume>().eq("novel_id", novelId).orderByAsc("volume_order"));
+        return novelVolumeList;
     }
 
     /**

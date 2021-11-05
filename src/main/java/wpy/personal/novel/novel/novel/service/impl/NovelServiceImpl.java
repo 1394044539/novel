@@ -26,6 +26,7 @@ import wpy.personal.novel.novel.novel.mapper.NovelMapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.stereotype.Service;
 import wpy.personal.novel.utils.FileUtils;
+import wpy.personal.novel.utils.NumberUtils;
 import wpy.personal.novel.utils.ObjectUtils;
 import wpy.personal.novel.utils.StringUtils;
 
@@ -197,6 +198,19 @@ public class NovelServiceImpl extends ServiceImpl<NovelMapper, Novel> implements
         //4、存入数据库
         this.save(novel);
         return novel;
+    }
+
+    @Override
+    public void updateTotal(String novelId, SysUser sysUser) {
+        Novel novel = this.getById(novelId);
+        List<NovelVolume> novelVolumeList = this.novelVolumeMapper.selectList(new QueryWrapper<NovelVolume>().in("novel_id", novelId));
+        for (NovelVolume novelVolume : novelVolumeList) {
+            novel.setTotalWord(NumberUtils.add(novel.getTotalWord(),novelVolume.getTotalWord()));
+            novel.setTotalLine(NumberUtils.add(novel.getTotalLine(),novelVolume.getTotalLine()));
+        }
+        novel.setUpdateTime(new Date());
+        novel.setUpdateBy(sysUser.getUserId());
+        this.updateById(novel);
     }
 
     /**
