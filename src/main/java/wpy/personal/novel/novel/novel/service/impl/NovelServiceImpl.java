@@ -151,36 +151,8 @@ public class NovelServiceImpl extends ServiceImpl<NovelMapper, Novel> implements
     @Transactional
     public void deleteNovel(List<String> idList, SysUser sysUser) {
         //查询每一个文件是否有其他小说在使用他
-        List<String> deleteFileIdList = Lists.newArrayList();
         List<NovelVolume> novelVolumeList = this.novelVolumeMapper.selectList(new QueryWrapper<NovelVolume>().in("novel_id", idList));
-        if(!CollectionUtils.isEmpty(novelVolumeList)){
-            //1)查询小说的全部文件id
-            List<String> fileIdList = novelVolumeList.stream().map(NovelVolume::getFileId).collect(Collectors.toList());
-            //2)查询文件id是否有多个小说在使用
-            List<NovelVolume> volumeFileList = this.novelVolumeMapper.selectList(new QueryWrapper<NovelVolume>().in("file_id", fileIdList));
-            // 按照文件id分组
-            Map<String, List<NovelVolume>> fileIdMap = volumeFileList.stream().collect(Collectors.groupingBy(NovelVolume::getFileId));
-            for (String fileId : fileIdMap.keySet()) {
-                List<NovelVolume> novelVolumes = fileIdMap.get(fileId);
-                if(novelVolumes.size()==1){
-                    // 等于1，说明这个文件只被一个分卷使用过
-                    deleteFileIdList.add(fileId);
-                }else {
-                    // 说明被多个分卷使用过，此时需要判断这几个分卷是否在本次批量删除的小说内
-                    int exitsNum = 0;
-                    for (NovelVolume novelVolume : novelVolumes) {
-                        // 存在则+1
-                        if(idList.contains(novelVolume.getNovelId())){
-                            exitsNum++;
-                        }
-                    }
-                    // 如果相等，则说明都要删除
-                    if(exitsNum==novelVolumes.size()){
-                        deleteFileIdList.add(fileId);
-                    }
-                }
-            }
-        }
+        List<String> deleteFileIdList = novelVolumeService.getDeleteFileIds(novelVolumeList,idList);
 
         //1、删除小说表
         this.removeByIds(idList);

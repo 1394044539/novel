@@ -2,12 +2,14 @@ package wpy.personal.novel.novel.novel.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.google.common.collect.Lists;
 import org.apache.commons.io.IOUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.CollectionUtils;
 import org.springframework.web.multipart.MultipartFile;
 import wpy.personal.novel.base.enums.BusinessEnums;
 import wpy.personal.novel.base.enums.ErrorCode;
@@ -20,6 +22,7 @@ import wpy.personal.novel.novel.novel.service.NovelVolumeService;
 import wpy.personal.novel.pojo.bo.NovelVolumeBo;
 import wpy.personal.novel.pojo.bo.VolumeChapterBo;
 import wpy.personal.novel.pojo.dto.VolumeDto;
+import wpy.personal.novel.pojo.dto.VolumeOrderDto;
 import wpy.personal.novel.pojo.entity.NovelChapter;
 import wpy.personal.novel.pojo.entity.NovelFile;
 import wpy.personal.novel.pojo.entity.NovelVolume;
@@ -30,6 +33,8 @@ import wpy.personal.novel.utils.StringUtils;
 import java.io.InputStreamReader;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * <p>
@@ -43,6 +48,8 @@ import java.util.List;
 @Transactional
 public class NovelVolumeServiceImpl extends ServiceImpl<NovelVolumeMapper, NovelVolume> implements NovelVolumeService {
 
+    @Autowired
+    private NovelVolumeMapper novelVolumeMapper;
     @Autowired
     private NovelFileService novelFileService;
     @Autowired
@@ -99,6 +106,69 @@ public class NovelVolumeServiceImpl extends ServiceImpl<NovelVolumeMapper, Novel
             volumeDto.setNovelId(novelId);
             addVolume(volumeDto,sysUser);
         }
+    }
+
+    @Override
+    public void updateOrder(VolumeOrderDto volumeOrderDto, SysUser sysUser) {
+        List<String> volumeIdList = volumeOrderDto.getVolumeIdList();
+        List<NovelVolume> updateList = Lists.newArrayList();
+        for (int i = 0; i < volumeIdList.size(); i++) {
+            NovelVolume novelVolume = new NovelVolume();
+            novelVolume.setVolumeId(volumeIdList.get(i));
+            novelVolume.setVolumeOrder(i);
+            updateList.add(novelVolume);
+        }
+        if(!CollectionUtils.isEmpty(updateList)){
+            this.updateBatchById(updateList);
+        }
+    }
+
+    @Override
+    public void deleteVolume(List<String> idList, SysUser sysUser) {
+        //1、查看哪些文件需要被删除
+        //1)查询分卷的信息
+        List<NovelVolume> novelVolumes = this.novelVolumeMapper.selectBatchIds(idList);
+        List<String> deleteFileIds = this.getDeleteFileIds(novelVolumes, idList);
+        // 1、删除分卷表
+        this.removeByIds(idList);
+        // 2、删除章节表
+        this.novelChapterService.remove(new QueryWrapper<NovelChapter>().in("volume_id",idList));
+        // 3、删除文件表
+        this.novelFileService.deleteFiles(deleteFileIds);
+    }
+
+    @Override
+    public List<String> getDeleteFileIds(List<NovelVolume> novelVolumeList, List<String> idList) {
+        List<String> deleteFileIdList = Lists.newArrayList();
+        if(!CollectionUtils.isEmpty(novelVolumeList)){
+            //1)查询小说的全部文件id
+            List<String> fileIdList = novelVolumeList.stream().map(NovelVolume::getFileId).collect(Collectors.toList());
+            //2)查询文件id是否有多个小说在使用
+            List<NovelVolume> volumeFileList = this.novelVolumeMapper.selectList(new QueryWrapper<NovelVolume>().in("file_id", fileIdList));
+            // 按照文件id分组
+            Map<String, List<NovelVolume>> fileIdMap = volumeFileList.stream().collect(Collectors.groupingBy(NovelVolume::getFileId));
+            for (String fileId : fileIdMap.keySet()) {
+                List<NovelVolume> novelVolumes = fileIdMap.get(fileId);
+                if(novelVolumes.size()==1){
+                    // 等于1，说明这个文件只被一个分卷使用过
+                    deleteFileIdList.add(fileId);
+                }else {
+                    // 说明被多个分卷使用过，此时需要判断这几个分卷是否在本次批量删除的小说内
+                    int exitsNum = 0;
+                    for (NovelVolume novelVolume : novelVolumes) {
+                        // 存在则+1
+                        if(idList.contains(novelVolume.getNovelId())){
+                            exitsNum++;
+                        }
+                    }
+                    // 如果相等，则说明都要删除
+                    if(exitsNum==novelVolumes.size()){
+                        deleteFileIdList.add(fileId);
+                    }
+                }
+            }
+        }
+        return deleteFileIdList;
     }
 
     /**

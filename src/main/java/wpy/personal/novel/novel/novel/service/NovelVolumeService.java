@@ -3,9 +3,12 @@ package wpy.personal.novel.novel.novel.service;
 import org.springframework.web.multipart.MultipartFile;
 import wpy.personal.novel.pojo.bo.NovelVolumeBo;
 import wpy.personal.novel.pojo.dto.VolumeDto;
+import wpy.personal.novel.pojo.dto.VolumeOrderDto;
 import wpy.personal.novel.pojo.entity.NovelVolume;
 import com.baomidou.mybatisplus.extension.service.IService;
 import wpy.personal.novel.pojo.entity.SysUser;
+
+import java.util.List;
 
 /**
  * <p>
@@ -40,4 +43,26 @@ public interface NovelVolumeService extends IService<NovelVolume> {
      * @param sysUser
      */
     void batchUploadVolume(MultipartFile[] files, String novelId, SysUser sysUser);
+
+    /**
+     * 更新排序规则
+     * @param volumeOrderDto
+     * @param sysUser
+     */
+    void updateOrder(VolumeOrderDto volumeOrderDto, SysUser sysUser);
+
+    /**
+     * 删除分卷
+     * @param idList
+     * @param sysUser
+     */
+    void deleteVolume(List<String> idList, SysUser sysUser);
+
+    /**
+     * 获取需要被删除的文件id集合
+     * @param novelVolumeList
+     * @param idList
+     * @return
+     */
+    List<String> getDeleteFileIds(List<NovelVolume> novelVolumeList, List<String> idList);
 }

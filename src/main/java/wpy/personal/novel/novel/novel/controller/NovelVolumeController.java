@@ -10,11 +10,13 @@ import wpy.personal.novel.base.result.ResponseResult;
 import wpy.personal.novel.novel.novel.service.NovelVolumeService;
 import wpy.personal.novel.pojo.bo.NovelVolumeBo;
 import wpy.personal.novel.pojo.dto.VolumeDto;
+import wpy.personal.novel.pojo.dto.VolumeOrderDto;
 import wpy.personal.novel.pojo.entity.NovelVolume;
 import wpy.personal.novel.pojo.entity.SysUser;
 import wpy.personal.novel.utils.RequestUtils;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.List;
 
 /**
  * <p>
@@ -53,6 +55,22 @@ public class NovelVolumeController {
             ,@RequestParam("novelId")String novelId){
         SysUser sysUser = RequestUtils.getSysUser();
         novelVolumeService.batchUploadVolume(files,novelId,sysUser);
+        return ResponseResult.success();
+    }
+
+    @PutMapping("/updateOrder")
+    @SysLogs(fun = "更新排序规则")
+    public ResponseResult updateOrder(@RequestBody VolumeOrderDto volumeOrderDto){
+        SysUser sysUser = RequestUtils.getSysUser();
+        novelVolumeService.updateOrder(volumeOrderDto,sysUser);
+        return ResponseResult.success();
+    }
+
+    @DeleteMapping("/deleteVolume")
+    @SysLogs(fun = "删除分卷")
+    public ResponseResult deleteVolume(@RequestBody List<String> idList){
+        SysUser sysUser = RequestUtils.getSysUser();
+        novelVolumeService.deleteVolume(idList,sysUser);
         return ResponseResult.success();
     }
 }
