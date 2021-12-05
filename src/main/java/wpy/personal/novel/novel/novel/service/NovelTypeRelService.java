@@ -2,6 +2,9 @@ package wpy.personal.novel.novel.novel.service;
 
 import wpy.personal.novel.pojo.entity.NovelTypeRel;
 import com.baomidou.mybatisplus.extension.service.IService;
+import wpy.personal.novel.pojo.entity.SysUser;
+
+import java.util.List;
 
 /**
  * <p>
@@ -13,4 +16,11 @@ import com.baomidou.mybatisplus.extension.service.IService;
  */
 public interface NovelTypeRelService extends IService<NovelTypeRel> {
 
+    /**
+     * 修改小说类型
+     * @param novelId
+     * @param typeCodeList
+     * @param sysUser
+     */
+    void updateNovelType(String novelId, List<String> typeCodeList, SysUser sysUser);
 }

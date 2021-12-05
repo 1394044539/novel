@@ -81,4 +81,12 @@ public interface NovelVolumeService extends IService<NovelVolume> {
      * @return
      */
     List<NovelVolume> getVolumeList(String novelId, SysUser sysUser);
+
+    /**
+     * 更新分卷
+     * @param volumeDto
+     * @param sysUser
+     * @return
+     */
+    NovelVolume updateVolume(VolumeDto volumeDto, SysUser sysUser);
 }

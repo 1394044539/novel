@@ -3,7 +3,6 @@ package wpy.personal.novel.novel.novel.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-
 import org.springframework.web.multipart.MultipartFile;
 import wpy.personal.novel.base.annotation.SysLogs;
 import wpy.personal.novel.base.result.ResponseResult;
@@ -15,7 +14,6 @@ import wpy.personal.novel.pojo.entity.NovelVolume;
 import wpy.personal.novel.pojo.entity.SysUser;
 import wpy.personal.novel.utils.RequestUtils;
 
-import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 /**
@@ -38,6 +36,14 @@ public class NovelVolumeController {
     public ResponseResult addVolume(VolumeDto volumeDto){
         SysUser sysUser = RequestUtils.getSysUser();
         NovelVolume novelVolume = novelVolumeService.addVolumeUpdateNovel(volumeDto,sysUser);
+        return ResponseResult.success(novelVolume);
+    }
+
+    @PostMapping("/updateVolume")
+    @SysLogs(fun = "更新分卷")
+    public ResponseResult updateVolume(VolumeDto volumeDto){
+        SysUser sysUser = RequestUtils.getSysUser();
+        NovelVolume novelVolume = novelVolumeService.updateVolume(volumeDto,sysUser);
         return ResponseResult.success(novelVolume);
     }
 

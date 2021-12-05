@@ -13,7 +13,6 @@ import wpy.personal.novel.pojo.entity.Novel;
 import wpy.personal.novel.pojo.entity.SysUser;
 import wpy.personal.novel.utils.RequestUtils;
 
-import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 /**
@@ -56,7 +55,7 @@ public class NovelController {
 
     @PutMapping("/updateNovel")
     @SysLogs(fun = "修改小说")
-    public ResponseResult updateNovel(@RequestBody NovelDto novelDto){
+    public ResponseResult updateNovel(NovelDto novelDto){
         SysUser sysUser = RequestUtils.getSysUser();
         Novel  novel = novelService.updateNovel(novelDto,sysUser);
         return ResponseResult.success(novel);

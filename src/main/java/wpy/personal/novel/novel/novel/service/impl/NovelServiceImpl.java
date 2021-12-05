@@ -1,19 +1,19 @@
 package wpy.personal.novel.novel.novel.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.google.common.collect.Lists;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.multipart.MultipartFile;
 import wpy.personal.novel.base.constant.CharConstant;
 import wpy.personal.novel.base.enums.DictEnums;
 import wpy.personal.novel.base.enums.SqlEnums;
-import wpy.personal.novel.novel.novel.mapper.NovelFileMapper;
+import wpy.personal.novel.novel.novel.mapper.NovelMapper;
 import wpy.personal.novel.novel.novel.mapper.NovelTypeRelMapper;
 import wpy.personal.novel.novel.novel.mapper.NovelVolumeMapper;
 import wpy.personal.novel.novel.novel.service.*;
@@ -22,9 +22,6 @@ import wpy.personal.novel.pojo.bo.NovelBo;
 import wpy.personal.novel.pojo.dto.NovelDto;
 import wpy.personal.novel.pojo.dto.VolumeDto;
 import wpy.personal.novel.pojo.entity.*;
-import wpy.personal.novel.novel.novel.mapper.NovelMapper;
-import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import org.springframework.stereotype.Service;
 import wpy.personal.novel.utils.FileUtils;
 import wpy.personal.novel.utils.NumberUtils;
 import wpy.personal.novel.utils.ObjectUtils;
@@ -33,8 +30,6 @@ import wpy.personal.novel.utils.StringUtils;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 /**
  * <p>
@@ -85,7 +80,13 @@ public class NovelServiceImpl extends ServiceImpl<NovelMapper, Novel> implements
         if(StringUtils.isNotEmpty(novelDto.getNovelAuthor())){
             qw.like("novel_author",novelDto.getNovelAuthor());
         }
-        return this.novelMapper.selectPage(new Page<>(novelDto.getPage(), novelDto.getPageSize()), qw);
+        Page<Novel> novelPage = this.novelMapper.selectPage(new Page<>(novelDto.getPage(), novelDto.getPageSize()), qw);
+        List<Novel> records = novelPage.getRecords();
+        for (Novel record : records) {
+            List<SysDictParam> novelTypeList = novelTypeRelMapper.getNovelTypeList(record.getNovelId());
+            record.setTypeList(novelTypeList);
+        }
+        return novelPage;
     }
 
     @Override
@@ -144,6 +145,7 @@ public class NovelServiceImpl extends ServiceImpl<NovelMapper, Novel> implements
         novel.setUpdateTime(new Date());
         //注意封面是否被修改
         novel.setNovelImg(this.updateNovelImg(novel,novelDto.getImgFile()));
+        novelTypeRelService.updateNovelType(novel.getNovelId(),novelDto.getTypeCodeList(),sysUser);
         this.updateById(novel);
         return novel;
     }

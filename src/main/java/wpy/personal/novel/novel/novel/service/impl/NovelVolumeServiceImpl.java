@@ -71,7 +71,7 @@ public class NovelVolumeServiceImpl extends ServiceImpl<NovelVolumeMapper, Novel
         if(novelVolume.getVolumeOrder()==null){
             NovelVolume one = this.getOne(new QueryWrapper<NovelVolume>()
                     .select("max(volume_order) as volumeOrder").eq("novel_id",volumeDto.getNovelId()));
-            novelVolume.setVolumeOrder(one==null? 0:one.getVolumeOrder());
+            novelVolume.setVolumeOrder(one==null? 0:one.getVolumeOrder()+1);
         }
         novelVolume.setVolumeId(StringUtils.getUuid32());
         novelVolume.setCreateBy(sysUser.getUserId());
@@ -92,6 +92,9 @@ public class NovelVolumeServiceImpl extends ServiceImpl<NovelVolumeMapper, Novel
     @Override
     public NovelVolumeBo getVolumeInfo(String volumeId, SysUser sysUser) {
         NovelVolume novelVolume = this.getById(volumeId);
+        if(novelVolume==null){
+            throw BusinessException.fail("该分卷不存在");
+        }
         NovelVolumeBo novelVolumeBo = new NovelVolumeBo();
         BeanUtils.copyProperties(novelVolume,novelVolumeBo);
 
@@ -103,10 +106,14 @@ public class NovelVolumeServiceImpl extends ServiceImpl<NovelVolumeMapper, Novel
 
     @Override
     public void batchUploadVolume(MultipartFile[] files, String novelId, SysUser sysUser) {
+        NovelVolume one = this.getOne(new QueryWrapper<NovelVolume>()
+                .select("max(volume_order) as volumeOrder").eq("novel_id",novelId));
+        int count = one==null?0:one.getVolumeOrder();
         for (MultipartFile file : files) {
             VolumeDto volumeDto = new VolumeDto();
             volumeDto.setVolumeFile(file);
             volumeDto.setNovelId(novelId);
+            volumeDto.setVolumeOrder(++count);
             addVolume(volumeDto, sysUser);
         }
         // 更新小说字数
@@ -189,6 +196,18 @@ public class NovelVolumeServiceImpl extends ServiceImpl<NovelVolumeMapper, Novel
         List<NovelVolume> novelVolumeList = novelVolumeMapper.selectList(
                 new QueryWrapper<NovelVolume>().eq("novel_id", novelId).orderByAsc("volume_order"));
         return novelVolumeList;
+    }
+
+    @Override
+    public NovelVolume updateVolume(VolumeDto volumeDto, SysUser sysUser) {
+        NovelVolume novelVolume = new NovelVolume();
+        BeanUtils.copyProperties(volumeDto,novelVolume);
+        novelVolume.setUpdateBy(sysUser.getUserId());
+        novelVolume.setUpdateTime(new Date());
+        //注意封面是否被修改
+        novelVolume.setVolumeImg(FileUtils.uploadImg(rootPath,volumeImgPath,novelVolume.getVolumeId(),volumeDto.getImgFile()));
+        this.updateById(novelVolume);
+        return novelVolume;
     }
 
     /**
