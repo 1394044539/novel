@@ -42,7 +42,14 @@ public enum SqlEnums {
      * 用户状态
      */
     USER_NORMAL("0","正常"),
-    USER_DISABLE("1","禁用")
+    USER_DISABLE("1","禁用"),
+
+    /**
+     * 收藏类型(0:分卷,1:小说,2:文件夹)
+     */
+    COLLECTION_VOLUME("0","分卷"),
+    COLLECTION_NOVEL("1","小说"),
+    COLLECTION_CATALOG("2","文件夹")
     ;
 
 
