@@ -21,5 +21,48 @@
     <sql id="Base_Column_List">
         collection_id, collection_type, catalog_name, parent_id, volume_id, novel_id, create_time, create_by, update_time, update_by, is_delete
     </sql>
+    <select id="selectCollections" resultType="wpy.personal.novel.pojo.bo.CollectionBo">
+        SELECT
+            uc.collection_id AS collectionId,
+            uc.collection_type AS collectionType,
+            uc.catalog_name AS catalogName,
+            uc.parent_id AS parentId,
+            uc.volume_id AS volumeId,
+            uc.novel_id AS novelId,
+            uc.create_time AS createTime,
+            uc.create_by AS createBy,
+            uc.update_time AS updateTime,
+            uc.update_by AS updateBy,
+            uc.is_delete AS isDelete,
+            n.novel_name AS novelName,
+            n.novel_img AS novelImg,
+            nv.volume_name AS volumeName,
+            nv.volume_img AS volumeImg
+        FROM `user_collection` uc
+        left join novel n on n.novel_id = uc.novel_id
+        left join novel_volume nv on nv.volume_id = uc.volume_id
+        <trim prefix="where" prefixOverrides="and">
+            <if test="user.userId != null and user.userId != ''">
+                and uc.create_by = #{user.userId}
+            </if>
+            <if test="dto.parentId != null and dto.parentId != ''">
+                and uc.parent_id = #{dto.parentId}
+            </if>
+            <if test="dto.parentId == null or dto.parentId == ''">
+                and (uc.parent_id = '' or uc.parent_id is null)
+            </if>
+            <if test="dto.catalogName != null and dto.catalogName != ''">
+                and (uc.catalog_name like concat('%',#{dto.catalogName},'%')
+                    or n.novel_name like concat('%',#{dto.catalogName},'%')
+                    or nv.volume_name like concat('%',#{dto.catalogName},'%'))
+            </if>
+            <if test="dto.typeList != null and dto.typeList.size()>0">
+                and uc.collection_type in
+                <foreach collection="dto.typeList" open="(" close=")" separator="," item="type">
+                    #{type}
+                </foreach>
+            </if>
+        </trim>
+    </select>
 
 </mapper>

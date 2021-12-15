@@ -1,5 +1,6 @@
 package wpy.personal.novel.novel.novel.service;
 
+import wpy.personal.novel.pojo.bo.CollectionBo;
 import wpy.personal.novel.pojo.dto.UserCollectionDto;
 import wpy.personal.novel.pojo.entity.SysUser;
 import wpy.personal.novel.pojo.entity.UserCollection;
@@ -46,5 +47,5 @@ public interface UserCollectionService extends IService<UserCollection> {
      * @param sysUser
      * @return
      */
-    List<UserCollection> getCollectionList(UserCollectionDto parentId, SysUser sysUser);
+    List<CollectionBo> getCollectionList(UserCollectionDto parentId, SysUser sysUser);
 }
