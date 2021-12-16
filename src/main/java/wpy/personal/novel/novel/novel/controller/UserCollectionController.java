@@ -48,7 +48,15 @@ public class UserCollectionController {
     @DeleteMapping("/deleteCollection")
     @SysLogs(fun = "删除收藏")
     public ResponseResult deleteCollection(@RequestBody UserCollectionDto userCollectionDto){
-        userCollectionService.deleteCollection(userCollectionDto.getCollectionId());
+        userCollectionService.deleteCollection(userCollectionDto.getCollectionId(),userCollectionDto.getCollectionType());
+        return ResponseResult.success();
+    }
+
+    @PostMapping("/updateCollection")
+    @SysLogs(fun = "修改收藏")
+    public ResponseResult updateCollection(@RequestBody UserCollectionDto userCollectionDto){
+        SysUser sysUser = RequestUtils.getSysUser();
+        userCollectionService.updateCollection(userCollectionDto,sysUser);
         return ResponseResult.success();
     }
 

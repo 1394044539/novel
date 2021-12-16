@@ -11,6 +11,7 @@ import wpy.personal.novel.base.enums.SqlEnums;
 import wpy.personal.novel.base.exception.BusinessException;
 import wpy.personal.novel.novel.novel.mapper.NovelHistoryMapper;
 import wpy.personal.novel.novel.novel.service.NovelHistoryService;
+import wpy.personal.novel.pojo.bo.NovelHistoryBo;
 import wpy.personal.novel.pojo.dto.HistoryDto;
 import wpy.personal.novel.pojo.entity.NovelHistory;
 import wpy.personal.novel.pojo.entity.SysUser;
@@ -18,6 +19,7 @@ import wpy.personal.novel.utils.ObjectUtils;
 import wpy.personal.novel.utils.StringUtils;
 
 import java.util.Date;
+import java.util.List;
 
 /**
  * <p>
@@ -35,10 +37,10 @@ public class NovelHistoryServiceImpl extends ServiceImpl<NovelHistoryMapper, Nov
     private NovelHistoryMapper novelHistoryMapper;
 
     @Override
-    public Page<NovelHistory> getHistoryList(HistoryDto dto, SysUser sysUser) {
-        QueryWrapper<NovelHistory> qw = new QueryWrapper<>();
-
-        return this.novelHistoryMapper.selectPage(new Page<NovelHistory>(dto.getPage(), dto.getPageSize()), qw);
+    public Page<NovelHistoryBo> getHistoryList(HistoryDto dto, SysUser sysUser) {
+        Page<NovelHistoryBo> page = new Page<>(dto.getPage(), dto.getPageSize());
+        List<NovelHistoryBo> list = this.novelHistoryMapper.getHistoryList(dto,sysUser,page);
+        return page.setRecords(list);
     }
 
     @Override

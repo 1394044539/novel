@@ -2,6 +2,7 @@ package wpy.personal.novel.novel.novel.service;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
+import wpy.personal.novel.pojo.bo.NovelHistoryBo;
 import wpy.personal.novel.pojo.dto.HistoryDto;
 import wpy.personal.novel.pojo.entity.NovelHistory;
 import wpy.personal.novel.pojo.entity.SysUser;
@@ -22,7 +23,7 @@ public interface NovelHistoryService extends IService<NovelHistory> {
      * @param sysUser
      * @return
      */
-    Page<NovelHistory> getHistoryList(HistoryDto dto, SysUser sysUser);
+    Page<NovelHistoryBo> getHistoryList(HistoryDto dto, SysUser sysUser);
 
     /**
      * 保存历史记录

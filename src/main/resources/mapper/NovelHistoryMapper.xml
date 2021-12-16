@@ -22,5 +22,34 @@
     <sql id="Base_Column_List">
         history_id, ip, last_novel_id, last_volume_id, last_chapter_id, mark_name, record_type, record_percentage, create_by, create_time, update_by, update_time
     </sql>
+    <select id="getHistoryList" resultType="wpy.personal.novel.pojo.bo.NovelHistoryBo">
+        select
+            nh.history_id AS historyId,
+            nh.ip AS ip,
+            nh.last_novel_id AS LastNovelId,
+            nh.last_volume_id AS LastVolumeId,
+            nh.last_chapter_id AS LastChapterId,
+            nh.mark_name AS markName,
+            nh.record_type AS recordType,
+            nh.record_percentage AS recordPercentage,
+            nh.create_by AS createBy,
+            nh.create_time AS createTime,
+            nh.update_by AS updateBy,
+            nh.update_time AS updateTime,
+            nv.volume_name AS volumeName,
+            nc.chapter_name AS chapterName
+        from novel_history nh
+        left join novel_volume nv on nv.volume_id = nh.last_volume_id
+        left join novel_chapter nc on nc.chapter_id = nh.last_chapter_id
+        <trim prefix="where" prefixOverrides="and">
+            <if test="user.userId !=null and user.userId != ''">
+                nh.create_by = #{user.userId}
+            </if>
+            <if test="dto.recordType != null and dto.recordType != ''">
+                nh.record_type = #{dto.recordType}
+            </if>
+        </trim>
+        order by nh.update_time DESC
+    </select>
 
 </mapper>

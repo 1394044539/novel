@@ -2,9 +2,11 @@ package wpy.personal.novel.novel.novel.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.CollectionUtils;
 import wpy.personal.novel.base.enums.SqlEnums;
 import wpy.personal.novel.novel.novel.mapper.NovelMapper;
 import wpy.personal.novel.novel.novel.mapper.NovelVolumeMapper;
@@ -53,6 +55,7 @@ public class UserCollectionServiceImpl extends ServiceImpl<UserCollectionMapper,
             qw.eq("volume_id",id);
         }else if(SqlEnums.COLLECTION_NOVEL.getCode().equals(type)){
             qw.eq("novel_id",id);
+            qw.and(entity->entity.eq("volume_id","").or().isNull("volume_id"));
         }else if(SqlEnums.COLLECTION_CATALOG.getCode().equals(type)){
             qw.eq("parent_id",id);
         }
@@ -60,7 +63,27 @@ public class UserCollectionServiceImpl extends ServiceImpl<UserCollectionMapper,
     }
 
     @Override
-    public void deleteCollection(String collectionId) {
+    public void deleteCollection(String collectionId, String collectionType) {
+        if(!SqlEnums.COLLECTION_CATALOG.getCode().equals(collectionType)){
+            this.removeById(collectionId);
+        }else {
+            recursionRemove(collectionId);
+        }
+    }
+
+    /**
+     * 递归删除
+     * @param collectionId
+     */
+    private void recursionRemove(String collectionId) {
+        //子目录
+        List<UserCollection> list = userCollectionMapper.selectList(new QueryWrapper<UserCollection>().eq("parent_id", collectionId));
+        if(!CollectionUtils.isEmpty(list)){
+            //去递归
+            for (UserCollection userCollection : list) {
+                recursionRemove(userCollection.getCollectionId());
+            }
+        }
         this.removeById(collectionId);
     }
 
@@ -79,5 +102,12 @@ public class UserCollectionServiceImpl extends ServiceImpl<UserCollectionMapper,
             }
         }
         return newList;
+    }
+
+    @Override
+    public void updateCollection(UserCollectionDto userCollectionDto, SysUser sysUser) {
+        UserCollection userCollection = new UserCollection();
+        BeanUtils.copyProperties(userCollectionDto,userCollection);
+        this.updateById(userCollection);
     }
 }

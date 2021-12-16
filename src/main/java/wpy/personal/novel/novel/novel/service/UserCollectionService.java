@@ -38,8 +38,9 @@ public interface UserCollectionService extends IService<UserCollection> {
     /**
      * 取消收藏
      * @param collectionId
+     * @param collectionType
      */
-    void deleteCollection(String collectionId);
+    void deleteCollection(String collectionId, String collectionType);
 
     /**
      * 获取收藏列表
@@ -48,4 +49,12 @@ public interface UserCollectionService extends IService<UserCollection> {
      * @return
      */
     List<CollectionBo> getCollectionList(UserCollectionDto parentId, SysUser sysUser);
+
+    /**
+     * 修改收藏
+     * @param userCollectionDto
+     * @param sysUser
+     * @return
+     */
+    void updateCollection(UserCollectionDto userCollectionDto, SysUser sysUser);
 }
