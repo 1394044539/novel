@@ -31,7 +31,7 @@ mybatis-plus:
 logging:
   pattern:
     console: '%d{yyyy-MM-dd HH:mm:ss} %-5level [%thread] %clr(%-40.40logger.%13.13M){cyan} %clr(%3.3L) : %msg%n'
-    file: '%d{yyyy-MM-dd HH:mm:ss} %-5level [%thread] %clr(%-40.40logger.%13.13M){cyan} %clr(%3.3L) :{faint} %msg%n'
+    file: '%d{yyyy-MM-dd HH:mm:ss} %-5level [%thread] %logger{50} %L : %msg%n'
     rolling-file-name: ${LOG_FILE}.%d{yyyy-MM-dd}.%i.gz
   level:
     root: info
