@@ -1,6 +1,7 @@
 package wpy.personal.novel.novel.novel.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.google.common.collect.Lists;
 import nl.siegmann.epublib.domain.*;
 import org.apache.commons.io.IOUtils;
@@ -10,6 +11,7 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.multipart.MultipartFile;
@@ -19,14 +21,11 @@ import wpy.personal.novel.base.constant.StrConstant;
 import wpy.personal.novel.base.enums.BusinessEnums;
 import wpy.personal.novel.base.enums.ErrorCode;
 import wpy.personal.novel.base.exception.BusinessException;
-import wpy.personal.novel.pojo.bo.ChapterBo;
-import wpy.personal.novel.pojo.bo.VolumeChapterBo;
-import wpy.personal.novel.pojo.dto.VolumeDto;
-import wpy.personal.novel.pojo.entity.NovelChapter;
 import wpy.personal.novel.novel.novel.mapper.NovelChapterMapper;
 import wpy.personal.novel.novel.novel.service.NovelChapterService;
-import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import org.springframework.stereotype.Service;
+import wpy.personal.novel.pojo.bo.ChapterBo;
+import wpy.personal.novel.pojo.bo.VolumeChapterBo;
+import wpy.personal.novel.pojo.entity.NovelChapter;
 import wpy.personal.novel.pojo.entity.NovelVolume;
 import wpy.personal.novel.pojo.entity.SysUser;
 import wpy.personal.novel.utils.FileUtils;
@@ -131,7 +130,7 @@ public class NovelChapterServiceImpl extends ServiceImpl<NovelChapterMapper, Nov
                         //普通情况比较下一个的开始行即可
                         NovelChapter nextNovelChapter = chapterList.get(i + 1);
                         novelChapter.setEndLine(nextNovelChapter.getStartLine() - 1);
-                        novelChapter.setTotalLine(nextNovelChapter.getStartLine() - novelChapter.getTotalLine());
+                        novelChapter.setTotalLine(novelChapter.getTotalLine() == null ? nextNovelChapter.getStartLine() : nextNovelChapter.getStartLine() - novelChapter.getTotalLine());
                     }
                 }
             }
@@ -141,7 +140,7 @@ public class NovelChapterServiceImpl extends ServiceImpl<NovelChapterMapper, Nov
             }
             return volumeChapterBo;
         } catch (Exception e) {
-            log.error(e.getMessage());
+            log.error(e.getMessage(),e);
             throw BusinessException.fail(ErrorCode.ANALYSIS_TXT_ERROR, e);
         }
     }

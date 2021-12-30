@@ -24,7 +24,7 @@ public class ExceptionHandlerAdvice {
     @ExceptionHandler(value = RequestException.class)
     public ResponseResult requestExceptionHandler(RequestException exception){
         if(exception.getE()!=null){
-            log.error(exception.getMessage());
+            log.error(exception.getMsg(),exception.getE());
         }
         return ResponseResult.error(exception.getStatus(),exception.getMsg());
     }
@@ -32,7 +32,7 @@ public class ExceptionHandlerAdvice {
     @ExceptionHandler(value = BusinessException.class)
     public ResponseResult businessExceptionHandler(BusinessException exception){
         if(exception.getE()!=null){
-            log.error(exception.getMessage());
+            log.error(exception.getMsg(),exception.getE());
         }
         return ResponseResult.error(exception.getStatus(),exception.getMsg());
     }
@@ -40,7 +40,7 @@ public class ExceptionHandlerAdvice {
     @ExceptionHandler(value = UtilsException.class)
     public ResponseResult UtilsExceptionHandler(UtilsException exception){
         if(exception.getE()!=null){
-            log.error(exception.getMessage());
+            log.error(exception.getMessage(),exception.getE());
         }
         return ResponseResult.error(ResponseCode.FAIL.getCode(),exception.getMsg());
     }

@@ -8,7 +8,8 @@ import org.springframework.web.servlet.config.annotation.InterceptorRegistration
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
-import wpy.personal.novel.base.constant.CharConstant;
+
+import java.io.File;
 
 /**
  * 自定义拦截器配置文件
@@ -43,6 +44,6 @@ public class InterceptorConfig implements WebMvcConfigurer {
 
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
-        registry.addResourceHandler("/img/**").addResourceLocations("file:"+rootPath+ CharConstant.FILE_SEPARATOR);
+        registry.addResourceHandler("/img/**").addResourceLocations("file:"+rootPath+ File.separator);
     }
 }
