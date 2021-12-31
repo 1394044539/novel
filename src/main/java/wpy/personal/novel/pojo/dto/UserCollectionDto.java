@@ -66,4 +66,9 @@ public class UserCollectionDto {
      * 0：否；1：是
      */
     private String isDelete;
+
+    /**
+     * 移动复制的类型
+     */
+    private String optType;
 }

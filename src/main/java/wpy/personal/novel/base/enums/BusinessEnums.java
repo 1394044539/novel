@@ -15,7 +15,13 @@ public enum BusinessEnums {
      * 发送短信
      */
     SEND_MESSAGE("1","发送短信"),
-    NOT_SEND_MESSAGE("0","不发送短信")
+    NOT_SEND_MESSAGE("0","不发送短信"),
+
+    /**
+     * 移动或复制
+     */
+    COPY("copy","复制"),
+    MOVE("move","移动")
     ;
 
     private String code;

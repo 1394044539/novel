@@ -67,4 +67,13 @@ public class UserCollectionController {
         List<CollectionBo> list = userCollectionService.getCollectionList(userCollectionDto,sysUser);
         return ResponseResult.success(list);
     }
+
+    @PostMapping("/copyOrMove")
+    @SysLogs(fun = "移动或复制")
+    public ResponseResult copyOrMove(@RequestBody UserCollectionDto userCollectionDto){
+        SysUser sysUser = RequestUtils.getSysUser();
+        userCollectionService.copyOrMove(userCollectionDto,sysUser);
+        return ResponseResult.success();
+    }
+
 }

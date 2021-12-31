@@ -57,4 +57,11 @@ public interface UserCollectionService extends IService<UserCollection> {
      * @return
      */
     void updateCollection(UserCollectionDto userCollectionDto, SysUser sysUser);
+
+    /**
+     * 复制或移动
+     * @param userCollectionDto
+     * @param sysUser
+     */
+    void copyOrMove(UserCollectionDto userCollectionDto, SysUser sysUser);
 }

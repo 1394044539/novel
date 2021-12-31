@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
+import wpy.personal.novel.base.enums.BusinessEnums;
 import wpy.personal.novel.base.enums.SqlEnums;
 import wpy.personal.novel.novel.novel.mapper.NovelMapper;
 import wpy.personal.novel.novel.novel.mapper.NovelVolumeMapper;
@@ -109,5 +110,15 @@ public class UserCollectionServiceImpl extends ServiceImpl<UserCollectionMapper,
         UserCollection userCollection = new UserCollection();
         BeanUtils.copyProperties(userCollectionDto,userCollection);
         this.updateById(userCollection);
+    }
+
+    @Override
+    public void copyOrMove(UserCollectionDto userCollectionDto, SysUser sysUser) {
+        if(BusinessEnums.COPY.getCode().equals(userCollectionDto.getOptType())){
+            //复制
+
+        }else if(BusinessEnums.MOVE.getCode().equals(userCollectionDto.getOptType())){
+            //移动
+        }
     }
 }
