@@ -26,4 +26,12 @@ public interface UserCollectionMapper extends BaseMapper<UserCollection> {
      * @return
      */
     List<CollectionBo> selectCollections(@Param("dto") UserCollectionDto dto,@Param("user") SysUser sysUser);
+
+    /**
+     * 查询全部的目录
+     * @param parentId
+     * @param userId
+     * @return
+     */
+    List<UserCollection> getAllCollectionCatalog(@Param("parentId") String parentId,@Param("userId") String userId);
 }

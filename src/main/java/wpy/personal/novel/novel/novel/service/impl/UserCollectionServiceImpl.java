@@ -21,6 +21,7 @@ import wpy.personal.novel.pojo.dto.UserCollectionDto;
 import wpy.personal.novel.pojo.entity.SysUser;
 import wpy.personal.novel.pojo.entity.UserCollection;
 import wpy.personal.novel.utils.ObjectUtils;
+import wpy.personal.novel.utils.StringUtils;
 
 import java.util.List;
 import java.util.Map;
@@ -134,7 +135,63 @@ public class UserCollectionServiceImpl extends ServiceImpl<UserCollectionMapper,
      * @param sysUser
      */
     private void copy(UserCollectionDto userCollectionDto, SysUser sysUser) {
+        List<UserCollection> collections = this.userCollectionMapper.getAllCollectionCatalog(null,sysUser.getUserId());
+        // 按照父目录id进行分组
+        Map<String, List<UserCollection>> map = collections.stream().peek(e->{
+            if(StringUtils.isEmpty(e.getParentId())){
+                e.setParentId("");
+            }
+        }).collect(Collectors.groupingBy(UserCollection::getParentId));
+        //目标目录Id
+        String parentId = userCollectionDto.getParentId();
+        //被复制的目录Id
+        UserCollection collection = this.getById(userCollectionDto.getCollectionId());
+        // 第一级目录需要单独创建出来
+        UserCollection userCollection = ObjectUtils.newInstance(sysUser.getUserId(),UserCollection.class);
+        userCollection.setCollectionId(StringUtils.getUuid32());
+        userCollection.setCatalogName(collection.getCatalogName());
+        userCollection.setImgPath(collection.getImgPath());
+        userCollection.setCollectionType(collection.getCollectionType());
+        userCollection.setNovelId(collection.getNovelId());
+        userCollection.setVolumeId(collection.getVolumeId());
+        userCollection.setParentId(parentId);
+        List<UserCollection> insertList = Lists.newLinkedList();
+        insertList.add(userCollection);
+        //递归创建新的层级
+        List<UserCollection> list = getNewChildCatalog(collection.getCollectionId(),userCollection.getCollectionId(),map,sysUser);
+        insertList.addAll(list);
+        //插入数据库
+        this.saveBatch(insertList);
+    }
 
+    /**
+     * 获取复制时的子集目录
+     * @param srcId 被复制目录的id
+     * @param parentId 新目录的父级
+     * @param map 总目录集合
+     * @param sysUser 操作人
+     * @return
+     */
+    private List<UserCollection> getNewChildCatalog(String srcId, String parentId, Map<String, List<UserCollection>> map, SysUser sysUser) {
+        List<UserCollection> reList = Lists.newLinkedList();
+        //被复制的集合
+        List<UserCollection> list = map.get(srcId);
+        if(!CollectionUtils.isEmpty(list)){
+            for (UserCollection collection : list) {
+                UserCollection userCollection = ObjectUtils.newInstance(sysUser.getUserId(),UserCollection.class);
+                userCollection.setCollectionId(StringUtils.getUuid32());
+                userCollection.setCatalogName(collection.getCatalogName());
+                userCollection.setImgPath(collection.getImgPath());
+                userCollection.setCollectionType(collection.getCollectionType());
+                userCollection.setNovelId(collection.getNovelId());
+                userCollection.setVolumeId(collection.getVolumeId());
+                userCollection.setParentId(parentId);
+                reList.add(userCollection);
+                List<UserCollection> newChildCatalog = getNewChildCatalog(collection.getCollectionId(), userCollection.getCollectionId(), map, sysUser);
+                reList.addAll(newChildCatalog);
+            }
+        }
+        return reList;
     }
 
     /**
