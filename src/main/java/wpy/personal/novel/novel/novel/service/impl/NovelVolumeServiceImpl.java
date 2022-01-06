@@ -31,6 +31,8 @@ import wpy.personal.novel.pojo.entity.SysUser;
 import wpy.personal.novel.utils.FileUtils;
 import wpy.personal.novel.utils.StringUtils;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.io.InputStreamReader;
 import java.util.Date;
 import java.util.List;
@@ -208,6 +210,13 @@ public class NovelVolumeServiceImpl extends ServiceImpl<NovelVolumeMapper, Novel
         novelVolume.setVolumeImg(FileUtils.uploadImg(rootPath,volumeImgPath,novelVolume.getVolumeId(),volumeDto.getImgFile()));
         this.updateById(novelVolume);
         return novelVolume;
+    }
+
+    @Override
+    public void download(String volumeId, SysUser sysUser, HttpServletRequest request, HttpServletResponse response) {
+        NovelVolume volume = this.getById(volumeId);
+        NovelFile fileInfo = novelFileService.getById(volume.getFileId());
+        FileUtils.download(fileInfo.getFilePath(),volume.getVolumeName(),fileInfo.getFileType(),fileInfo.getFileSize(),request,response);
     }
 
     /**

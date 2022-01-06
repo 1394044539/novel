@@ -1,16 +1,16 @@
 package wpy.personal.novel.novel.novel.service.impl;
 
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.multipart.MultipartFile;
 import wpy.personal.novel.base.constant.CharConstant;
-import wpy.personal.novel.pojo.entity.NovelFile;
 import wpy.personal.novel.novel.novel.mapper.NovelFileMapper;
 import wpy.personal.novel.novel.novel.service.NovelFileService;
-import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import org.springframework.stereotype.Service;
+import wpy.personal.novel.pojo.entity.NovelFile;
 import wpy.personal.novel.utils.FileUtils;
 import wpy.personal.novel.utils.ObjectUtils;
 import wpy.personal.novel.utils.StringUtils;
@@ -67,4 +67,5 @@ public class NovelFileServiceImpl extends ServiceImpl<NovelFileMapper, NovelFile
         //2、删除数据库
         this.removeByIds(deleteFileIdList);
     }
+
 }

@@ -8,15 +8,23 @@ import org.springframework.web.multipart.MultipartFile;
 import wpy.personal.novel.base.constant.CharConstant;
 import wpy.personal.novel.base.constant.StrConstant;
 import wpy.personal.novel.base.enums.UtilsEnums;
+import wpy.personal.novel.base.exception.BusinessException;
 import wpy.personal.novel.base.exception.UtilsException;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.io.*;
 import java.math.BigInteger;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+
+import static java.nio.charset.StandardCharsets.ISO_8859_1;
 
 @Slf4j
 public class FileUtils {
@@ -383,6 +391,52 @@ public class FileUtils {
         } catch (IOException e) {
             log.error(e.getMessage());
             throw UtilsException.fail(UtilsEnums.READ_EPUB_FAIL,e);
+        }
+    }
+
+    /**
+     * 单文件下载
+     * @param realPath
+     * @param name
+     * @param type
+     * @param size
+     * @param request
+     * @param response
+     */
+    public static void download(String realPath, String name, String type, Long size, HttpServletRequest request, HttpServletResponse response) {
+        //获取文件
+        File file = new File(realPath);
+        String fileName = Optional.ofNullable(name).orElse(file.getName());
+        Long fileSize = Optional.ofNullable(size).orElse(file.length());
+        if(StringUtils.isNotEmpty(type)){
+            fileName=fileName+CharConstant.SEPARATOR+type;
+        }
+        if(!file.exists()){
+            throw BusinessException.fail("文件不存在");
+        }
+        response.setContentType("application/octet-stream;charset=UTF-8");
+        response.setContentType("multipart/form-data");
+        response.setHeader("Access-Control-Expose-Headers", "Content-Disposition");
+        response.setHeader("Accept-Ranges", "bytes");
+        response.addHeader("Content-Length", "" + fileSize);
+        try {
+            request.setCharacterEncoding("utf-8");
+            response.setHeader("Content-Disposition", "attachment;fileName=" + URLEncoder.encode(fileName,"utf-8"));
+        }catch (Exception e){
+            log.error(e.getMessage(),e);
+        }
+        try (
+                InputStream inputStream=new FileInputStream(file);
+                OutputStream out=response.getOutputStream();
+        ){
+            int b = 0;
+            byte[] buffer = new byte[1024];
+            while ((b = inputStream.read(buffer)) != -1) {
+                out.write(buffer, 0, b);
+            }
+            out.flush();
+        }catch (Exception e){
+            log.error(e.getMessage());
         }
     }
 }

@@ -21,4 +21,5 @@ public class StrConstant {
     public static final String CONTENT_TYPE = "application/json;charset=utf-8";
     public static final String DEFAULT_CHARSET = "utf-8";
     public static final String TXT = "txt";
+    public static final String ZIP = "zip";
 }

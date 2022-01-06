@@ -11,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.multipart.MultipartFile;
 import wpy.personal.novel.base.constant.CharConstant;
+import wpy.personal.novel.base.constant.StrConstant;
 import wpy.personal.novel.base.enums.DictEnums;
 import wpy.personal.novel.base.enums.SqlEnums;
 import wpy.personal.novel.novel.novel.mapper.NovelMapper;
@@ -27,9 +28,15 @@ import wpy.personal.novel.utils.NumberUtils;
 import wpy.personal.novel.utils.ObjectUtils;
 import wpy.personal.novel.utils.StringUtils;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.*;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
 
 /**
  * <p>
@@ -213,6 +220,46 @@ public class NovelServiceImpl extends ServiceImpl<NovelMapper, Novel> implements
         novel.setUpdateTime(new Date());
         novel.setUpdateBy(sysUser.getUserId());
         this.updateById(novel);
+    }
+
+    @Override
+    public void download(String novelId, SysUser sysUser, HttpServletRequest request, HttpServletResponse response) {
+        //1、以自己的名字打成压缩包
+        Novel novel = this.getById(novelId);
+        String zipName = novel.getNovelName()+CharConstant.SEPARATOR+ StrConstant.ZIP;
+        response.setContentType("application/octet-stream;charset=UTF-8");
+        response.setContentType("multipart/form-data");
+        response.setHeader("Access-Control-Expose-Headers", "Content-Disposition");
+//        response.setHeader("Accept-Ranges", "bytes");
+//        response.addHeader("Content-Length", "" + fileSize);
+        try {
+            request.setCharacterEncoding("utf-8");
+            response.setHeader("Content-Disposition", "attachment;fileName=" + URLEncoder.encode(zipName,StrConstant.DEFAULT_CHARSET));
+        }catch (Exception e){
+            log.error(e.getMessage(),e);
+        }
+        //2、获取当前小说的全部分卷
+        List<NovelVolume> volumeList = this.novelVolumeService.getVolumeList(novelId, sysUser);
+        try (
+                ZipOutputStream zipos = new ZipOutputStream(new BufferedOutputStream(response.getOutputStream()));
+                DataOutputStream os = new DataOutputStream(zipos)
+        ){
+            zipos.setMethod(ZipOutputStream.DEFLATED);
+            for (NovelVolume novelVolume : volumeList) {
+                NovelFile file = this.novelFileService.getById(novelVolume.getFileId());
+                ZipEntry zipEntry=new ZipEntry(novelVolume.getVolumeName()+CharConstant.SEPARATOR+file.getFileType());
+                zipos.putNextEntry(zipEntry);
+                //这里才开始获取流
+                InputStream inputStream=new FileInputStream(new File(file.getFilePath()));
+                int b = 0;
+                byte[] buffer = new byte[1024];
+                while ((b = inputStream.read(buffer)) != -1) {
+                    os.write(buffer, 0, b);
+                }
+            }
+        }catch (Exception e){
+            log.error(e.getMessage());
+        }
     }
 
     /**

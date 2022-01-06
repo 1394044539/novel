@@ -8,6 +8,8 @@ import wpy.personal.novel.pojo.dto.VolumeOrderDto;
 import wpy.personal.novel.pojo.entity.NovelVolume;
 import wpy.personal.novel.pojo.entity.SysUser;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 
 /**
@@ -89,4 +91,13 @@ public interface NovelVolumeService extends IService<NovelVolume> {
      * @return
      */
     NovelVolume updateVolume(VolumeDto volumeDto, SysUser sysUser);
+
+    /**
+     * 下载
+     * @param volumeId
+     * @param sysUser
+     * @param request
+     * @param response
+     */
+    void download(String volumeId, SysUser sysUser, HttpServletRequest request, HttpServletResponse response);
 }

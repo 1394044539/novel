@@ -4,28 +4,40 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.google.common.collect.Lists;
+import org.apache.commons.lang.RandomStringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
+import wpy.personal.novel.base.constant.CharConstant;
+import wpy.personal.novel.base.constant.StrConstant;
 import wpy.personal.novel.base.enums.BusinessEnums;
 import wpy.personal.novel.base.enums.SqlEnums;
-import wpy.personal.novel.base.exception.BusinessException;
 import wpy.personal.novel.novel.novel.mapper.NovelMapper;
 import wpy.personal.novel.novel.novel.mapper.NovelVolumeMapper;
 import wpy.personal.novel.novel.novel.mapper.UserCollectionMapper;
+import wpy.personal.novel.novel.novel.service.NovelFileService;
+import wpy.personal.novel.novel.novel.service.NovelService;
+import wpy.personal.novel.novel.novel.service.NovelVolumeService;
 import wpy.personal.novel.novel.novel.service.UserCollectionService;
 import wpy.personal.novel.pojo.bo.CollectionBo;
 import wpy.personal.novel.pojo.dto.UserCollectionDto;
-import wpy.personal.novel.pojo.entity.SysUser;
-import wpy.personal.novel.pojo.entity.UserCollection;
+import wpy.personal.novel.pojo.entity.*;
+import wpy.personal.novel.utils.FileUtils;
 import wpy.personal.novel.utils.ObjectUtils;
 import wpy.personal.novel.utils.StringUtils;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.*;
+import java.net.URLEncoder;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
 
 /**
  * <p>
@@ -42,9 +54,15 @@ public class UserCollectionServiceImpl extends ServiceImpl<UserCollectionMapper,
     @Autowired
     private UserCollectionMapper userCollectionMapper;
     @Autowired
+    private NovelService novelService;
+    @Autowired
     private NovelMapper novelMapper;
     @Autowired
+    private NovelVolumeService novelVolumeService;
+    @Autowired
     private NovelVolumeMapper novelVolumeMapper;
+    @Autowired
+    private NovelFileService novelFileService;
 
     @Override
     public UserCollection addCollection(UserCollectionDto userCollectionDto, SysUser sysUser) {
@@ -129,6 +147,131 @@ public class UserCollectionServiceImpl extends ServiceImpl<UserCollectionMapper,
         }
     }
 
+    @Override
+    public void download(UserCollectionDto userCollectionDto, SysUser sysUser, HttpServletRequest request, HttpServletResponse response) {
+        if(SqlEnums.COLLECTION_CATALOG.getCode().equals(userCollectionDto.getCollectionType())){
+           //文件夹下载
+            this.downloadCatalog(userCollectionDto.getCollectionId(),sysUser,request,response);
+        }else if(SqlEnums.COLLECTION_VOLUME.getCode().equals(userCollectionDto.getCollectionType())){
+            //分卷下载
+            novelVolumeService.download(userCollectionDto.getVolumeId(),sysUser,request,response);
+        }else if(SqlEnums.COLLECTION_NOVEL.getCode().equals(userCollectionDto.getCollectionType())){
+            //小说下载
+            novelService.download(userCollectionDto.getNovelId(),sysUser,request,response);
+        }
+    }
+
+    /**
+     * 下载文件夹
+     * @param collectionId
+     * @param sysUser
+     * @param request
+     * @param response
+     */
+    private void downloadCatalog(String collectionId, SysUser sysUser, HttpServletRequest request, HttpServletResponse response) {
+        //先吧自己打成一个压缩包
+        UserCollection collection = this.getById(collectionId);
+        String zipName = collection.getCatalogName()+ CharConstant.SEPARATOR+ StrConstant.ZIP;
+        response.setContentType("application/octet-stream;charset=UTF-8");
+        response.setContentType("multipart/form-data");
+        response.setHeader("Access-Control-Expose-Headers", "Content-Disposition");
+//        response.setHeader("Accept-Ranges", "bytes");
+//        response.addHeader("Content-Length", "" + fileSize);
+        try {
+            request.setCharacterEncoding("utf-8");
+            response.setHeader("Content-Disposition", "attachment;fileName=" + URLEncoder.encode(zipName,StrConstant.DEFAULT_CHARSET));
+        }catch (Exception e){
+            log.error(e.getMessage(),e);
+        }
+        try (
+                ZipOutputStream zipos = new ZipOutputStream(new BufferedOutputStream(response.getOutputStream()));
+                DataOutputStream os = new DataOutputStream(zipos)
+        ){
+            zipos.setMethod(ZipOutputStream.DEFLATED);
+            this.recursionDownloadCatalog(collectionId,zipos,os,collection.getCatalogName(),sysUser);
+        }catch (Exception e){
+            log.error(e.getMessage());
+        }
+    }
+
+    /**
+     * 递归下载
+     * @param collectionId
+     * @param zipos
+     * @param os
+     * @param catalogName
+     * @param sysUser
+     * @throws Exception
+     */
+    private void recursionDownloadCatalog(String collectionId, ZipOutputStream zipos, DataOutputStream os, String catalogName, SysUser sysUser) throws Exception{
+        //1、取出收藏的目录下的所有信息
+        UserCollectionDto dto = new UserCollectionDto();
+        dto.setParentId(collectionId);
+        List<CollectionBo> list = this.userCollectionMapper.selectCollections(dto, sysUser);
+        List<String> renameList = Lists.newArrayList();
+        for (CollectionBo collectionBo : list) {
+            if(SqlEnums.COLLECTION_VOLUME.getCode().equals(collectionBo.getCollectionType())){
+                //分卷
+                NovelVolume volume = this.novelVolumeService.getById(collectionBo.getVolumeId());
+                NovelFile file = this.novelFileService.getById(volume.getFileId());
+                String pathName=catalogName+CharConstant.FILE_SEPARATOR+
+                        volume.getVolumeName()+CharConstant.SEPARATOR+file.getFileType();
+                pathName = this.checkRename(renameList,pathName);
+                renameList.add(pathName);
+                ZipEntry zipEntry=new ZipEntry(pathName);
+                zipos.putNextEntry(zipEntry);
+                InputStream inputStream=new FileInputStream(new File(file.getFilePath()));
+                int b = 0;
+                byte[] buffer = new byte[1024];
+                while ((b = inputStream.read(buffer)) != -1) {
+                    os.write(buffer, 0, b);
+                }
+            }else if(SqlEnums.COLLECTION_NOVEL.getCode().equals(collectionBo.getCollectionType())){
+                //小说
+                Novel novel = this.novelService.getById(collectionBo.getNovelId());
+                //获取当前小说的全部分卷
+                List<NovelVolume> volumeList = this.novelVolumeService.getVolumeList(collectionBo.getNovelId(), sysUser);
+                for (NovelVolume novelVolume : volumeList) {
+                    NovelFile file = this.novelFileService.getById(novelVolume.getFileId());
+                    String pathName=catalogName+CharConstant.FILE_SEPARATOR+"(系列)"+novel.getNovelName()+CharConstant.FILE_SEPARATOR+
+                            novelVolume.getVolumeName()+CharConstant.SEPARATOR+file.getFileType();
+                    pathName = this.checkRename(renameList,pathName);
+                    renameList.add(pathName);
+                    ZipEntry zipEntry=new ZipEntry(pathName);
+                    zipos.putNextEntry(zipEntry);
+                    InputStream inputStream=new FileInputStream(new File(file.getFilePath()));
+                    int b = 0;
+                    byte[] buffer = new byte[1024];
+                    while ((b = inputStream.read(buffer)) != -1) {
+                        os.write(buffer, 0, b);
+                    }
+                }
+            }else if(SqlEnums.COLLECTION_CATALOG.getCode().equals(collectionBo.getCollectionType())){
+                //文件夹
+                String catalogPath=catalogName+CharConstant.FILE_SEPARATOR+"(文件夹)"+collectionBo.getCatalogName();
+                catalogPath = this.checkRename(renameList,catalogPath);
+                renameList.add(catalogPath);
+                recursionDownloadCatalog(collectionBo.getCollectionId(),zipos,os,catalogPath,sysUser);
+            }
+        }
+    }
+
+    /**
+     * 解决重命名问题
+     * @param list
+     * @param pathName
+     * @return
+     */
+    private String checkRename(List<String> list, String pathName) {
+        if(list.contains(pathName)){
+            String fileType = FileUtils.getFileType(pathName);
+            String fileName = FileUtils.getFileName(pathName);
+            pathName=fileName+ CharConstant.UNDERLINE+RandomStringUtils.randomAlphanumeric(4)+
+                    CharConstant.SEPARATOR+fileType;
+        }
+        return pathName;
+    }
+
     /**
      * 复制
      * @param userCollectionDto
@@ -166,8 +309,8 @@ public class UserCollectionServiceImpl extends ServiceImpl<UserCollectionMapper,
 
     /**
      * 获取复制时的子集目录
-     * @param srcId 被复制目录的id
-     * @param parentId 新目录的父级
+     * @param srcId 原目录的父级id
+     * @param parentId 新目录的父级id
      * @param map 总目录集合
      * @param sysUser 操作人
      * @return

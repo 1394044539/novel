@@ -8,6 +8,8 @@ import wpy.personal.novel.pojo.entity.Novel;
 import com.baomidou.mybatisplus.extension.service.IService;
 import wpy.personal.novel.pojo.entity.SysUser;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 
 /**
@@ -73,4 +75,13 @@ public interface NovelService extends IService<Novel> {
      * @param sysUser
      */
     void updateTotal(String novelId,SysUser sysUser);
+
+    /**
+     * 下载小说
+     * @param novelId
+     * @param sysUser
+     * @param request
+     * @param response
+     */
+    void download(String novelId, SysUser sysUser, HttpServletRequest request, HttpServletResponse response);
 }

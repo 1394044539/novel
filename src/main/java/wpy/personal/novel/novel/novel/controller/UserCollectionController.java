@@ -12,6 +12,8 @@ import wpy.personal.novel.pojo.entity.SysUser;
 import wpy.personal.novel.pojo.entity.UserCollection;
 import wpy.personal.novel.utils.RequestUtils;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 
 /**
@@ -74,6 +76,13 @@ public class UserCollectionController {
         SysUser sysUser = RequestUtils.getSysUser();
         userCollectionService.copyOrMove(userCollectionDto,sysUser);
         return ResponseResult.success();
+    }
+
+    @GetMapping("/download")
+    @SysLogs(fun = "下载")
+    public void download(UserCollectionDto userCollectionDto, HttpServletRequest request, HttpServletResponse response){
+        SysUser sysUser = RequestUtils.getSysUser();
+        userCollectionService.download(userCollectionDto,sysUser,request,response);
     }
 
 }

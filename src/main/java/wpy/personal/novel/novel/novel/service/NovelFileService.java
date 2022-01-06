@@ -1,8 +1,8 @@
 package wpy.personal.novel.novel.novel.service;
 
+import com.baomidou.mybatisplus.extension.service.IService;
 import org.springframework.web.multipart.MultipartFile;
 import wpy.personal.novel.pojo.entity.NovelFile;
-import com.baomidou.mybatisplus.extension.service.IService;
 
 import java.util.List;
 
@@ -19,4 +19,5 @@ public interface NovelFileService extends IService<NovelFile> {
     NovelFile saveFile(MultipartFile volumeFile, String novelId, String userId);
 
     void deleteFiles(List<String> deleteFileIdList);
+
 }

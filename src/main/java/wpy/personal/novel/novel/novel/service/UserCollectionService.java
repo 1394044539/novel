@@ -6,6 +6,8 @@ import wpy.personal.novel.pojo.entity.SysUser;
 import wpy.personal.novel.pojo.entity.UserCollection;
 import com.baomidou.mybatisplus.extension.service.IService;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 
 /**
@@ -64,4 +66,13 @@ public interface UserCollectionService extends IService<UserCollection> {
      * @param sysUser
      */
     void copyOrMove(UserCollectionDto userCollectionDto, SysUser sysUser);
+
+    /**
+     * 下载收藏
+     * @param userCollectionDto
+     * @param sysUser
+     * @param request
+     * @param response
+     */
+    void download(UserCollectionDto userCollectionDto, SysUser sysUser, HttpServletRequest request, HttpServletResponse response);
 }
