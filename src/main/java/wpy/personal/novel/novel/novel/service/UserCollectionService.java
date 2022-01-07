@@ -75,4 +75,12 @@ public interface UserCollectionService extends IService<UserCollection> {
      * @param response
      */
     void download(UserCollectionDto userCollectionDto, SysUser sysUser, HttpServletRequest request, HttpServletResponse response);
+
+    /**
+     * 下载全部收藏
+     * @param sysUser
+     * @param request
+     * @param response
+     */
+    void downloadAll(SysUser sysUser, HttpServletRequest request, HttpServletResponse response);
 }

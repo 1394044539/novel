@@ -161,6 +161,32 @@ public class UserCollectionServiceImpl extends ServiceImpl<UserCollectionMapper,
         }
     }
 
+    @Override
+    public void downloadAll(SysUser sysUser, HttpServletRequest request, HttpServletResponse response) {
+        //先吧自己打成一个压缩包
+        String zipName = StrConstant.ALL_COLLECTION+ CharConstant.SEPARATOR+ StrConstant.ZIP;
+        response.setContentType("application/octet-stream;charset=UTF-8");
+        response.setContentType("multipart/form-data");
+        response.setHeader("Access-Control-Expose-Headers", "Content-Disposition");
+//        response.setHeader("Accept-Ranges", "bytes");
+//        response.addHeader("Content-Length", "" + fileSize);
+        try {
+            request.setCharacterEncoding("utf-8");
+            response.setHeader("Content-Disposition", "attachment;fileName=" + URLEncoder.encode(zipName,StrConstant.DEFAULT_CHARSET));
+        }catch (Exception e){
+            log.error(e.getMessage(),e);
+        }
+        try (
+                ZipOutputStream zipos = new ZipOutputStream(new BufferedOutputStream(response.getOutputStream()));
+                DataOutputStream os = new DataOutputStream(zipos)
+        ){
+            zipos.setMethod(ZipOutputStream.DEFLATED);
+            this.recursionDownloadCatalog("",zipos,os,StrConstant.ALL_COLLECTION,sysUser);
+        }catch (Exception e){
+            log.error(e.getMessage());
+        }
+    }
+
     /**
      * 下载文件夹
      * @param collectionId

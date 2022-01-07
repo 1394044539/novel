@@ -85,4 +85,11 @@ public class UserCollectionController {
         userCollectionService.download(userCollectionDto,sysUser,request,response);
     }
 
+    @GetMapping("/downloadAll")
+    @SysLogs(fun = "下载全部")
+    public void downloadAll(HttpServletRequest request, HttpServletResponse response){
+        SysUser sysUser = RequestUtils.getSysUser();
+        userCollectionService.downloadAll(sysUser,request,response);
+    }
+
 }

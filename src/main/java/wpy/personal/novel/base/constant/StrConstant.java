@@ -22,4 +22,5 @@ public class StrConstant {
     public static final String DEFAULT_CHARSET = "utf-8";
     public static final String TXT = "txt";
     public static final String ZIP = "zip";
+    public static final String ALL_COLLECTION = "全部收藏";
 }
