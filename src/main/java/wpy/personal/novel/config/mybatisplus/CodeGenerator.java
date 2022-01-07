@@ -23,7 +23,7 @@ public class CodeGenerator {
         mpg.setDataSource(getDataSourceConfig());
 
         //2、数据库表配置
-        String[] table= new String[]{"sys_register"};
+        String[] table= new String[]{"feedback"};
         mpg.setStrategy(getStrategyConfig(table));
 
         //3.包配置

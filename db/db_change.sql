@@ -49,3 +49,17 @@ ADD COLUMN `param_value` varchar(32) NULL COMMENT '参数值' AFTER `param_name`
 -- 2021/11/1 章节表增加小说id
 ALTER TABLE `novel_chapter`
 ADD COLUMN `novel_id` char(32) NULL COMMENT '小说id' AFTER `chapter_id`;
+
+-- 2022/1/7 新增公告表
+CREATE TABLE `feedback`  (
+  `feedback_id` char(32) NOT NULL COMMENT '主键id',
+  `feedback_tilte` varchar(60) NULL COMMENT '反馈标题',
+  `feedback_content` varchar(1024) NULL COMMENT '反馈内容',
+  `feedback_type` char(1) NULL COMMENT '反馈类型：（0:bug,1:意见）',
+  `is_delete` char(1) NULL COMMENT '是否删除',
+  `create_by` char(32) NULL COMMENT '创建人',
+  `create_time` datetime NULL COMMENT '创建时间',
+  `update_by` char(32) NULL COMMENT '修改人',
+  `update_time` datetime NULL COMMENT '修改时间',
+  PRIMARY KEY (`feedback_id`)
+);
