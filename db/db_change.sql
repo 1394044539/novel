@@ -51,15 +51,20 @@ ALTER TABLE `novel_chapter`
 ADD COLUMN `novel_id` char(32) NULL COMMENT '小说id' AFTER `chapter_id`;
 
 -- 2022/1/7 新增公告表
-CREATE TABLE `feedback`  (
+CREATE TABLE `feedback` (
   `feedback_id` char(32) NOT NULL COMMENT '主键id',
-  `feedback_tilte` varchar(60) NULL COMMENT '反馈标题',
-  `feedback_content` varchar(1024) NULL COMMENT '反馈内容',
-  `feedback_type` char(1) NULL COMMENT '反馈类型：（0:bug,1:意见）',
-  `is_delete` char(1) NULL COMMENT '是否删除',
-  `create_by` char(32) NULL COMMENT '创建人',
-  `create_time` datetime NULL COMMENT '创建时间',
-  `update_by` char(32) NULL COMMENT '修改人',
-  `update_time` datetime NULL COMMENT '修改时间',
+  `feedback_title` varchar(60) DEFAULT NULL COMMENT '反馈标题',
+  `feedback_content` varchar(1024) DEFAULT NULL COMMENT '反馈内容',
+  `feedback_type` char(1) DEFAULT NULL COMMENT '反馈类型：（0:bug,1:意见）',
+  `handle_status` char(1) DEFAULT NULL COMMENT '处理状态：（0:待处理,1:已完成）',
+  `is_delete` char(1) DEFAULT NULL COMMENT '是否删除',
+  `create_by` char(32) DEFAULT NULL COMMENT '创建人',
+  `create_time` datetime DEFAULT NULL COMMENT '创建时间',
+  `update_by` char(32) DEFAULT NULL COMMENT '修改人',
+  `update_time` datetime DEFAULT NULL COMMENT '修改时间',
   PRIMARY KEY (`feedback_id`)
-);
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+
+-- 2022/01/11 公告表删除字段
+ALTER TABLE `sys_notice` DROP COLUMN `is_open`;

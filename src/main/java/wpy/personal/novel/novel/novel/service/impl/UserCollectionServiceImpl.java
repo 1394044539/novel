@@ -84,7 +84,11 @@ public class UserCollectionServiceImpl extends ServiceImpl<UserCollectionMapper,
         }else if(SqlEnums.COLLECTION_CATALOG.getCode().equals(type)){
             qw.eq("parent_id",id);
         }
-        return this.getOne(qw);
+        List<UserCollection> userCollections = this.userCollectionMapper.selectList(qw);
+        if(CollectionUtils.isEmpty(userCollections)){
+            return null;
+        }
+        return userCollections.get(0);
     }
 
     @Override

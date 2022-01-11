@@ -11,6 +11,9 @@ public enum DictEnums {
     ADMIN("ADMIN","管理员"),
     ORDINARY_USER("ORDINARY_USER","普通用户"),
 
+    OPEN_NOTICE("OPEN_NOTICE","首页打开的公告"),
+    CLOSE_NOTICE("0","关闭公告时的默认值"),
+
     NOVEL_TYPE("NOVEL_TYPE","小说类型"),
     ADMIN_CHOSE_TYPE("ADMIN_CHOSE_TYPE","首页选择的分类"),
 

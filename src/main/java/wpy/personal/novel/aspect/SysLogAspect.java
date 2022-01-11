@@ -65,6 +65,7 @@ public class SysLogAspect {
         log.info("请求方式：{}",request.getMethod());
         log.info("请求ip：{}",ip);
         log.info("请求人：{}",sysUser.getUserName());
+        log.info("请求描述:{}",sysLogs.fun());
         SysLog sysLog=new SysLog();
         sysLog.setLogId(StringUtils.getUuid32());
         sysLog.setLogType(SqlEnums.CURRENCY_LOG.getCode());

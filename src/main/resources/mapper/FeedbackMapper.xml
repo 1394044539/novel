@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="wpy.personal.novel.config.mybatisplus.mapper.FeedbackMapper">
+<mapper namespace="wpy.personal.novel.novel.novel.mapper.FeedbackMapper">
 
     <!-- 通用查询映射结果 -->
-    <resultMap id="BaseResultMap" type="wpy.personal.novel.config.mybatisplus.entity.Feedback">
+    <resultMap id="BaseResultMap" type="wpy.personal.novel.pojo.entity.Feedback">
         <id column="feedback_id" property="feedbackId" />
-        <result column="feedback_tilte" property="feedbackTilte" />
+        <result column="feedback_title" property="feedbackTitle" />
         <result column="feedback_content" property="feedbackContent" />
         <result column="feedback_type" property="feedbackType" />
         <result column="is_delete" property="isDelete" />
@@ -17,7 +17,7 @@
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        feedback_id, feedback_tilte, feedback_content, feedback_type, is_delete, create_by, create_time, update_by, update_time
+        feedback_id, feedback_title, feedback_content, feedback_type, is_delete, create_by, create_time, update_by, update_time
     </sql>
 
 </mapper>

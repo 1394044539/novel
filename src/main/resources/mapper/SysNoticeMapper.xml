@@ -7,7 +7,6 @@
         <id column="notice_id" property="noticeId" />
         <result column="notice_title" property="noticeTitle" />
         <result column="notice_content" property="noticeContent" />
-        <result column="is_open" property="isOpen" />
         <result column="main_show" property="mainShow" />
         <result column="notice_order" property="noticeOrder" />
         <result column="is_public" property="isPublic" />
@@ -20,7 +19,7 @@
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        notice_id, notice_title, notice_content, is_open, main_show, notice_order, is_public, create_time, create_by, update_time, update_by, is_delete
+        notice_id, notice_title, notice_content, main_show, notice_order, is_public, create_time, create_by, update_time, update_by, is_delete
     </sql>
 
 </mapper>

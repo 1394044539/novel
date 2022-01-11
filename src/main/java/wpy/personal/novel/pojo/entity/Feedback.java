@@ -32,8 +32,8 @@ public class Feedback implements Serializable {
     /**
      * 反馈标题
      */
-    @TableField("feedback_tilte")
-    private String feedbackTilte;
+    @TableField("feedback_title")
+    private String feedbackTitle;
 
     /**
      * 反馈内容
@@ -46,6 +46,12 @@ public class Feedback implements Serializable {
      */
     @TableField("feedback_type")
     private String feedbackType;
+
+    /**
+     * 处理状态：（0:待处理,1:已完成）
+     */
+    @TableField("handle_status")
+    private String handleStatus;
 
     /**
      * 是否删除
