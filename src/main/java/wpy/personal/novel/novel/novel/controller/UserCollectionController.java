@@ -1,12 +1,14 @@
 package wpy.personal.novel.novel.novel.controller;
 
 
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import wpy.personal.novel.base.annotation.SysLogs;
 import wpy.personal.novel.base.result.ResponseResult;
 import wpy.personal.novel.novel.novel.service.UserCollectionService;
 import wpy.personal.novel.pojo.bo.CollectionBo;
+import wpy.personal.novel.pojo.bo.CollectionTableBo;
 import wpy.personal.novel.pojo.dto.UserCollectionDto;
 import wpy.personal.novel.pojo.entity.SysUser;
 import wpy.personal.novel.pojo.entity.UserCollection;
@@ -68,6 +70,14 @@ public class UserCollectionController {
         SysUser sysUser = RequestUtils.getSysUser();
         List<CollectionBo> list = userCollectionService.getCollectionList(userCollectionDto,sysUser);
         return ResponseResult.success(list);
+    }
+
+    @PostMapping("/list")
+    @SysLogs(fun = "收藏列表管理")
+    public ResponseResult list(@RequestBody UserCollectionDto userCollectionDto){
+        SysUser sysUser = RequestUtils.getSysUser();
+        Page<CollectionTableBo> page = userCollectionService.list(userCollectionDto,sysUser);
+        return ResponseResult.success(page);
     }
 
     @PostMapping("/copyOrMove")

@@ -1,7 +1,9 @@
 package wpy.personal.novel.novel.novel.mapper;
 
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.apache.ibatis.annotations.Param;
 import wpy.personal.novel.pojo.bo.CollectionBo;
+import wpy.personal.novel.pojo.bo.CollectionTableBo;
 import wpy.personal.novel.pojo.dto.UserCollectionDto;
 import wpy.personal.novel.pojo.entity.SysUser;
 import wpy.personal.novel.pojo.entity.UserCollection;
@@ -34,4 +36,13 @@ public interface UserCollectionMapper extends BaseMapper<UserCollection> {
      * @return
      */
     List<UserCollection> getAllCollectionCatalog(@Param("parentId") String parentId,@Param("userId") String userId);
+
+    /**
+     * 分页查询
+     * @param dto
+     * @param sysUser
+     * @param page
+     * @return
+     */
+    List<CollectionTableBo> list(@Param("dto") UserCollectionDto dto,@Param("user") SysUser sysUser, Page<CollectionTableBo> page);
 }

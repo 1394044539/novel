@@ -2,6 +2,7 @@ package wpy.personal.novel.novel.novel.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.google.common.collect.Lists;
 import org.apache.commons.lang.RandomStringUtils;
@@ -22,6 +23,7 @@ import wpy.personal.novel.novel.novel.service.NovelService;
 import wpy.personal.novel.novel.novel.service.NovelVolumeService;
 import wpy.personal.novel.novel.novel.service.UserCollectionService;
 import wpy.personal.novel.pojo.bo.CollectionBo;
+import wpy.personal.novel.pojo.bo.CollectionTableBo;
 import wpy.personal.novel.pojo.dto.UserCollectionDto;
 import wpy.personal.novel.pojo.entity.*;
 import wpy.personal.novel.utils.FileUtils;
@@ -189,6 +191,21 @@ public class UserCollectionServiceImpl extends ServiceImpl<UserCollectionMapper,
         }catch (Exception e){
             log.error(e.getMessage());
         }
+    }
+
+    @Override
+    public Page<CollectionTableBo> list(UserCollectionDto dto, SysUser sysUser) {
+        Page<CollectionTableBo> page = new Page<>(dto.getPage(), dto.getPageSize());
+        List<CollectionTableBo> list = this.userCollectionMapper.list(dto,sysUser,page);
+        for (CollectionTableBo collectionTableBo : list) {
+            if(SqlEnums.COLLECTION_VOLUME.getCode().equals(collectionTableBo.getCollectionType())){
+                collectionTableBo.setName(collectionTableBo.getVolumeName());
+            }else if(SqlEnums.COLLECTION_NOVEL.getCode().equals(collectionTableBo.getCollectionType())){
+                collectionTableBo.setName(collectionTableBo.getNovelName());
+            }
+        }
+        page.setRecords(list);
+        return page;
     }
 
     /**

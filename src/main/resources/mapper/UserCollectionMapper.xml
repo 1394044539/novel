@@ -86,5 +86,41 @@
             </if>
         </where>
     </select>
+    <select id="list" resultType="wpy.personal.novel.pojo.bo.CollectionTableBo">
+        SELECT
+            uc.collection_id AS collectionId,
+            uc.collection_type AS collectionType,
+            uc.catalog_name AS name,
+            uc.parent_id AS parentId,
+            uc.volume_id AS volumeId,
+            uc.novel_id AS novelId,
+            uc.create_time AS createTime,
+            uc.create_by AS createBy,
+            uc.update_time AS updateTime,
+            uc.update_by AS updateBy,
+            uc.is_delete AS isDelete,
+            n.novel_name AS novelName,
+            n.novel_img AS novelImg,
+            nv.volume_name AS volumeName,
+            nv.volume_img AS volumeImg,
+            su.user_name AS createByName,
+            uc2.catalog_name AS parentName
+        FROM `user_collection` uc
+        left join novel n on n.novel_id = uc.novel_id
+        left join novel_volume nv on nv.volume_id = uc.volume_id
+        left join sys_user su on su.user_id = uc.create_by
+        left join user_collection uc2 on uc2.collection_id = uc.parent_id
+        <where>
+            <if test="user.userId != null and user.userId != ''">
+                and uc.create_by = #{user.userId}
+            </if>
+            <if test="dto.catalogName != null and dto.catalogName != ''">
+                and (uc.catalog_name like concat('%',#{dto.catalogName},'%')
+                or n.novel_name like concat('%',#{dto.catalogName},'%')
+                or nv.volume_name like concat('%',#{dto.catalogName},'%'))
+            </if>
+        </where>
+        order by uc.create_time desc
+    </select>
 
 </mapper>

@@ -1,6 +1,8 @@
 package wpy.personal.novel.novel.novel.service;
 
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import wpy.personal.novel.pojo.bo.CollectionBo;
+import wpy.personal.novel.pojo.bo.CollectionTableBo;
 import wpy.personal.novel.pojo.dto.UserCollectionDto;
 import wpy.personal.novel.pojo.entity.SysUser;
 import wpy.personal.novel.pojo.entity.UserCollection;
@@ -83,4 +85,12 @@ public interface UserCollectionService extends IService<UserCollection> {
      * @param response
      */
     void downloadAll(SysUser sysUser, HttpServletRequest request, HttpServletResponse response);
+
+    /**
+     * 分页查询
+     * @param userCollectionDto
+     * @param sysUser
+     * @return
+     */
+    Page<CollectionTableBo> list(UserCollectionDto userCollectionDto, SysUser sysUser);
 }
