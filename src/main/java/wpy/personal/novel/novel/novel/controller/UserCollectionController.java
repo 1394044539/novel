@@ -56,6 +56,21 @@ public class UserCollectionController {
         return ResponseResult.success();
     }
 
+    @DeleteMapping("/batchCancelCollection")
+    @SysLogs(fun = "批量删除收藏")
+    public ResponseResult batchCancelCollection(@RequestBody List<UserCollectionDto> list){
+        userCollectionService.batchCancelCollection(list);
+        return ResponseResult.success();
+    }
+
+    @DeleteMapping("/removeAll")
+    @SysLogs(fun = "清空收藏")
+    public ResponseResult batchCancelCollection(@RequestBody UserCollectionDto dto){
+        SysUser sysUser = RequestUtils.getSysUser();
+        userCollectionService.removeAll(dto,sysUser);
+        return ResponseResult.success();
+    }
+
     @PostMapping("/updateCollection")
     @SysLogs(fun = "修改收藏")
     public ResponseResult updateCollection(@RequestBody UserCollectionDto userCollectionDto){

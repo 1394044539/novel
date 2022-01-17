@@ -57,6 +57,11 @@ public class UserCollectionDto extends BasePageDto{
     private String createBy;
 
     /**
+     * 创建人名
+     */
+    private String createByName;
+
+    /**
      * 更新时间
      */
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")

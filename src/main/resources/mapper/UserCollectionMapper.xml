@@ -119,6 +119,12 @@
                 or n.novel_name like concat('%',#{dto.catalogName},'%')
                 or nv.volume_name like concat('%',#{dto.catalogName},'%'))
             </if>
+            <if test="dto.createByName != null and dto.createByName != ''">
+                and su.user_name = #{dto.createByName}
+            </if>
+            <if test="dto.collectionType != null and dto.collectionType != ''">
+                and uc.collection_type = #{dto.collectionType}
+            </if>
         </where>
         order by uc.create_time desc
     </select>

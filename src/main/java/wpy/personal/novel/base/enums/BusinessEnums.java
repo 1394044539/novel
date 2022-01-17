@@ -21,7 +21,13 @@ public enum BusinessEnums {
      * 移动或复制
      */
     COPY("copy","复制"),
-    MOVE("move","移动")
+    MOVE("move","移动"),
+
+    /**
+     * 是否失效
+     */
+    INVALID("1","失效"),
+    EFFECTIVE("0","有效")
     ;
 
     private String code;

@@ -34,7 +34,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
 import java.net.URLEncoder;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -206,6 +205,38 @@ public class UserCollectionServiceImpl extends ServiceImpl<UserCollectionMapper,
         }
         page.setRecords(list);
         return page;
+    }
+
+    @Override
+    public void batchCancelCollection(List<UserCollectionDto> list) {
+        for (UserCollectionDto dto : list) {
+            this.deleteCollection(dto.getCollectionId(),dto.getCollectionType());
+        }
+    }
+
+    @Override
+    public void removeAll(UserCollectionDto dto, SysUser sysUser) {
+        //失效，这里失效代表的是，清除的时候只清除本体被删除的小说
+        if(BusinessEnums.INVALID.getCode().equals(dto.getIsDelete())){
+            this.clearInvalidCollection(sysUser);
+        }else {
+            this.remove(new QueryWrapper<UserCollection>()
+                    .eq("create_by",sysUser.getUserId()));
+        }
+    }
+
+    @Override
+    public void clearInvalidCollection(SysUser sysUser) {
+        List<UserCollection> userCollections = userCollectionMapper.selectList(new QueryWrapper<UserCollection>()
+                .eq("create_by", sysUser.getUserId())
+                .ne("collection_type", SqlEnums.COLLECTION_CATALOG.getCode()));
+        for (UserCollection userCollection : userCollections) {
+            if(SqlEnums.COLLECTION_NOVEL.getCode().equals(userCollection.getCollectionType())){
+                Novel byId = novelService.getById(userCollection.getNovelId());
+            }else if(SqlEnums.COLLECTION_VOLUME.getCode().equals(userCollection.getCollectionType())){
+
+            }
+        }
     }
 
     /**

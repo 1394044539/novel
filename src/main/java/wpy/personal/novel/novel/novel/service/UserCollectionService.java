@@ -93,4 +93,23 @@ public interface UserCollectionService extends IService<UserCollection> {
      * @return
      */
     Page<CollectionTableBo> list(UserCollectionDto userCollectionDto, SysUser sysUser);
+
+    /**
+     * 批量删除收藏
+     * @param list
+     */
+    void batchCancelCollection(List<UserCollectionDto> list);
+
+    /**
+     * 清空收藏
+     * @param dto
+     * @param sysUser
+     */
+    void removeAll(UserCollectionDto dto, SysUser sysUser);
+
+    /**
+     * 清除小说本体被删除的小说
+     * @param sysUser
+     */
+    void clearInvalidCollection(SysUser sysUser);
 }
