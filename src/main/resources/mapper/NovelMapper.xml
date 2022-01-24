@@ -4,21 +4,16 @@
 
     <!-- 通用查询映射结果 -->
     <resultMap id="BaseResultMap" type="wpy.personal.novel.pojo.entity.Novel">
-        <id column="novel_id" property="novelId" />
-        <result column="novel_author" property="novelAuthor" />
+        <id column="volume_id" property="volumeId" />
+        <result column="novel_id" property="novelId" />
+        <result column="file_id" property="fileId" />
+        <result column="volume_name" property="volumeName" />
+        <result column="volume_img" property="volumeImg" />
         <result column="public_time" property="publicTime" />
-        <result column="novel_name" property="novelName" />
+        <result column="volume_desc" property="volumeDesc" />
+        <result column="volume_order" property="volumeOrder" />
         <result column="total_line" property="totalLine" />
         <result column="total_word" property="totalWord" />
-        <result column="novel_img" property="novelImg" />
-        <result column="novel_desc" property="novelDesc" />
-        <result column="novel_introduce" property="novelIntroduce" />
-        <result column="novel_hot" property="novelHot" />
-        <result column="novel_up" property="novelUp" />
-        <result column="novel_click" property="novelClick" />
-        <result column="novel_comment" property="novelComment" />
-        <result column="novel_share" property="novelShare" />
-        <result column="novel_collect" property="novelCollect" />
         <result column="create_time" property="createTime" />
         <result column="create_by" property="createBy" />
         <result column="update_time" property="updateTime" />
@@ -28,72 +23,7 @@
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        novel_id, novel_author, public_time, novel_name, total_line, total_word, novel_img, novel_desc, novel_introduce, novel_hot, novel_up, novel_click, novel_comment, novel_share, novel_collect, create_time, create_by, update_time, update_by, is_delete
+        volume_id, novel_id, file_id, volume_name, volume_img, public_time, volume_desc, volume_order, total_line, total_word, create_time, create_by, update_time, update_by, is_delete
     </sql>
-    <select id="getSeriesList" resultType="wpy.personal.novel.pojo.entity.Novel">
-        SELECT
-            t.novel_id,
-            t.novel_name,
-            t.public_time,
-            t.novel_author,
-            t.total_line,
-            t.total_word,
-            t.novel_img,
-            t.novel_desc,
-            t.novel_introduce,
-            t.novel_hot,
-            t.novel_up,
-            t.novel_click,
-            t.novel_comment,
-            t.novel_share,
-            novel_collect,
-            t.create_time,
-            t.create_by,
-            t.update_time,
-            t.update_by,
-            t.is_delete,
-            group_concat( DISTINCT t.param_value ) param_value
-        FROM
-            (
-            SELECT
-                n.*,
-                pa.param_value
-            FROM
-                novel n
-                LEFT JOIN novel_type_rel ntr ON n.novel_id = ntr.novel_id
-                LEFT JOIN (
-                SELECT
-                    sdp.param_code,
-                    sdp.param_name,
-                    sdp.param_value
-                FROM
-                    sys_dict_param sdp
-                    LEFT JOIN sys_dict sd ON sdp.dict_id = sd.dict_id
-                WHERE
-                    sd.dict_code = 'NOVEL_TYPE'
-                ) pa ON pa.param_code = ntr.type_code
-            ) t
-        GROUP BY
-            t.novel_id,
-            t.novel_name,
-            t.public_time,
-            t.novel_author,
-            t.total_line,
-            t.total_word,
-            t.novel_img,
-            t.novel_desc,
-            t.novel_introduce,
-            t.novel_hot,
-            t.novel_up,
-            t.novel_click,
-            t.novel_comment,
-            t.novel_share,
-            novel_collect,
-            t.create_time,
-            t.create_by,
-            t.update_time,
-            t.update_by,
-            t.is_delete
-    </select>
 
 </mapper>

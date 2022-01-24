@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
  * @since 2021-09-07
  */
 @RestController
-@RequestMapping("/novelTypeRel")
-public class NovelTypeRelController {
+@RequestMapping("/seriesTypeRel")
+public class SeriesTypeRelController {
 
 }

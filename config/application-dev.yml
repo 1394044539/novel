@@ -45,8 +45,8 @@ novel:
   filePath:
     rootPath: D:\workOrStudy\program\fileData
     novelFile: novelFile
+    seriesImg: seriesImg
     novelImg: novelImg
-    volumeImg: volumeImg
 # 短信平台
 zhen-zi-message:
   url: https://sms_developer.zhenzikj.com

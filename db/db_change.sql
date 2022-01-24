@@ -65,6 +65,6 @@ CREATE TABLE `feedback` (
   PRIMARY KEY (`feedback_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
-
+ ru
 -- 2022/01/11 公告表删除字段
 ALTER TABLE `sys_notice` DROP COLUMN `is_open`;

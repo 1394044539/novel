@@ -1,5 +1,6 @@
 package wpy.personal.novel.novel.novel.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -39,13 +40,20 @@ public class NovelFileServiceImpl extends ServiceImpl<NovelFileMapper, NovelFile
 
     @Override
     public NovelFile saveFile(MultipartFile volumeFile, String novelId, String userId) {
+
+        //首先需要判断该文件是否已存在
+        String fileNamMd5 = FileUtils.getMd5(volumeFile);
+        NovelFile fileMd5 = this.getOne(new QueryWrapper<NovelFile>().eq("file_md5", fileNamMd5));
+        if(fileMd5!=null){
+            return fileMd5;
+        }
+        //不存在则上传
         NovelFile novelFile = ObjectUtils.newInstance(userId, NovelFile.class);
         novelFile.setFileId(StringUtils.getUuid32());
         novelFile.setFileSize(volumeFile.getSize());
         novelFile.setFileType(FileUtils.getFileType(volumeFile.getOriginalFilename()));
         novelFile.setFileName(volumeFile.getOriginalFilename());
         //上传文件,用md5作为文件名，路径用配置+小说id表示
-        String fileNamMd5 = FileUtils.getMd5(volumeFile);
         String uploadFilePath = rootPath + CharConstant.FILE_SEPARATOR+novelFilePath+CharConstant.FILE_SEPARATOR+novelId;
         FileUtils.upload(volumeFile,uploadFilePath,fileNamMd5);
         novelFile.setFileMd5(fileNamMd5);

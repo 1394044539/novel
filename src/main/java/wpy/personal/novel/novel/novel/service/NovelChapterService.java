@@ -2,10 +2,10 @@ package wpy.personal.novel.novel.novel.service;
 
 import org.springframework.web.multipart.MultipartFile;
 import wpy.personal.novel.pojo.bo.ChapterBo;
-import wpy.personal.novel.pojo.bo.VolumeChapterBo;
+import wpy.personal.novel.pojo.bo.NovelChapterBo;
 import wpy.personal.novel.pojo.entity.NovelChapter;
 import com.baomidou.mybatisplus.extension.service.IService;
-import wpy.personal.novel.pojo.entity.NovelVolume;
+import wpy.personal.novel.pojo.entity.Novel;
 import wpy.personal.novel.pojo.entity.SysUser;
 
 import java.util.List;
@@ -23,21 +23,21 @@ public interface NovelChapterService extends IService<NovelChapter> {
     /**
      * 解析txt文件
      * @param bytes
-     * @param novelVolume
+     * @param novel
      * @param volumeFile
      * @param userId
      * @return
      */
-    VolumeChapterBo analysisTxt(byte[] bytes, NovelVolume novelVolume, MultipartFile volumeFile, String userId);
+    NovelChapterBo analysisTxt(byte[] bytes, Novel novel, MultipartFile volumeFile, String userId);
 
     /**
      * 解析epub文件
      * @param bytes
-     * @param novelVolume
+     * @param novel
      * @param volumeFile
      * @param userId
      */
-    VolumeChapterBo analysisEpub(byte[] bytes, NovelVolume novelVolume, MultipartFile volumeFile, String userId);
+    NovelChapterBo analysisEpub(byte[] bytes, Novel novel, MultipartFile volumeFile, String userId);
 
     /**
      * 获取章节内容

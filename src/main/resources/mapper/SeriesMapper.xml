@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="wpy.personal.novel.novel.novel.mapper.SeriesMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="wpy.personal.novel.pojo.entity.Series">
+        <id column="series_id" property="seriesId" />
+        <result column="series_author" property="seriesAuthor" />
+        <result column="public_time" property="publicTime" />
+        <result column="series_name" property="seriesName" />
+        <result column="series_img" property="seriesImg" />
+        <result column="series_desc" property="seriesDesc" />
+        <result column="series_introduce" property="seriesIntroduce" />
+        <result column="create_time" property="createTime" />
+        <result column="create_by" property="createBy" />
+        <result column="update_time" property="updateTime" />
+        <result column="update_by" property="updateBy" />
+        <result column="is_delete" property="isDelete" />
+    </resultMap>
+
+    <select id="getSeriesList" resultType="wpy.personal.novel.pojo.bo.SeriesListBo">
+        select *
+        from (
+                 SELECT t.series_id,
+                        t.series_name,
+                        t.public_time,
+                        t.series_author,
+                        t.series_img,
+                        t.series_desc,
+                        t.series_introduce,
+                        t.create_time,
+                        t.create_by,
+                        t.update_time,
+                        t.update_by,
+                        t.is_delete,
+                        group_concat(DISTINCT t.param_value) AS types,
+                        group_concat(DISTINCT t.param_code)  AS typeCodes
+                 FROM (
+                          SELECT n.*,
+                                 pa.param_value,
+                                 pa.param_code
+                          FROM series n
+                                   LEFT JOIN series_type_rel str ON n.series_id = str.series_id
+                                   LEFT JOIN (
+                              SELECT sdp.param_code,
+                                     sdp.param_name,
+                                     sdp.param_value
+                              FROM sys_dict_param sdp
+                                       LEFT JOIN sys_dict sd ON sdp.dict_id = sd.dict_id
+                              WHERE sd.dict_code = 'NOVEL_TYPE'
+                          ) pa ON pa.param_code = str.type_code
+                      ) t
+                 GROUP BY t.series_id,
+                          t.series_name,
+                          t.public_time,
+                          t.series_author,
+                          t.series_img,
+                          t.series_desc,
+                          t.series_introduce,
+                          t.create_time,
+                          t.create_by,
+                          t.update_time,
+                          t.update_by,
+                          t.is_delete
+             ) t2
+        left join sys_user su on su.user_id = t2.create_by
+        <where>
+            <if test="param.seriesName != null and param.seriesName != ''">
+                and t2.series_name like concat('%',#{param.seriesName},'%')
+            </if>
+            <if test="param.seriesAuthor != null and param.seriesAuthor != ''">
+                and t2.series_author like concat('%',#{param.seriesAuthor},'%')
+            </if>
+            <if test="param.createStartTime != null">
+                and t2.create_time &gt;= #{param.createStartTime}
+            </if>
+            <if test="param.createEndTime != null">
+                and t2.create_time &lt;= #{param.createEndTime}
+            </if>
+            <if test="param.publicStartTime != null">
+                and t2.public_time &gt;= #{param.publicStartTime}
+            </if>
+            <if test="param.publicEndTime != null">
+                and t2.public_time &lt;= #{param.publicEndTime}
+            </if>
+            <if test="param.typeCodeList != null and param.typeCodeList.size() > 0">
+                and (
+                <foreach collection="param.typeCodeList" item="code" separator="or">
+                    t2.typeCodes like concat('%',#{code},'%')
+                </foreach>
+                )
+            </if>
+            <if test="param.createBy != null and param.createBy != ''">
+                and t2.create_by = #{param.createBy}
+            </if>
+            <if test="param.createByName != null and param.createByName != ''">
+                and su.user_name like concat ('%',#{param.createByName},'%')
+            </if>
+        </where>
+    </select>
+
+</mapper>

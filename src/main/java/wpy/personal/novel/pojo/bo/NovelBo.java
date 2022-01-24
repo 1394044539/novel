@@ -3,38 +3,60 @@ package wpy.personal.novel.pojo.bo;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 import org.springframework.format.annotation.DateTimeFormat;
-import wpy.personal.novel.pojo.entity.NovelVolume;
-import wpy.personal.novel.pojo.entity.SysDictParam;
+import wpy.personal.novel.pojo.entity.NovelChapter;
 
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
+/**
+ * 分卷信息
+ */
 @Data
 public class NovelBo implements Serializable {
 
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = -4158619597150055215L;
     /**
      * 主键id
+     */
+    private String volumeId;
+
+    /**
+     * 小说id
      */
     private String novelId;
 
     /**
-     * 作者
+     * 文件id
      */
-    private String novelAuthor;
+    private String fileId;
 
     /**
-     * 发布日期
+     * 分卷名
+     */
+    private String volumeName;
+
+    /**
+     * 封面
+     */
+    private String volumeImg;
+
+    /**
+     * 发布时间
      */
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     @JsonFormat(pattern = "yyyy-MM-dd")
     private Date publicTime;
 
     /**
-     * 小说名
+     * 分卷描述
      */
-    private String novelName;
+    private String volumeDesc;
+
+    /**
+     * 分卷排序
+     */
+    private Integer volumeOrder;
 
     /**
      * 总行数
@@ -45,51 +67,6 @@ public class NovelBo implements Serializable {
      * 总字数
      */
     private Long totalWord;
-
-    /**
-     * 封面
-     */
-    private String novelImg;
-
-    /**
-     * 小说描述
-     */
-    private String novelDesc;
-
-    /**
-     * 小说介绍
-     */
-    private String novelIntroduce;
-
-    /**
-     * 小说热度
-     */
-    private Long novelHot;
-
-    /**
-     * 小说点赞次数
-     */
-    private Long novelUp;
-
-    /**
-     * 小说点击次数
-     */
-    private Long novelClick;
-
-    /**
-     * 小说评论次数
-     */
-    private Long novelComment;
-
-    /**
-     * 小说分享次数
-     */
-    private Long novelShare;
-
-    /**
-     * 小说收藏次数
-     */
-    private Long novelCollect;
 
     /**
      * 创建时间
@@ -121,12 +98,7 @@ public class NovelBo implements Serializable {
     private String isDelete;
 
     /**
-     * 小说类型
+     * 章节列表
      */
-    private List<SysDictParam> typeList;
-
-    /**
-     * 小说分卷信息
-     */
-    private List<NovelVolume> novelVolumeList;
+    private List<NovelChapter> chapterList;
 }

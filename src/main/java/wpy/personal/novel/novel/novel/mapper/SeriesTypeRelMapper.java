@@ -1,7 +1,7 @@
 package wpy.personal.novel.novel.novel.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import wpy.personal.novel.pojo.entity.NovelTypeRel;
+import wpy.personal.novel.pojo.entity.SeriesTypeRel;
 import wpy.personal.novel.pojo.entity.SysDictParam;
 
 import java.util.List;
@@ -14,7 +14,7 @@ import java.util.List;
  * @author wangpanyin
  * @since 2021-09-07
  */
-public interface NovelTypeRelMapper extends BaseMapper<NovelTypeRel> {
+public interface SeriesTypeRelMapper extends BaseMapper<SeriesTypeRel> {
 
     /**
      * 获取小说类型

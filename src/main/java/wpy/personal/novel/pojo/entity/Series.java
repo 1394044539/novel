@@ -1,19 +1,19 @@
 package wpy.personal.novel.pojo.entity;
 
-import com.baomidou.mybatisplus.annotation.TableName;
-import java.util.Date;
-import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableField;
-import java.io.Serializable;
-
+import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableName;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.springframework.format.annotation.DateTimeFormat;
 
+import java.io.Serializable;
+import java.util.Date;
+
 /**
  * <p>
- * 小说类型关联表
+ * 系列表
  * </p>
  *
  * @author wangpanyin
@@ -21,28 +21,54 @@ import org.springframework.format.annotation.DateTimeFormat;
  */
 @Data
 @EqualsAndHashCode(callSuper = false)
-@TableName("novel_type_rel")
-public class NovelTypeRel implements Serializable {
+@TableName("series")
+public class Series implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
     /**
      * 主键id
      */
-    @TableId("novel_type_rel_id")
-    private String novelTypeRelId;
+    @TableId("series_id")
+    private String seriesId;
 
     /**
-     * 小说id
+     * 作者
      */
-    @TableField("novel_id")
-    private String novelId;
+    @TableField("series_author")
+    private String seriesAuthor;
 
     /**
-     * 类型编码
+     * 发布日期
      */
-    @TableField("type_code")
-    private String typeCode;
+    @TableField("public_time")
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    @JsonFormat(pattern = "yyyy-MM-dd")
+    private Date publicTime;
+
+    /**
+     * 系列名
+     */
+    @TableField("series_name")
+    private String seriesName;
+
+    /**
+     * 封面
+     */
+    @TableField("series_img")
+    private String seriesImg;
+
+    /**
+     * 系列描述
+     */
+    @TableField("series_desc")
+    private String seriesDesc;
+
+    /**
+     * 系列绍
+     */
+    @TableField("series_introduce")
+    private String seriesIntroduce;
 
     /**
      * 创建时间
@@ -77,6 +103,5 @@ public class NovelTypeRel implements Serializable {
      */
     @TableField("is_delete")
     private String isDelete;
-
 
 }

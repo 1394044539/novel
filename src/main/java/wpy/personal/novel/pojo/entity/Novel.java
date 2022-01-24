@@ -10,11 +10,10 @@ import org.springframework.format.annotation.DateTimeFormat;
 
 import java.io.Serializable;
 import java.util.Date;
-import java.util.List;
 
 /**
  * <p>
- * 小说表
+ * 小说分卷表
  * </p>
  *
  * @author wangpanyin
@@ -34,18 +33,16 @@ public class Novel implements Serializable {
     private String novelId;
 
     /**
-     * 作者
+     * 小说id
      */
-    @TableField("novel_author")
-    private String novelAuthor;
+    @TableField("series_id")
+    private String seriesId;
 
     /**
-     * 发布日期
+     * 文件id
      */
-    @TableField("public_time")
-    @DateTimeFormat(pattern = "yyyy-MM-dd")
-    @JsonFormat(pattern = "yyyy-MM-dd")
-    private Date publicTime;
+    @TableField("file_id")
+    private String fileId;
 
     /**
      * 小说名
@@ -54,22 +51,18 @@ public class Novel implements Serializable {
     private String novelName;
 
     /**
-     * 总行数
-     */
-    @TableField("total_line")
-    private Integer totalLine;
-
-    /**
-     * 总字数
-     */
-    @TableField("total_word")
-    private Long totalWord;
-
-    /**
      * 封面
      */
     @TableField("novel_img")
     private String novelImg;
+
+    /**
+     * 发布时间
+     */
+    @TableField("public_time")
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    private Date publicTime;
 
     /**
      * 小说描述
@@ -78,46 +71,10 @@ public class Novel implements Serializable {
     private String novelDesc;
 
     /**
-     * 小说介绍
+     * 小说排序
      */
-    @TableField("novel_introduce")
-    private String novelIntroduce;
-
-    /**
-     * 小说热度
-     */
-    @TableField("novel_hot")
-    private Long novelHot;
-
-    /**
-     * 小说点赞次数
-     */
-    @TableField("novel_up")
-    private Long novelUp;
-
-    /**
-     * 小说点击次数
-     */
-    @TableField("novel_click")
-    private Long novelClick;
-
-    /**
-     * 小说评论次数
-     */
-    @TableField("novel_comment")
-    private Long novelComment;
-
-    /**
-     * 小说分享次数
-     */
-    @TableField("novel_share")
-    private Long novelShare;
-
-    /**
-     * 小说收藏次数
-     */
-    @TableField("novel_collect")
-    private Long novelCollect;
+    @TableField("novel_order")
+    private Integer novelOrder;
 
     /**
      * 创建时间
@@ -153,7 +110,10 @@ public class Novel implements Serializable {
     @TableField("is_delete")
     private String isDelete;
 
+    /**
+     * 作者信息
+     */
     @TableField(exist = false)
-    private List<SysDictParam> typeList;
+    private String novelAuthor;
 
 }

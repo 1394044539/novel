@@ -5,15 +5,15 @@ import lombok.Data;
 import java.util.List;
 
 @Data
-public class VolumeOrderDto {
+public class NovelOrderDto {
 
     /**
      * 小说id
      */
-    private String novelId;
+    private String series;
 
     /**
      * 分卷id集合
      */
-    private List<String> volumeIdList;
+    private List<String> novelIdList;
 }

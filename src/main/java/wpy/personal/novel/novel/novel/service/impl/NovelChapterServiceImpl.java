@@ -24,9 +24,9 @@ import wpy.personal.novel.base.exception.BusinessException;
 import wpy.personal.novel.novel.novel.mapper.NovelChapterMapper;
 import wpy.personal.novel.novel.novel.service.NovelChapterService;
 import wpy.personal.novel.pojo.bo.ChapterBo;
-import wpy.personal.novel.pojo.bo.VolumeChapterBo;
+import wpy.personal.novel.pojo.bo.NovelChapterBo;
 import wpy.personal.novel.pojo.entity.NovelChapter;
-import wpy.personal.novel.pojo.entity.NovelVolume;
+import wpy.personal.novel.pojo.entity.Novel;
 import wpy.personal.novel.pojo.entity.SysUser;
 import wpy.personal.novel.utils.FileUtils;
 import wpy.personal.novel.utils.ObjectUtils;
@@ -55,8 +55,8 @@ public class NovelChapterServiceImpl extends ServiceImpl<NovelChapterMapper, Nov
 
     @Value("${novel.filePath.rootPath}")
     private String rootPath;
-    @Value("${novel.filePath.volumeImg}")
-    private String volumeImgPath;
+    @Value("${novel.filePath.novelImg}")
+    private String novelImg;
 
 
     /**
@@ -66,15 +66,16 @@ public class NovelChapterServiceImpl extends ServiceImpl<NovelChapterMapper, Nov
 
 
     @Override
-    public VolumeChapterBo analysisTxt(byte[] bytes, NovelVolume novelVolume, MultipartFile volumeFile, String userId) {
+    public NovelChapterBo analysisTxt(byte[] bytes, Novel novel, MultipartFile volumeFile, String userId) {
         try {
-            VolumeChapterBo volumeChapterBo = new VolumeChapterBo();
+            NovelChapterBo novelChapterBo = new NovelChapterBo();
+            //todo 改到这里，接下来需要修改NovelData类和数据库保持一致，然后把章节解析出来的字数存到novelData表中
             //bytes转化为流，获取全部数据
             List<String> allList = new ArrayList<>(IOUtils.readLines(new ByteArrayInputStream(bytes), StrConstant.DEFAULT_CHARSET));
             //获取返回的参数
-            volumeChapterBo.setTotalLine(allList.size());
+//            novelChapterBo.setTotalLine(allList.size());
             Long reduce = allList.stream().reduce(0L, (result, item) -> result + (long) item.length(), Long::sum);
-            volumeChapterBo.setTotalWord(reduce);
+//            novelChapterBo.setTotalWord(reduce);
             List<NovelChapter> chapterList = Lists.newArrayList();
             int chapterOrder = 0;
             //第一次循环，正则取到章节基本信息
@@ -82,9 +83,9 @@ public class NovelChapterServiceImpl extends ServiceImpl<NovelChapterMapper, Nov
                 NovelChapter novelChapter = ObjectUtils.newInstance(userId, NovelChapter.class);
                 novelChapter.setChapterId(StringUtils.getUuid32());
                 // 小说id
-                novelChapter.setNovelId(novelVolume.getNovelId());
-                //分卷id
-                novelChapter.setVolumeId(novelVolume.getVolumeId());
+                novelChapter.setNovelId(novel.getNovelId());
+                //系列id
+                novelChapter.setSeriesId(novel.getSeriesId());
                 //设置排序
                 novelChapter.setChapterOrder(chapterOrder);
                 chapterOrder++;
@@ -110,13 +111,13 @@ public class NovelChapterServiceImpl extends ServiceImpl<NovelChapterMapper, Nov
             if (CollectionUtils.isEmpty(chapterList)) {
                 //说明未解析到任何章节名数据，则整本为一个章节，章节名为小说名
                 NovelChapter novelChapter = ObjectUtils.newInstance(userId, NovelChapter.class);
-                novelChapter.setNovelId(novelVolume.getNovelId());
-                novelChapter.setVolumeId(novelVolume.getVolumeId());
+                novelChapter.setNovelId(novel.getNovelId());
+                novelChapter.setSeriesId(novel.getSeriesId());
                 novelChapter.setChapterOrder(NumConstant.ZERO);
                 novelChapter.setTotalLine(allList.size());
                 novelChapter.setStartLine(NumConstant.ZERO);
                 novelChapter.setEndLine(allList.size());
-                novelChapter.setChapterName(novelVolume.getVolumeName());
+                novelChapter.setChapterName(novel.getNovelName());
                 chapterList.add(novelChapter);
             } else {
                 //再循环一次，把每一章的行数的记录下来
@@ -138,7 +139,7 @@ public class NovelChapterServiceImpl extends ServiceImpl<NovelChapterMapper, Nov
             if (!CollectionUtils.isEmpty(chapterList)) {
                 this.saveBatch(chapterList);
             }
-            return volumeChapterBo;
+            return novelChapterBo;
         } catch (Exception e) {
             log.error(e.getMessage(),e);
             throw BusinessException.fail(ErrorCode.ANALYSIS_TXT_ERROR, e);
@@ -146,11 +147,11 @@ public class NovelChapterServiceImpl extends ServiceImpl<NovelChapterMapper, Nov
     }
 
     @Override
-    public VolumeChapterBo analysisEpub(byte[] bytes, NovelVolume novelVolume, MultipartFile volumeFile, String userId) {
+    public NovelChapterBo analysisEpub(byte[] bytes, Novel novel, MultipartFile volumeFile, String userId) {
         //获取epub文件
         Book epubBook = FileUtils.getEpubBook(new ByteArrayInputStream(bytes));
         //解析epub会有这样的情况，前端啥都没有写，完全需要从文件中解析，所以这里每一个都需要判断一下
-        VolumeChapterBo volumeChapterBo = this.checkVolumeParam(epubBook, novelVolume);
+        NovelChapterBo novelChapterBo = this.checkVolumeParam(epubBook, novel);
         //开始解析章节信息
         TableOfContents tableOfContents = epubBook.getTableOfContents();
         List<TOCReference> tocReferences = tableOfContents.getTocReferences();
@@ -164,8 +165,8 @@ public class NovelChapterServiceImpl extends ServiceImpl<NovelChapterMapper, Nov
                 continue;
             }
             NovelChapter novelChapter = ObjectUtils.newInstance(userId, NovelChapter.class);
-            novelChapter.setNovelId(novelVolume.getNovelId());
-            novelChapter.setVolumeId(novelVolume.getVolumeId());
+            novelChapter.setNovelId(novel.getNovelId());
+            novelChapter.setSeriesId(novel.getSeriesId());
             novelChapter.setEpubPath(resource.getHref());
             novelChapter.setChapterName(StringUtils.isNotEmpty(resource.getTitle())?resource.getTitle():tocReference.getTitle());
             novelChapter.setChapterOrder(i);
@@ -196,9 +197,9 @@ public class NovelChapterServiceImpl extends ServiceImpl<NovelChapterMapper, Nov
         if(!CollectionUtils.isEmpty(list)){
             this.saveBatch(list);
         }
-        volumeChapterBo.setTotalWord(wordNum);
-        volumeChapterBo.setTotalLine(novelLine);
-        return volumeChapterBo;
+//        novelChapterBo.setTotalWord(wordNum);
+//        novelChapterBo.setTotalLine(novelLine);
+        return novelChapterBo;
     }
 
     @Override
@@ -209,7 +210,7 @@ public class NovelChapterServiceImpl extends ServiceImpl<NovelChapterMapper, Nov
         chapterBo.setChapterName(novelChapter.getChapterName());
         //2、拿到上一章和下一章
         QueryWrapper<NovelChapter> qw = new QueryWrapper<>();
-        qw.eq("volume_id", novelChapter.getVolumeId());
+        qw.eq("novel_id", novelChapter.getNovelId());
         qw.and(wrapper -> wrapper.eq("chapter_order", novelChapter.getChapterOrder() - 1)
                 .or().eq("chapter_order", novelChapter.getChapterOrder() + 1));
         List<NovelChapter> novelChapterList = this.novelChapterMapper.selectList(qw);
@@ -299,11 +300,11 @@ public class NovelChapterServiceImpl extends ServiceImpl<NovelChapterMapper, Nov
      * 检查epub的参数是否需要从文件中查找
      *
      * @param epubBook
-     * @param novelVolume
+     * @param novel
      * @return
      */
-    private VolumeChapterBo checkVolumeParam(Book epubBook, NovelVolume novelVolume) {
-        VolumeChapterBo volumeChapterBo = new VolumeChapterBo();
+    private NovelChapterBo checkVolumeParam(Book epubBook, Novel novel) {
+        NovelChapterBo novelChapterBo = new NovelChapterBo();
         Metadata metadata = epubBook.getMetadata();
 
         //获得作者信息
@@ -322,19 +323,19 @@ public class NovelChapterServiceImpl extends ServiceImpl<NovelChapterMapper, Nov
                 authorStr+=";"+a;
             }
         }
-        volumeChapterBo.setVolumeAuthor(authorStr);
+        novelChapterBo.setNovelAuthor(authorStr);
         //判断是否有发布时间
-        if (novelVolume.getPublicTime() == null) {
+        if (novel.getPublicTime() == null) {
             List<nl.siegmann.epublib.domain.Date> dates = metadata.getDates();
             if (!dates.isEmpty()) {
                 nl.siegmann.epublib.domain.Date date = dates.get(0);
                 if (date != null) {
-                    volumeChapterBo.setPublicTime(DateUtils.getAllFormatDate(date.getValue()));
+                    novelChapterBo.setPublicTime(DateUtils.getAllFormatDate(date.getValue()));
                 }
             }
         }
         //获得描述信息
-        if (StringUtils.isEmpty(novelVolume.getVolumeDesc())) {
+        if (StringUtils.isEmpty(novel.getNovelDesc())) {
             StringBuilder stringBuilder = new StringBuilder();
             List<String> descriptions = metadata.getDescriptions();
             for (String description : descriptions) {
@@ -351,39 +352,39 @@ public class NovelChapterServiceImpl extends ServiceImpl<NovelChapterMapper, Nov
             introduce = introduce.replace("\t", "");
             introduce = introduce.replace("\r", "");
             introduce = introduce.replace(" ", "");
-            volumeChapterBo.setVolumeDesc(introduce);
+            novelChapterBo.setNovelDesc(introduce);
         }
         //获得标题信息
-        if (StringUtils.isEmpty(novelVolume.getVolumeName())) {
+        if (StringUtils.isEmpty(novel.getNovelName())) {
             if (StringUtils.isNotEmpty(metadata.getFirstTitle())) {
-                volumeChapterBo.setVolumeName(metadata.getFirstTitle());
+                novelChapterBo.setNovelName(metadata.getFirstTitle());
             } else if (!metadata.getTitles().isEmpty()) {
-                volumeChapterBo.setVolumeName(metadata.getTitles().get(0));
+                novelChapterBo.setNovelName(metadata.getTitles().get(0));
             }
         }
 
         //判断是否有封面
-        if (StringUtils.isEmpty(novelVolume.getVolumeImg())) {
+        if (StringUtils.isEmpty(novel.getNovelImg())) {
             Resource coverImage = epubBook.getCoverImage();
             if (coverImage != null) {
                 try {
                     byte[] data = coverImage.getData();
                     //文件名加后缀
                     String fileName;
-                    if (StringUtils.isNotEmpty(novelVolume.getVolumeName())) {
-                        fileName = novelVolume.getVolumeName();
-                    } else if (StringUtils.isNotEmpty(volumeChapterBo.getVolumeName())) {
-                        fileName = volumeChapterBo.getVolumeName();
+                    if (StringUtils.isNotEmpty(novel.getNovelName())) {
+                        fileName = novel.getNovelName();
+                    } else if (StringUtils.isNotEmpty(novelChapterBo.getNovelName())) {
+                        fileName = novelChapterBo.getNovelName();
                     } else {
-                        fileName = novelVolume.getNovelId();
+                        fileName = novel.getNovelId();
                     }
                     fileName += coverImage.getMediaType().getDefaultExtension();
-                    volumeChapterBo.setVolumeImg(FileUtils.uploadImg(rootPath, volumeImgPath, novelVolume.getVolumeId(), fileName, data));
+                    novelChapterBo.setNovelImg(FileUtils.uploadImg(rootPath, novelImg, novel.getNovelId(), fileName, data));
                 } catch (IOException e) {
                     log.error(e.getMessage());
                 }
             }
         }
-        return volumeChapterBo;
+        return novelChapterBo;
     }
 }

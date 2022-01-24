@@ -8,18 +8,8 @@ import java.io.Serializable;
 import java.util.Date;
 
 @Data
-public class VolumeChapterBo implements Serializable {
+public class NovelChapterBo implements Serializable {
     private static final long serialVersionUID = -726601285100705560L;
-
-    /**
-     * 总行数
-     */
-    private Integer totalLine;
-
-    /**
-     * 总字数
-     */
-    private Long totalWord;
 
     /**
      * 文件id
@@ -29,7 +19,7 @@ public class VolumeChapterBo implements Serializable {
     /**
      * epub封面
      */
-    private String volumeImg;
+    private String novelImg;
 
     /**
      * 发布时间
@@ -41,15 +31,15 @@ public class VolumeChapterBo implements Serializable {
     /**
      * 描述
      */
-    private String volumeDesc;
+    private String novelDesc;
 
     /**
      * 名称
      */
-    private String volumeName;
+    private String novelName;
 
     /**
      * 作者
      */
-    private String volumeAuthor;
+    private String novelAuthor;
 }

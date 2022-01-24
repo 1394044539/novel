@@ -1,14 +1,12 @@
 package wpy.personal.novel.novel.novel.service;
 
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.baomidou.mybatisplus.extension.service.IService;
 import org.springframework.web.multipart.MultipartFile;
 import wpy.personal.novel.pojo.bo.NovelBo;
 import wpy.personal.novel.pojo.dto.NovelDto;
+import wpy.personal.novel.pojo.dto.NovelOrderDto;
 import wpy.personal.novel.pojo.entity.Novel;
-import com.baomidou.mybatisplus.extension.service.IService;
 import wpy.personal.novel.pojo.entity.SysUser;
-import wpy.personal.novel.pojo.vo.SeriesListVo;
-import wpy.personal.novel.utils.pageUtils.RequestPageUtils;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -16,7 +14,7 @@ import java.util.List;
 
 /**
  * <p>
- * 小说表 服务类
+ * 小说分卷表 服务类
  * </p>
  *
  * @author wangpanyin
@@ -25,15 +23,7 @@ import java.util.List;
 public interface NovelService extends IService<Novel> {
 
     /**
-     * 根据条件查询小说
-     * @param param
-     * @param sysUser
-     * @return
-     */
-    Page<Novel> getSeriesList(RequestPageUtils<SeriesListVo> param, SysUser sysUser);
-
-    /**
-     * 插入小说
+     * 添加分卷信息
      * @param novelDto
      * @param sysUser
      * @return
@@ -41,15 +31,61 @@ public interface NovelService extends IService<Novel> {
     Novel addNovel(NovelDto novelDto, SysUser sysUser);
 
     /**
-     * 根据id获取小说详情
-     * @param novelId
+     * 获取某一卷的信息
+     * @param volumeId
      * @param sysUser
      * @return
      */
-    NovelBo getNovelInfo(String novelId, SysUser sysUser);
+    NovelBo getNovelInfo(String volumeId, SysUser sysUser);
 
     /**
-     * 修改小说信息
+     * 批量上传分卷信息
+     * @param files
+     * @param seriesId
+     * @param sysUser
+     */
+    void batchUploadNovel(MultipartFile[] files, String seriesId, SysUser sysUser);
+
+    /**
+     * 更新排序规则
+     * @param novelOrderDto
+     * @param sysUser
+     */
+    void updateOrder(NovelOrderDto novelOrderDto, SysUser sysUser);
+
+    /**
+     * 删除分卷
+     * @param idList
+     * @param sysUser
+     */
+    void deleteNovel(List<String> idList, SysUser sysUser);
+
+    /**
+     * 获取需要被删除的文件id集合
+     * @param novelList
+     * @param idList
+     * @return
+     */
+    List<String> getDeleteFileIds(List<Novel> novelList, List<String> idList);
+
+    /**
+     * 上传正常单个上传小说
+     * @param novelDto
+     * @param sysUser
+     * @return
+     */
+    Novel addUploadNovel(NovelDto novelDto, SysUser sysUser);
+
+    /**
+     * 获取分卷列表
+     * @param seriesId
+     * @param sysUser
+     * @return
+     */
+    List<Novel> getNovelList(String seriesId, SysUser sysUser);
+
+    /**
+     * 更新分卷
      * @param novelDto
      * @param sysUser
      * @return
@@ -57,33 +93,11 @@ public interface NovelService extends IService<Novel> {
     Novel updateNovel(NovelDto novelDto, SysUser sysUser);
 
     /**
-     * 删除小说
-     * @param idList
-     * @param sysUser
-     */
-    void deleteNovel(List<String> idList, SysUser sysUser);
-
-    /**
-     * 快速上传
-     * @param file
-     * @param sysUser
-     * @return
-     */
-    Novel quickUpload(MultipartFile file, SysUser sysUser);
-
-    /**
-     * 更新小说总数
-     * @param novelId
-     * @param sysUser
-     */
-    void updateTotal(String novelId,SysUser sysUser);
-
-    /**
-     * 下载小说
-     * @param novelId
+     * 下载
+     * @param volumeId
      * @param sysUser
      * @param request
      * @param response
      */
-    void download(String novelId, SysUser sysUser, HttpServletRequest request, HttpServletResponse response);
+    void download(String volumeId, SysUser sysUser, HttpServletRequest request, HttpServletResponse response);
 }

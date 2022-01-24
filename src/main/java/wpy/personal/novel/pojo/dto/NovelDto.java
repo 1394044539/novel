@@ -7,46 +7,34 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.Serializable;
 import java.util.Date;
-import java.util.List;
 
 /**
- * 小说dto
+ * 分卷表dto
  */
 @Data
-public class NovelDto extends BasePageDto implements Serializable {
+public class NovelDto implements Serializable {
 
     private static final long serialVersionUID = 1L;
+
     /**
      * 主键id
      */
     private String novelId;
 
     /**
-     * 作者
+     * 小说id
      */
-    private String novelAuthor;
+    private String seriesId;
 
     /**
-     * 发布日期
+     * 文件id
      */
-    @DateTimeFormat(pattern = "yyyy-MM-dd")
-    @JsonFormat(pattern = "yyyy-MM-dd")
-    private Date publicTime;
+    private String fileId;
 
     /**
-     * 小说名
+     * 分卷名
      */
     private String novelName;
-
-    /**
-     * 总行数
-     */
-    private Integer totalLine;
-
-    /**
-     * 总字数
-     */
-    private Long totalWord;
 
     /**
      * 封面
@@ -54,44 +42,21 @@ public class NovelDto extends BasePageDto implements Serializable {
     private String novelImg;
 
     /**
-     * 小说描述
+     * 发布时间
+     */
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    @JsonFormat(pattern = "yyyy-MM-dd")
+    private Date publicTime;
+
+    /**
+     * 分卷描述
      */
     private String novelDesc;
 
     /**
-     * 小说介绍
+     * 分卷排序
      */
-    private String novelIntroduce;
-
-    /**
-     * 小说热度
-     */
-    private Long novelHot;
-
-    /**
-     * 小说点赞次数
-     */
-    private Long novelUp;
-
-    /**
-     * 小说点击次数
-     */
-    private Long novelClick;
-
-    /**
-     * 小说评论次数
-     */
-    private Long novelComment;
-
-    /**
-     * 小说分享次数
-     */
-    private Long novelShare;
-
-    /**
-     * 小说收藏次数
-     */
-    private Long novelCollect;
+    private Integer novelOrder;
 
     /**
      * 创建时间
@@ -123,12 +88,18 @@ public class NovelDto extends BasePageDto implements Serializable {
     private String isDelete;
 
     /**
-     * 小说类型
+     * 分卷文件
      */
-    private List<String> typeCodeList;
+    private MultipartFile novelFile;
 
     /**
-     * 小说封面
+     * 封面文件
      */
     private MultipartFile imgFile;
+
+    /**
+     * 文件类型
+     */
+    private String fileType;
+
 }

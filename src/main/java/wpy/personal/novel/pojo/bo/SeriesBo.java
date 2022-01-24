@@ -3,70 +3,53 @@ package wpy.personal.novel.pojo.bo;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 import org.springframework.format.annotation.DateTimeFormat;
-import wpy.personal.novel.pojo.entity.NovelChapter;
+import wpy.personal.novel.pojo.entity.Novel;
+import wpy.personal.novel.pojo.entity.SysDictParam;
 
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
-/**
- * 分卷信息
- */
 @Data
-public class NovelVolumeBo implements Serializable {
+public class SeriesBo implements Serializable {
 
-    private static final long serialVersionUID = -4158619597150055215L;
+    private static final long serialVersionUID = 1L;
     /**
      * 主键id
      */
-    private String volumeId;
+    private String seriesId;
 
     /**
-     * 小说id
+     * 作者
      */
-    private String novelId;
+    private String seriesAuthor;
 
     /**
-     * 文件id
-     */
-    private String fileId;
-
-    /**
-     * 分卷名
-     */
-    private String volumeName;
-
-    /**
-     * 封面
-     */
-    private String volumeImg;
-
-    /**
-     * 发布时间
+     * 发布日期
      */
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     @JsonFormat(pattern = "yyyy-MM-dd")
     private Date publicTime;
 
     /**
-     * 分卷描述
+     * 小说名
      */
-    private String volumeDesc;
+    private String seriesName;
 
     /**
-     * 分卷排序
+     * 封面
      */
-    private Integer volumeOrder;
+    private String seriesImg;
 
     /**
-     * 总行数
+     * 小说描述
      */
-    private Integer totalLine;
+    private String seriesDesc;
 
     /**
-     * 总字数
+     * 小说介绍
      */
-    private Long totalWord;
+    private String seriesIntroduce;
 
     /**
      * 创建时间
@@ -98,7 +81,12 @@ public class NovelVolumeBo implements Serializable {
     private String isDelete;
 
     /**
-     * 章节列表
+     * 小说类型
      */
-    private List<NovelChapter> chapterList;
+    private List<SysDictParam> typeList;
+
+    /**
+     * 小说分卷信息
+     */
+    private List<Novel> novelList;
 }

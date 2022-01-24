@@ -15,12 +15,12 @@ import wpy.personal.novel.base.constant.CharConstant;
 import wpy.personal.novel.base.constant.StrConstant;
 import wpy.personal.novel.base.enums.BusinessEnums;
 import wpy.personal.novel.base.enums.SqlEnums;
+import wpy.personal.novel.novel.novel.mapper.SeriesMapper;
 import wpy.personal.novel.novel.novel.mapper.NovelMapper;
-import wpy.personal.novel.novel.novel.mapper.NovelVolumeMapper;
 import wpy.personal.novel.novel.novel.mapper.UserCollectionMapper;
 import wpy.personal.novel.novel.novel.service.NovelFileService;
+import wpy.personal.novel.novel.novel.service.SeriesService;
 import wpy.personal.novel.novel.novel.service.NovelService;
-import wpy.personal.novel.novel.novel.service.NovelVolumeService;
 import wpy.personal.novel.novel.novel.service.UserCollectionService;
 import wpy.personal.novel.pojo.bo.CollectionBo;
 import wpy.personal.novel.pojo.bo.CollectionTableBo;
@@ -55,13 +55,13 @@ public class UserCollectionServiceImpl extends ServiceImpl<UserCollectionMapper,
     @Autowired
     private UserCollectionMapper userCollectionMapper;
     @Autowired
+    private SeriesService seriesService;
+    @Autowired
+    private SeriesMapper seriesMapper;
+    @Autowired
     private NovelService novelService;
     @Autowired
     private NovelMapper novelMapper;
-    @Autowired
-    private NovelVolumeService novelVolumeService;
-    @Autowired
-    private NovelVolumeMapper novelVolumeMapper;
     @Autowired
     private NovelFileService novelFileService;
 
@@ -160,10 +160,10 @@ public class UserCollectionServiceImpl extends ServiceImpl<UserCollectionMapper,
             this.downloadCatalog(userCollectionDto.getCollectionId(),sysUser,request,response);
         }else if(SqlEnums.COLLECTION_VOLUME.getCode().equals(userCollectionDto.getCollectionType())){
             //分卷下载
-            novelVolumeService.download(userCollectionDto.getVolumeId(),sysUser,request,response);
+            novelService.download(userCollectionDto.getVolumeId(),sysUser,request,response);
         }else if(SqlEnums.COLLECTION_NOVEL.getCode().equals(userCollectionDto.getCollectionType())){
             //小说下载
-            novelService.download(userCollectionDto.getNovelId(),sysUser,request,response);
+            seriesService.download(userCollectionDto.getNovelId(),sysUser,request,response);
         }
     }
 
@@ -233,7 +233,7 @@ public class UserCollectionServiceImpl extends ServiceImpl<UserCollectionMapper,
                 .ne("collection_type", SqlEnums.COLLECTION_CATALOG.getCode()));
         for (UserCollection userCollection : userCollections) {
             if(SqlEnums.COLLECTION_NOVEL.getCode().equals(userCollection.getCollectionType())){
-                Novel byId = novelService.getById(userCollection.getNovelId());
+                Series byId = seriesService.getById(userCollection.getNovelId());
             }else if(SqlEnums.COLLECTION_VOLUME.getCode().equals(userCollection.getCollectionType())){
 
             }
@@ -291,10 +291,10 @@ public class UserCollectionServiceImpl extends ServiceImpl<UserCollectionMapper,
         for (CollectionBo collectionBo : list) {
             if(SqlEnums.COLLECTION_VOLUME.getCode().equals(collectionBo.getCollectionType())){
                 //分卷
-                NovelVolume volume = this.novelVolumeService.getById(collectionBo.getVolumeId());
+                Novel volume = this.novelService.getById(collectionBo.getVolumeId());
                 NovelFile file = this.novelFileService.getById(volume.getFileId());
                 String pathName=catalogName+CharConstant.FILE_SEPARATOR+
-                        volume.getVolumeName()+CharConstant.SEPARATOR+file.getFileType();
+                        volume.getNovelName()+CharConstant.SEPARATOR+file.getFileType();
                 pathName = this.checkRename(renameList,pathName);
                 renameList.add(pathName);
                 ZipEntry zipEntry=new ZipEntry(pathName);
@@ -307,13 +307,13 @@ public class UserCollectionServiceImpl extends ServiceImpl<UserCollectionMapper,
                 }
             }else if(SqlEnums.COLLECTION_NOVEL.getCode().equals(collectionBo.getCollectionType())){
                 //小说
-                Novel novel = this.novelService.getById(collectionBo.getNovelId());
+                Series novel = this.seriesService.getById(collectionBo.getNovelId());
                 //获取当前小说的全部分卷
-                List<NovelVolume> volumeList = this.novelVolumeService.getVolumeList(collectionBo.getNovelId(), sysUser);
-                for (NovelVolume novelVolume : volumeList) {
+                List<Novel> volumeList = this.novelService.getNovelList(collectionBo.getNovelId(), sysUser);
+                for (Novel novelVolume : volumeList) {
                     NovelFile file = this.novelFileService.getById(novelVolume.getFileId());
-                    String pathName=catalogName+CharConstant.FILE_SEPARATOR+"(系列)"+novel.getNovelName()+CharConstant.FILE_SEPARATOR+
-                            novelVolume.getVolumeName()+CharConstant.SEPARATOR+file.getFileType();
+                    String pathName=catalogName+CharConstant.FILE_SEPARATOR+"(系列)"+novel.getSeriesName()+CharConstant.FILE_SEPARATOR+
+                            novelVolume.getNovelName()+CharConstant.SEPARATOR+file.getFileType();
                     pathName = this.checkRename(renameList,pathName);
                     renameList.add(pathName);
                     ZipEntry zipEntry=new ZipEntry(pathName);
