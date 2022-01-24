@@ -5,6 +5,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
+import wpy.personal.novel.base.enums.DictEnums;
 import wpy.personal.novel.pojo.bo.UserRoleBo;
 import wpy.personal.novel.pojo.entity.SysRole;
 import wpy.personal.novel.pojo.entity.SysUser;
@@ -58,5 +59,16 @@ public class SysUserRoleServiceImpl extends ServiceImpl<SysUserRoleMapper, SysUs
     @Override
     public List<SysUser> getUserListByRole(String roleId) {
         return this.sysUserRoleMapper.getUserListByRole(roleId);
+    }
+
+    @Override
+    public boolean hasRole(String userId,DictEnums... dictEnums) {
+        List<String> roleList = this.getRoleCodeListByUserId(userId);
+        for (DictEnums dictEnum : dictEnums) {
+            if(roleList.contains(dictEnum.getKey())){
+                return true;
+            }
+        }
+        return false;
     }
 }

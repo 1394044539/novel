@@ -11,7 +11,9 @@ import wpy.personal.novel.pojo.bo.NovelBo;
 import wpy.personal.novel.pojo.dto.NovelDto;
 import wpy.personal.novel.pojo.entity.Novel;
 import wpy.personal.novel.pojo.entity.SysUser;
+import wpy.personal.novel.pojo.vo.SeriesListVo;
 import wpy.personal.novel.utils.RequestUtils;
+import wpy.personal.novel.utils.pageUtils.RequestPageUtils;
 
 import java.util.List;
 
@@ -32,9 +34,9 @@ public class NovelController {
 
     @PostMapping("/getNovelList")
     @SysLogs(fun = "获取小说列表")
-    public ResponseResult getNovelList( @RequestBody NovelDto novelDto){
+    public ResponseResult getNovelList( @RequestBody RequestPageUtils<SeriesListVo> param){
         SysUser sysUser = RequestUtils.getSysUser();
-        return ResponseResult.success(novelService.getNovelList(novelDto,sysUser));
+        return ResponseResult.success(novelService.getSeriesList(param,sysUser));
     }
 
     @GetMapping("/getNovelInfo")

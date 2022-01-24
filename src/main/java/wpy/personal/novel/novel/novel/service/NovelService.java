@@ -7,6 +7,8 @@ import wpy.personal.novel.pojo.dto.NovelDto;
 import wpy.personal.novel.pojo.entity.Novel;
 import com.baomidou.mybatisplus.extension.service.IService;
 import wpy.personal.novel.pojo.entity.SysUser;
+import wpy.personal.novel.pojo.vo.SeriesListVo;
+import wpy.personal.novel.utils.pageUtils.RequestPageUtils;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -24,11 +26,11 @@ public interface NovelService extends IService<Novel> {
 
     /**
      * 根据条件查询小说
-     * @param novelData
+     * @param param
      * @param sysUser
      * @return
      */
-    Page<Novel> getNovelList(NovelDto novelData, SysUser sysUser);
+    Page<Novel> getSeriesList(RequestPageUtils<SeriesListVo> param, SysUser sysUser);
 
     /**
      * 插入小说

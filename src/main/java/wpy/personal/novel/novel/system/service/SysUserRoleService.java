@@ -1,5 +1,6 @@
 package wpy.personal.novel.novel.system.service;
 
+import wpy.personal.novel.base.enums.DictEnums;
 import wpy.personal.novel.pojo.bo.UserRoleBo;
 import wpy.personal.novel.pojo.entity.SysRole;
 import wpy.personal.novel.pojo.entity.SysUser;
@@ -38,4 +39,11 @@ public interface SysUserRoleService extends IService<SysUserRole> {
      * @return
      */
     List<SysUser> getUserListByRole(String roleId);
+
+    /**
+     * 判断是否有某种角色
+     * @param dictEnums
+     * @return
+     */
+    boolean hasRole(String userId,DictEnums ...dictEnums);
 }

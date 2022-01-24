@@ -23,10 +23,12 @@ import wpy.personal.novel.pojo.bo.NovelBo;
 import wpy.personal.novel.pojo.dto.NovelDto;
 import wpy.personal.novel.pojo.dto.VolumeDto;
 import wpy.personal.novel.pojo.entity.*;
+import wpy.personal.novel.pojo.vo.SeriesListVo;
 import wpy.personal.novel.utils.FileUtils;
 import wpy.personal.novel.utils.NumberUtils;
 import wpy.personal.novel.utils.ObjectUtils;
 import wpy.personal.novel.utils.StringUtils;
+import wpy.personal.novel.utils.pageUtils.RequestPageUtils;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -73,21 +75,27 @@ public class NovelServiceImpl extends ServiceImpl<NovelMapper, Novel> implements
     private String novelImgPath;
 
     @Override
-    public Page<Novel> getNovelList(NovelDto novelDto, SysUser sysUser) {
-        QueryWrapper<Novel> qw = new QueryWrapper<>();
-        qw.eq("is_delete",SqlEnums.NOT_DELETE.getCode());
-        List<String> roleList = sysUserRoleService.getRoleCodeListByUserId(sysUser.getUserId());
-        if(roleList.contains(DictEnums.ORDINARY_USER.getKey())){
+    public Page<Novel> getSeriesList(RequestPageUtils<SeriesListVo> condition, SysUser sysUser) {
+//        QueryWrapper<Novel> qw = new QueryWrapper<>();
+//        qw.eq("is_delete",SqlEnums.NOT_DELETE.getCode());
+//        if(sysUserRoleService.hasRole(sysUser.getUserId(),DictEnums.ORDINARY_USER)){
+//            //非管理员只能看自己的
+//            qw.eq("create_by",sysUser.getUserId());
+//        }
+//        if(StringUtils.isNotEmpty(novelDto.getNovelName())){
+//            qw.like("novel_name",novelDto.getNovelName());
+//        }
+//        if(StringUtils.isNotEmpty(novelDto.getNovelAuthor())){
+//            qw.like("novel_author",novelDto.getNovelAuthor());
+//        }
+        SeriesListVo param = condition.getParam();
+        if(!sysUserRoleService.hasRole(sysUser.getUserId(),DictEnums.ORDINARY_USER)){
             //非管理员只能看自己的
-            qw.eq("create_by",sysUser.getUserId());
+            param.setCreateBy(sysUser.getUserId());
         }
-        if(StringUtils.isNotEmpty(novelDto.getNovelName())){
-            qw.like("novel_name",novelDto.getNovelName());
-        }
-        if(StringUtils.isNotEmpty(novelDto.getNovelAuthor())){
-            qw.like("novel_author",novelDto.getNovelAuthor());
-        }
-        Page<Novel> novelPage = this.novelMapper.selectPage(new Page<>(novelDto.getPage(), novelDto.getPageSize()), qw);
+        Page<Novel> page = new Page<>(condition.getPage(), condition.getPageSize());
+        List<Novel> list = this.novelMapper.getSeriesList(param,page);
+        Page<Novel> novelPage = this.novelMapper.selectPage(new Page<>(condition.getPage(), condition.getPageSize()), new QueryWrapper<>());
         List<Novel> records = novelPage.getRecords();
         for (Novel record : records) {
             List<SysDictParam> novelTypeList = novelTypeRelMapper.getNovelTypeList(record.getNovelId());
