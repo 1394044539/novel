@@ -81,10 +81,10 @@ public interface SeriesService extends IService<Series> {
 
     /**
      * 下载小说
-     * @param novelId
+     * @param seriesId
      * @param sysUser
      * @param request
      * @param response
      */
-    void download(String novelId, SysUser sysUser, HttpServletRequest request, HttpServletResponse response);
+    void download(String seriesId, SysUser sysUser, HttpServletRequest request, HttpServletResponse response);
 }

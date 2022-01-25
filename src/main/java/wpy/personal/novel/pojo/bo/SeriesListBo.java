@@ -55,6 +55,10 @@ public class SeriesListBo {
      */
     private String createByName;
 
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern = "yyyy-MM-dd  HH:mm:ss")
+    private String updateTime;
+
     /**
      * 类型
      */
@@ -75,4 +79,13 @@ public class SeriesListBo {
      */
     private String createBy;
 
+    /**
+     * 总字数
+     */
+    private Long totalWord;
+
+    /**
+     * 总章节数
+     */
+    private int totalChapter;
 }

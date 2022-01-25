@@ -184,15 +184,13 @@ public class NovelServiceImpl extends ServiceImpl<NovelMapper, Novel> implements
     @Override
     public Novel addUploadNovel(NovelDto novelDto, SysUser sysUser) {
         Novel novel = this.addNovel(novelDto, sysUser);
-        // 更新小说字数
-//        seriesService.updateTotal(novel.getNovelId(),sysUser);
         return novel;
     }
 
     @Override
     public List<Novel> getNovelList(String seriesId, SysUser sysUser) {
         List<Novel> novelList = novelMapper.selectList(
-                new QueryWrapper<Novel>().eq("series_id", seriesId).orderByAsc("volume_order"));
+                new QueryWrapper<Novel>().eq("series_id", seriesId).orderByAsc("novel_order"));
         return novelList;
     }
 
@@ -236,6 +234,9 @@ public class NovelServiceImpl extends ServiceImpl<NovelMapper, Novel> implements
         }
         if(novel.getPublicTime()==null){
             novel.setPublicTime(novelChapterBo.getPublicTime());
+        }
+        if(novel.getTotalWord()==null){
+            novel.setTotalWord(novelChapterBo.getTotalWord());
         }
     }
 

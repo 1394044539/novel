@@ -87,6 +87,11 @@ public class NovelChapter implements Serializable {
     private String parentId;
 
     /**
+     * 总字数
+     */
+    @TableField("total_word")
+    private Long totalWord;
+    /**
      * 创建时间
      */
     @TableField("create_time")

@@ -18,7 +18,9 @@ import wpy.personal.novel.novel.novel.mapper.SeriesMapper;
 import wpy.personal.novel.novel.novel.mapper.SeriesTypeRelMapper;
 import wpy.personal.novel.novel.novel.service.*;
 import wpy.personal.novel.novel.system.service.SysUserRoleService;
+import wpy.personal.novel.pojo.bo.NovelFileBo;
 import wpy.personal.novel.pojo.bo.SeriesBo;
+import wpy.personal.novel.pojo.bo.SeriesCountBo;
 import wpy.personal.novel.pojo.bo.SeriesListBo;
 import wpy.personal.novel.pojo.dto.NovelDto;
 import wpy.personal.novel.pojo.dto.SeriesDto;
@@ -84,6 +86,10 @@ public class SeriesServiceImpl extends ServiceImpl<SeriesMapper, Series> impleme
         List<SeriesListBo> list = this.seriesMapper.getSeriesList(param,page);
         for (SeriesListBo seriesListBo : list) {
             seriesListBo.setTypeCodeList(StringUtils.commaStrToList(seriesListBo.getTypeCodes()));
+            //查询总章节和总字数
+            SeriesCountBo seriesCountBo = this.seriesMapper.countSeriesInfo(seriesListBo.getSeriesId());
+            seriesListBo.setTotalWord(seriesCountBo.getTotalWord());
+            seriesListBo.setTotalChapter(seriesCountBo.getTotalChapter());
         }
         return page.setRecords(list);
     }
@@ -136,7 +142,7 @@ public class SeriesServiceImpl extends ServiceImpl<SeriesMapper, Series> impleme
         series.setUpdateBy(sysUser.getUserId());
         series.setUpdateTime(new Date());
         //注意封面是否被修改
-        series.setSeriesImg(this.updateNovelImg(series, seriesDto.getImgFile()));
+        series.setSeriesImg(this.updateSeriesImg(series, seriesDto.getImgFile()));
         seriesTypeRelService.updateSeriesType(series.getSeriesId(), seriesDto.getTypeCodeList(),sysUser);
         this.updateById(series);
         return series;
@@ -184,7 +190,7 @@ public class SeriesServiceImpl extends ServiceImpl<SeriesMapper, Series> impleme
         //3、通过拿到的分卷信息反向赋值给小说
         series.setSeriesImg(novel.getNovelImg());
         series.setSeriesAuthor(novel.getNovelAuthor());
-        series.setSeriesDesc(novel.getNovelDesc());
+        series.setSeriesIntroduce(novel.getNovelDesc());
         series.setPublicTime(novel.getPublicTime());
         series.setSeriesName(novel.getNovelName());
         //4、存入数据库
@@ -206,15 +212,14 @@ public class SeriesServiceImpl extends ServiceImpl<SeriesMapper, Series> impleme
     }
 
     @Override
-    public void download(String novelId, SysUser sysUser, HttpServletRequest request, HttpServletResponse response) {
+    public void download(String seriesId, SysUser sysUser, HttpServletRequest request, HttpServletResponse response) {
         //1、以自己的名字打成压缩包
-        Series novel = this.getById(novelId);
-        String zipName = novel.getSeriesName()+CharConstant.SEPARATOR+ StrConstant.ZIP;
+        Series series = this.getById(seriesId);
+        String zipName = series.getSeriesName()+CharConstant.SEPARATOR+ StrConstant.ZIP;
         response.setContentType("application/octet-stream;charset=UTF-8");
         response.setContentType("multipart/form-data");
         response.setHeader("Access-Control-Expose-Headers", "Content-Disposition");
 //        response.setHeader("Accept-Ranges", "bytes");
-//        response.addHeader("Content-Length", "" + fileSize);
         try {
             request.setCharacterEncoding("utf-8");
             response.setHeader("Content-Disposition", "attachment;fileName=" + URLEncoder.encode(zipName,StrConstant.DEFAULT_CHARSET));
@@ -222,24 +227,26 @@ public class SeriesServiceImpl extends ServiceImpl<SeriesMapper, Series> impleme
             log.error(e.getMessage(),e);
         }
         //2、获取当前小说的全部分卷
-        List<Novel> volumeList = this.novelService.getNovelList(novelId, sysUser);
+        List<NovelFileBo> list = this.novelMapper.getNovelFile(seriesId);
+//        Long reduce = list.stream().reduce(0L, (result, item) -> result + (long) item.getFileSize(), Long::sum);
+//        response.addHeader("Content-Length", "" + reduce);
         try (
                 ZipOutputStream zipos = new ZipOutputStream(new BufferedOutputStream(response.getOutputStream()));
                 DataOutputStream os = new DataOutputStream(zipos)
         ){
             zipos.setMethod(ZipOutputStream.DEFLATED);
-            for (Novel novelVolume : volumeList) {
-                NovelFile file = this.novelFileService.getById(novelVolume.getFileId());
-                ZipEntry zipEntry=new ZipEntry(novelVolume.getNovelName()+CharConstant.SEPARATOR+file.getFileType());
+            for (NovelFileBo novelFileBo : list) {
+                ZipEntry zipEntry=new ZipEntry(novelFileBo.getNovelName()+CharConstant.SEPARATOR+novelFileBo.getFileType());
                 zipos.putNextEntry(zipEntry);
                 //这里才开始获取流
-                InputStream inputStream=new FileInputStream(new File(file.getFilePath()));
+                InputStream inputStream=new FileInputStream(new File(novelFileBo.getFilePath()+CharConstant.FILE_SEPARATOR+novelFileBo.getFileMd5()));
                 int b = 0;
                 byte[] buffer = new byte[1024];
                 while ((b = inputStream.read(buffer)) != -1) {
                     os.write(buffer, 0, b);
                 }
             }
+            os.flush();
         }catch (Exception e){
             log.error(e.getMessage());
         }
@@ -251,15 +258,14 @@ public class SeriesServiceImpl extends ServiceImpl<SeriesMapper, Series> impleme
      * @param imgFile
      * @return
      */
-    private String updateNovelImg(Series series, MultipartFile imgFile) {
+    private String updateSeriesImg(Series series, MultipartFile imgFile) {
         if(imgFile==null){
             return null;
         }
         //1、删掉原来的封面。为内存考虑
-        Series oldNovel = this.getById(series.getIsDelete());
-        String oldPath = rootPath + CharConstant.FILE_SEPARATOR + oldNovel.getSeriesImg();
-        FileUtils.deleteFile(oldPath);
+        Series oldNovel = this.getById(series.getSeriesId());
+        FileUtils.deleteFile(oldNovel.getSeriesImg());
         //开始上传
-        return FileUtils.uploadImg(rootPath,novelImgPath,series.getIsDelete(),imgFile);
+        return FileUtils.uploadImg(rootPath,novelImgPath,series.getSeriesId(),imgFile);
     }
 }

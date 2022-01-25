@@ -10,13 +10,14 @@ import java.util.List;
 @Data
 public class UserCollectionDto extends BasePageDto{
 
+    private static final long serialVersionUID = 7088202860302855274L;
     /**
      * 主键id
      */
     private String collectionId;
 
     /**
-     * 收藏类型(0:分卷,1:小说,2:文件夹)
+     * 收藏类型(0:小说,1:系列,2:文件夹)
      */
     private String collectionType;
     /**
@@ -35,9 +36,9 @@ public class UserCollectionDto extends BasePageDto{
     private String parentId;
 
     /**
-     * 分卷id
+     * 系列id
      */
-    private String volumeId;
+    private String seriesId;
 
     /**
      * 小说id

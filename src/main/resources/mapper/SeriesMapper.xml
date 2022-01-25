@@ -98,5 +98,10 @@
             </if>
         </where>
     </select>
+    <select id="countSeriesInfo" resultType="wpy.personal.novel.pojo.bo.SeriesCountBo">
+        select count(1) AS totalChapter,sum(total_word) AS totalWord
+        FROM novel
+        where series_id = #{seriesId}
+    </select>
 
 </mapper>

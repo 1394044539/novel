@@ -2,6 +2,7 @@ package wpy.personal.novel.novel.novel.mapper;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.apache.ibatis.annotations.Param;
+import wpy.personal.novel.pojo.bo.SeriesCountBo;
 import wpy.personal.novel.pojo.bo.SeriesListBo;
 import wpy.personal.novel.pojo.entity.Series;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
@@ -26,4 +27,11 @@ public interface SeriesMapper extends BaseMapper<Series> {
      * @return
      */
     List<SeriesListBo> getSeriesList(@Param("param") SeriesListVo param, Page<SeriesListBo> page);
+
+    /**
+     * 查询count
+     * @param seriesId
+     * @return
+     */
+    SeriesCountBo countSeriesInfo(String seriesId);
 }

@@ -42,4 +42,9 @@ public class NovelChapterBo implements Serializable {
      * 作者
      */
     private String novelAuthor;
+
+    /**
+     * 总字数
+     */
+    private Long totalWord;
 }

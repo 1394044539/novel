@@ -25,5 +25,11 @@
     <sql id="Base_Column_List">
         volume_id, novel_id, file_id, volume_name, volume_img, public_time, volume_desc, volume_order, total_line, total_word, create_time, create_by, update_time, update_by, is_delete
     </sql>
+    <select id="getNovelFile" resultType="wpy.personal.novel.pojo.bo.NovelFileBo">
+        select n.novel_id,n.novel_name,n.file_id,nf.file_path,nf.file_md5,nf.file_type,nf.file_size
+        from novel n
+        left join novel_file nf on n.file_id = nf.file_id
+        where n.series_id = #{seriesId}
+    </select>
 
 </mapper>

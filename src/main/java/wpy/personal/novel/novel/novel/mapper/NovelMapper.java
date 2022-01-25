@@ -1,7 +1,10 @@
 package wpy.personal.novel.novel.novel.mapper;
 
+import wpy.personal.novel.pojo.bo.NovelFileBo;
 import wpy.personal.novel.pojo.entity.Novel;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+
+import java.util.List;
 
 /**
  * <p>
@@ -13,4 +16,10 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
  */
 public interface NovelMapper extends BaseMapper<Novel> {
 
+    /**
+     * 查询小说信息
+     * @param seriesId
+     * @return
+     */
+    List<NovelFileBo> getNovelFile(String seriesId);
 }

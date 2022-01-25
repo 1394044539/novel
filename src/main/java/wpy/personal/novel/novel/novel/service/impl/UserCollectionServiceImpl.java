@@ -159,11 +159,11 @@ public class UserCollectionServiceImpl extends ServiceImpl<UserCollectionMapper,
            //文件夹下载
             this.downloadCatalog(userCollectionDto.getCollectionId(),sysUser,request,response);
         }else if(SqlEnums.COLLECTION_VOLUME.getCode().equals(userCollectionDto.getCollectionType())){
-            //分卷下载
-            novelService.download(userCollectionDto.getVolumeId(),sysUser,request,response);
-        }else if(SqlEnums.COLLECTION_NOVEL.getCode().equals(userCollectionDto.getCollectionType())){
             //小说下载
-            seriesService.download(userCollectionDto.getNovelId(),sysUser,request,response);
+            novelService.download(userCollectionDto.getNovelId(),sysUser,request,response);
+        }else if(SqlEnums.COLLECTION_NOVEL.getCode().equals(userCollectionDto.getCollectionType())){
+            //系列下载
+            seriesService.download(userCollectionDto.getSeriesId(),sysUser,request,response);
         }
     }
 
@@ -375,7 +375,7 @@ public class UserCollectionServiceImpl extends ServiceImpl<UserCollectionMapper,
         userCollection.setImgPath(collection.getImgPath());
         userCollection.setCollectionType(collection.getCollectionType());
         userCollection.setNovelId(collection.getNovelId());
-        userCollection.setVolumeId(collection.getVolumeId());
+        userCollection.setSeriesId(collection.getSeriesId());
         userCollection.setParentId(parentId);
         List<UserCollection> insertList = Lists.newLinkedList();
         insertList.add(userCollection);
@@ -406,7 +406,7 @@ public class UserCollectionServiceImpl extends ServiceImpl<UserCollectionMapper,
                 userCollection.setImgPath(collection.getImgPath());
                 userCollection.setCollectionType(collection.getCollectionType());
                 userCollection.setNovelId(collection.getNovelId());
-                userCollection.setVolumeId(collection.getVolumeId());
+                userCollection.setSeriesId(collection.getSeriesId());
                 userCollection.setParentId(parentId);
                 reList.add(userCollection);
                 List<UserCollection> newChildCatalog = getNewChildCatalog(collection.getCollectionId(), userCollection.getCollectionId(), map, sysUser);

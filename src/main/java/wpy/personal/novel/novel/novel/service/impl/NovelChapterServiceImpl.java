@@ -69,43 +69,40 @@ public class NovelChapterServiceImpl extends ServiceImpl<NovelChapterMapper, Nov
     public NovelChapterBo analysisTxt(byte[] bytes, Novel novel, MultipartFile volumeFile, String userId) {
         try {
             NovelChapterBo novelChapterBo = new NovelChapterBo();
-            //todo 改到这里，接下来需要修改NovelData类和数据库保持一致，然后把章节解析出来的字数存到novelData表中
             //bytes转化为流，获取全部数据
             List<String> allList = new ArrayList<>(IOUtils.readLines(new ByteArrayInputStream(bytes), StrConstant.DEFAULT_CHARSET));
             //获取返回的参数
 //            novelChapterBo.setTotalLine(allList.size());
             Long reduce = allList.stream().reduce(0L, (result, item) -> result + (long) item.length(), Long::sum);
-//            novelChapterBo.setTotalWord(reduce);
+            novelChapterBo.setTotalWord(reduce);
             List<NovelChapter> chapterList = Lists.newArrayList();
             int chapterOrder = 0;
             //第一次循环，正则取到章节基本信息
             for (int i = 0; i < allList.size(); i++) {
+                //如果正则匹配上，则说明这是章节名称
+                String chapterText = allList.get(i);
+                String chapterName = "";
+                if (txtChapterPattern.matcher(chapterText).matches()) {
+                    chapterName = chapterText;
+                } else if (i == NumConstant.ZERO) {
+                    //如果是第一次，且没有匹配到数据，默认为序章
+                    chapterName="序章";
+                } else {
+                    //既不是章节标题也不是序章，进行下一次循环
+                    continue;
+                }
                 NovelChapter novelChapter = ObjectUtils.newInstance(userId, NovelChapter.class);
                 novelChapter.setChapterId(StringUtils.getUuid32());
                 // 小说id
                 novelChapter.setNovelId(novel.getNovelId());
                 //系列id
                 novelChapter.setSeriesId(novel.getSeriesId());
-                //设置排序
-                novelChapter.setChapterOrder(chapterOrder);
-                chapterOrder++;
-                //如果正则匹配上，则说明这是章节名称
-                String chapterText = allList.get(i);
-                if (txtChapterPattern.matcher(chapterText).matches()) {
-                    //设置章节名
-                    novelChapter.setChapterName(chapterText);
-                    //设置章节行数
-                    novelChapter.setStartLine(i + 1);
-                } else if (i == NumConstant.ZERO) {
-                    //如果是第一次，且没有匹配到数据，默认为序章
-                    novelChapter.setChapterName("序章");
-                    //设置章节行数
-                    novelChapter.setStartLine(0);
-                } else {
-                    //既不是章节标题也不是序章，将章节号减回来然后进行下一次循环
-                    chapterOrder--;
-                    continue;
-                }
+                //设置排序，设置完后+1
+                novelChapter.setChapterOrder(chapterOrder++);
+                //设置章节名
+                novelChapter.setChapterName(chapterName);
+                //设置章节行数
+                novelChapter.setStartLine(i);
                 chapterList.add(novelChapter);
             }
             if (CollectionUtils.isEmpty(chapterList)) {
@@ -118,6 +115,7 @@ public class NovelChapterServiceImpl extends ServiceImpl<NovelChapterMapper, Nov
                 novelChapter.setStartLine(NumConstant.ZERO);
                 novelChapter.setEndLine(allList.size());
                 novelChapter.setChapterName(novel.getNovelName());
+                novelChapter.setTotalWord(reduce);
                 chapterList.add(novelChapter);
             } else {
                 //再循环一次，把每一章的行数的记录下来
@@ -131,8 +129,11 @@ public class NovelChapterServiceImpl extends ServiceImpl<NovelChapterMapper, Nov
                         //普通情况比较下一个的开始行即可
                         NovelChapter nextNovelChapter = chapterList.get(i + 1);
                         novelChapter.setEndLine(nextNovelChapter.getStartLine() - 1);
-                        novelChapter.setTotalLine(novelChapter.getTotalLine() == null ? nextNovelChapter.getStartLine() : nextNovelChapter.getStartLine() - novelChapter.getTotalLine());
+                        novelChapter.setTotalLine(nextNovelChapter.getStartLine() - novelChapter.getStartLine());
                     }
+                    //计算章节字数
+                    Long chapterWord = allList.stream().skip(novelChapter.getStartLine()).limit(novelChapter.getTotalLine()).reduce(0L, (result, item) -> result + (long) item.length(), Long::sum);
+                    novelChapter.setTotalWord(chapterWord);
                 }
             }
             //批量插入进数据库
@@ -157,7 +158,6 @@ public class NovelChapterServiceImpl extends ServiceImpl<NovelChapterMapper, Nov
         List<TOCReference> tocReferences = tableOfContents.getTocReferences();
         List<NovelChapter> list=Lists.newArrayList();
         long wordNum=0;
-        int novelLine=0;
         for(int i=0;i<tocReferences.size();i++){
             TOCReference tocReference = tocReferences.get(i);
             Resource resource = tocReference.getResource();
@@ -185,7 +185,6 @@ public class NovelChapterServiceImpl extends ServiceImpl<NovelChapterMapper, Nov
                 while (context.contains("\n")){
                     context=StringUtils.replaceFirst(context, "\n", "");
                     chapterLine++;
-                    novelLine++;
                 }
                 context=StringUtils.replaceAll(context, "\r", "");
                 wordNum += context.length();
@@ -197,8 +196,7 @@ public class NovelChapterServiceImpl extends ServiceImpl<NovelChapterMapper, Nov
         if(!CollectionUtils.isEmpty(list)){
             this.saveBatch(list);
         }
-//        novelChapterBo.setTotalWord(wordNum);
-//        novelChapterBo.setTotalLine(novelLine);
+        novelChapterBo.setTotalWord(wordNum);
         return novelChapterBo;
     }
 

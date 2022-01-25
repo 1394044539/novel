@@ -51,10 +51,10 @@ public class UserCollection implements Serializable {
     private String parentId;
 
     /**
-     * 分卷id
+     * 系列id
      */
-    @TableField("volume_id")
-    private String volumeId;
+    @TableField("series_id")
+    private String seriesId;
 
     /**
      * 小说id

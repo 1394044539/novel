@@ -77,6 +77,12 @@ public class Novel implements Serializable {
     private Integer novelOrder;
 
     /**
+     * 总字数
+     */
+    @TableField("total_word")
+    private Long totalWord;
+
+    /**
      * 创建时间
      */
     @TableField("create_time")
