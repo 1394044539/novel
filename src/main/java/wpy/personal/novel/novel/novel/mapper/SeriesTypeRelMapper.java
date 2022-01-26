@@ -18,8 +18,8 @@ public interface SeriesTypeRelMapper extends BaseMapper<SeriesTypeRel> {
 
     /**
      * 获取小说类型
-     * @param novelId
+     * @param seriesId
      * @return
      */
-    List<SysDictParam> getNovelTypeList(String novelId);
+    List<SysDictParam> getSeriesTypeList(String seriesId);
 }

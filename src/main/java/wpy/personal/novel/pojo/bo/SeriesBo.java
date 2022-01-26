@@ -32,7 +32,7 @@ public class SeriesBo implements Serializable {
     private Date publicTime;
 
     /**
-     * 小说名
+     * 系列名
      */
     private String seriesName;
 
@@ -84,9 +84,18 @@ public class SeriesBo implements Serializable {
      * 小说类型
      */
     private List<SysDictParam> typeList;
+    /**
+     * code集合
+     */
+    private List<String> typeCodeList;
 
     /**
      * 小说分卷信息
      */
     private List<Novel> novelList;
+
+    /**
+     * 总字数
+     */
+    private Long totalWord;
 }

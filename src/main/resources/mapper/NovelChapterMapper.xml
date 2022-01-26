@@ -27,8 +27,8 @@
     <select id="getChapterFileInfo" resultType="wpy.personal.novel.pojo.entity.NovelChapter">
         select nc.*,nf.file_type,nf.file_path,nf.file_md5
         from novel_chapter nc
-        left join novel_volume nv on nv.volume_id = nc.volume_id
-        left join novel_file nf on nf.file_id = nv.file_id
+        left join novel n on n.novel_id = nc.novel_id
+        left join novel_file nf on nf.file_id = n.file_id
         where nc.chapter_id = #{chapterId}
     </select>
 

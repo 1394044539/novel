@@ -77,11 +77,11 @@ public class UserCollectionServiceImpl extends ServiceImpl<UserCollectionMapper,
     public UserCollection getCollection(String id, String type, SysUser sysUser) {
         QueryWrapper<UserCollection> qw=new QueryWrapper<>();
         qw.eq("create_by",sysUser.getUserId());
-        if(SqlEnums.COLLECTION_VOLUME.getCode().equals(type)){
-            qw.eq("volume_id",id);
-        }else if(SqlEnums.COLLECTION_NOVEL.getCode().equals(type)){
+        if(SqlEnums.COLLECTION_NOVEL.getCode().equals(type)){
             qw.eq("novel_id",id);
-            qw.and(entity->entity.eq("volume_id","").or().isNull("volume_id"));
+        }else if(SqlEnums.COLLECTION_SERIES.getCode().equals(type)){
+            qw.eq("series_id",id);
+            qw.and(entity->entity.eq("novel_id","").or().isNull("novel_id"));
         }else if(SqlEnums.COLLECTION_CATALOG.getCode().equals(type)){
             qw.eq("parent_id",id);
         }
@@ -124,10 +124,10 @@ public class UserCollectionServiceImpl extends ServiceImpl<UserCollectionMapper,
         //todo 查询小说看到哪一张
         List<CollectionBo> newList = this.userCollectionMapper.selectCollections(dto,sysUser);
         for (CollectionBo collectionBo : newList) {
-            if(SqlEnums.COLLECTION_VOLUME.getCode().equals(collectionBo.getCollectionType())){
+            if(SqlEnums.COLLECTION_NOVEL.getCode().equals(collectionBo.getCollectionType())){
                 collectionBo.setCatalogName(collectionBo.getVolumeName());
                 collectionBo.setImgPath(collectionBo.getVolumeImg());
-            }else if(SqlEnums.COLLECTION_NOVEL.getCode().equals(collectionBo.getCollectionType())){
+            }else if(SqlEnums.COLLECTION_SERIES.getCode().equals(collectionBo.getCollectionType())){
                 collectionBo.setCatalogName(collectionBo.getNovelName());
                 collectionBo.setImgPath(collectionBo.getNovelImg());
             }
@@ -158,10 +158,10 @@ public class UserCollectionServiceImpl extends ServiceImpl<UserCollectionMapper,
         if(SqlEnums.COLLECTION_CATALOG.getCode().equals(userCollectionDto.getCollectionType())){
            //文件夹下载
             this.downloadCatalog(userCollectionDto.getCollectionId(),sysUser,request,response);
-        }else if(SqlEnums.COLLECTION_VOLUME.getCode().equals(userCollectionDto.getCollectionType())){
+        }else if(SqlEnums.COLLECTION_NOVEL.getCode().equals(userCollectionDto.getCollectionType())){
             //小说下载
             novelService.download(userCollectionDto.getNovelId(),sysUser,request,response);
-        }else if(SqlEnums.COLLECTION_NOVEL.getCode().equals(userCollectionDto.getCollectionType())){
+        }else if(SqlEnums.COLLECTION_SERIES.getCode().equals(userCollectionDto.getCollectionType())){
             //系列下载
             seriesService.download(userCollectionDto.getSeriesId(),sysUser,request,response);
         }
@@ -198,9 +198,9 @@ public class UserCollectionServiceImpl extends ServiceImpl<UserCollectionMapper,
         Page<CollectionTableBo> page = new Page<>(dto.getPage(), dto.getPageSize());
         List<CollectionTableBo> list = this.userCollectionMapper.list(dto,sysUser,page);
         for (CollectionTableBo collectionTableBo : list) {
-            if(SqlEnums.COLLECTION_VOLUME.getCode().equals(collectionTableBo.getCollectionType())){
+            if(SqlEnums.COLLECTION_NOVEL.getCode().equals(collectionTableBo.getCollectionType())){
                 collectionTableBo.setName(collectionTableBo.getVolumeName());
-            }else if(SqlEnums.COLLECTION_NOVEL.getCode().equals(collectionTableBo.getCollectionType())){
+            }else if(SqlEnums.COLLECTION_SERIES.getCode().equals(collectionTableBo.getCollectionType())){
                 collectionTableBo.setName(collectionTableBo.getNovelName());
             }
         }
@@ -232,9 +232,9 @@ public class UserCollectionServiceImpl extends ServiceImpl<UserCollectionMapper,
                 .eq("create_by", sysUser.getUserId())
                 .ne("collection_type", SqlEnums.COLLECTION_CATALOG.getCode()));
         for (UserCollection userCollection : userCollections) {
-            if(SqlEnums.COLLECTION_NOVEL.getCode().equals(userCollection.getCollectionType())){
+            if(SqlEnums.COLLECTION_SERIES.getCode().equals(userCollection.getCollectionType())){
                 Series byId = seriesService.getById(userCollection.getNovelId());
-            }else if(SqlEnums.COLLECTION_VOLUME.getCode().equals(userCollection.getCollectionType())){
+            }else if(SqlEnums.COLLECTION_NOVEL.getCode().equals(userCollection.getCollectionType())){
 
             }
         }
@@ -289,7 +289,7 @@ public class UserCollectionServiceImpl extends ServiceImpl<UserCollectionMapper,
         List<CollectionBo> list = this.userCollectionMapper.selectCollections(dto, sysUser);
         List<String> renameList = Lists.newArrayList();
         for (CollectionBo collectionBo : list) {
-            if(SqlEnums.COLLECTION_VOLUME.getCode().equals(collectionBo.getCollectionType())){
+            if(SqlEnums.COLLECTION_NOVEL.getCode().equals(collectionBo.getCollectionType())){
                 //分卷
                 Novel volume = this.novelService.getById(collectionBo.getVolumeId());
                 NovelFile file = this.novelFileService.getById(volume.getFileId());
@@ -305,7 +305,7 @@ public class UserCollectionServiceImpl extends ServiceImpl<UserCollectionMapper,
                 while ((b = inputStream.read(buffer)) != -1) {
                     os.write(buffer, 0, b);
                 }
-            }else if(SqlEnums.COLLECTION_NOVEL.getCode().equals(collectionBo.getCollectionType())){
+            }else if(SqlEnums.COLLECTION_SERIES.getCode().equals(collectionBo.getCollectionType())){
                 //小说
                 Series novel = this.seriesService.getById(collectionBo.getNovelId());
                 //获取当前小说的全部分卷

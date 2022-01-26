@@ -45,10 +45,10 @@ public enum SqlEnums {
     USER_DISABLE("1","禁用"),
 
     /**
-     * 收藏类型(0:分卷,1:小说,2:文件夹)
+     * 收藏类型(0:小说,1:系列,2:文件夹)
      */
-    COLLECTION_VOLUME("0","分卷"),
-    COLLECTION_NOVEL("1","小说"),
+    COLLECTION_NOVEL("0","小说"),
+    COLLECTION_SERIES("1","系列"),
     COLLECTION_CATALOG("2","文件夹")
     ;
 

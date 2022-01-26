@@ -19,12 +19,12 @@ public class NovelBo implements Serializable {
     /**
      * 主键id
      */
-    private String volumeId;
+    private String novelId;
 
     /**
-     * 小说id
+     * 系列id
      */
-    private String novelId;
+    private String seriesId;
 
     /**
      * 文件id
@@ -34,12 +34,12 @@ public class NovelBo implements Serializable {
     /**
      * 分卷名
      */
-    private String volumeName;
+    private String novelName;
 
     /**
      * 封面
      */
-    private String volumeImg;
+    private String novelImg;
 
     /**
      * 发布时间
@@ -51,12 +51,12 @@ public class NovelBo implements Serializable {
     /**
      * 分卷描述
      */
-    private String volumeDesc;
+    private String novelDesc;
 
     /**
      * 分卷排序
      */
-    private Integer volumeOrder;
+    private Integer novelOrder;
 
     /**
      * 总行数

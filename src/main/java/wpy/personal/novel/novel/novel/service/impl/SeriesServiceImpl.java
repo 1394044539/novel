@@ -38,6 +38,7 @@ import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
@@ -122,16 +123,19 @@ public class SeriesServiceImpl extends ServiceImpl<SeriesMapper, Series> impleme
     @Override
     public SeriesBo getSeriesInfo(String seriesId, SysUser sysUser) {
         SeriesBo seriesBo = new SeriesBo();
-        //1、取出小说信息
+        //1、取出系列信息
         Series series = this.getById(seriesId);
         BeanUtils.copyProperties(series, seriesBo);
-        //2、取出小说类型
-        List<SysDictParam> typeList = seriesTypeRelMapper.getNovelTypeList(seriesId);
+        //2、取出系列类型
+        List<SysDictParam> typeList = seriesTypeRelMapper.getSeriesTypeList(seriesId);
         seriesBo.setTypeList(typeList);
-        //3、取出小说的分卷信息
+        seriesBo.setTypeCodeList(typeList.stream().map(SysDictParam::getParamCode).collect(Collectors.toList()));
+        //3、取出系列的分卷信息
         List<Novel> novelList = novelMapper.selectList(
-                new QueryWrapper<Novel>().eq("novel_id", seriesId).orderByAsc("volume_order"));
+                new QueryWrapper<Novel>().eq("series_id", seriesId).orderByAsc("novel_order"));
         seriesBo.setNovelList(novelList);
+        SeriesCountBo seriesCountBo = this.seriesMapper.countSeriesInfo(seriesId);
+        seriesBo.setTotalWord(seriesCountBo.getTotalWord());
         return seriesBo;
     }
 
