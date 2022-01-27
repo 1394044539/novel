@@ -125,11 +125,11 @@ public class UserCollectionServiceImpl extends ServiceImpl<UserCollectionMapper,
         List<CollectionBo> newList = this.userCollectionMapper.selectCollections(dto,sysUser);
         for (CollectionBo collectionBo : newList) {
             if(SqlEnums.COLLECTION_NOVEL.getCode().equals(collectionBo.getCollectionType())){
-                collectionBo.setCatalogName(collectionBo.getVolumeName());
-                collectionBo.setImgPath(collectionBo.getVolumeImg());
-            }else if(SqlEnums.COLLECTION_SERIES.getCode().equals(collectionBo.getCollectionType())){
                 collectionBo.setCatalogName(collectionBo.getNovelName());
                 collectionBo.setImgPath(collectionBo.getNovelImg());
+            }else if(SqlEnums.COLLECTION_SERIES.getCode().equals(collectionBo.getCollectionType())){
+                collectionBo.setCatalogName(collectionBo.getSeriesName());
+                collectionBo.setImgPath(collectionBo.getSeriesImg());
             }
         }
         return newList;
@@ -199,9 +199,9 @@ public class UserCollectionServiceImpl extends ServiceImpl<UserCollectionMapper,
         List<CollectionTableBo> list = this.userCollectionMapper.list(dto,sysUser,page);
         for (CollectionTableBo collectionTableBo : list) {
             if(SqlEnums.COLLECTION_NOVEL.getCode().equals(collectionTableBo.getCollectionType())){
-                collectionTableBo.setName(collectionTableBo.getVolumeName());
-            }else if(SqlEnums.COLLECTION_SERIES.getCode().equals(collectionTableBo.getCollectionType())){
                 collectionTableBo.setName(collectionTableBo.getNovelName());
+            }else if(SqlEnums.COLLECTION_SERIES.getCode().equals(collectionTableBo.getCollectionType())){
+                collectionTableBo.setName(collectionTableBo.getSeriesName());
             }
         }
         page.setRecords(list);
@@ -290,16 +290,16 @@ public class UserCollectionServiceImpl extends ServiceImpl<UserCollectionMapper,
         List<String> renameList = Lists.newArrayList();
         for (CollectionBo collectionBo : list) {
             if(SqlEnums.COLLECTION_NOVEL.getCode().equals(collectionBo.getCollectionType())){
-                //分卷
-                Novel volume = this.novelService.getById(collectionBo.getVolumeId());
-                NovelFile file = this.novelFileService.getById(volume.getFileId());
+                //小说
+                Novel novel = this.novelService.getById(collectionBo.getNovelId());
+                NovelFile file = this.novelFileService.getById(novel.getFileId());
                 String pathName=catalogName+CharConstant.FILE_SEPARATOR+
-                        volume.getNovelName()+CharConstant.SEPARATOR+file.getFileType();
+                        novel.getNovelName()+CharConstant.SEPARATOR+file.getFileType();
                 pathName = this.checkRename(renameList,pathName);
                 renameList.add(pathName);
                 ZipEntry zipEntry=new ZipEntry(pathName);
                 zipos.putNextEntry(zipEntry);
-                InputStream inputStream=new FileInputStream(new File(file.getFilePath()));
+                InputStream inputStream=new FileInputStream(new File(file.getFilePath()+CharConstant.FILE_SEPARATOR+file.getFileMd5()));
                 int b = 0;
                 byte[] buffer = new byte[1024];
                 while ((b = inputStream.read(buffer)) != -1) {
@@ -318,7 +318,7 @@ public class UserCollectionServiceImpl extends ServiceImpl<UserCollectionMapper,
                     renameList.add(pathName);
                     ZipEntry zipEntry=new ZipEntry(pathName);
                     zipos.putNextEntry(zipEntry);
-                    InputStream inputStream=new FileInputStream(new File(file.getFilePath()));
+                    InputStream inputStream=new FileInputStream(new File(file.getFilePath()+CharConstant.FILE_SEPARATOR+file.getFileMd5()));
                     int b = 0;
                     byte[] buffer = new byte[1024];
                     while ((b = inputStream.read(buffer)) != -1) {

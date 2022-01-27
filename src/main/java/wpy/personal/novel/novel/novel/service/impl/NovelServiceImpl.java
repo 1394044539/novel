@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.multipart.MultipartFile;
+import wpy.personal.novel.base.constant.CharConstant;
 import wpy.personal.novel.base.enums.BusinessEnums;
 import wpy.personal.novel.base.enums.ErrorCode;
 import wpy.personal.novel.base.exception.BusinessException;
@@ -210,7 +211,7 @@ public class NovelServiceImpl extends ServiceImpl<NovelMapper, Novel> implements
     public void download(String volumeId, SysUser sysUser, HttpServletRequest request, HttpServletResponse response) {
         Novel novel = this.getById(volumeId);
         NovelFile fileInfo = novelFileService.getById(novel.getFileId());
-        FileUtils.download(fileInfo.getFilePath(),novel.getNovelName(),fileInfo.getFileType(),fileInfo.getFileSize(),request,response);
+        FileUtils.download(fileInfo.getFilePath()+ CharConstant.FILE_SEPARATOR+fileInfo.getFileMd5(),novel.getNovelName(),fileInfo.getFileType(),fileInfo.getFileSize(),request,response);
     }
 
     /**

@@ -35,13 +35,13 @@ public class CollectionTableBo {
     private String parentName;
 
     /**
-     * 分卷id
+     * 系列id
      */
-    private String volumeId;
+    private String seriesId;
     /**
-     * 分卷名
+     * 系列名
      */
-    private String volumeName;
+    private String seriesName;
 
     /**
      * 小说id

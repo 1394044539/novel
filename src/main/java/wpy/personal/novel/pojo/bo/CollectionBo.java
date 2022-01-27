@@ -30,9 +30,9 @@ public class CollectionBo {
     private String parentId;
 
     /**
-     * 分卷id
+     * 系列id
      */
-    private String volumeId;
+    private String seriesId;
 
     /**
      * 小说id
@@ -84,12 +84,12 @@ public class CollectionBo {
     private String novelImg;
 
     /**
-     * 分卷名
+     * 系列名
      */
-    private String volumeName;
+    private String seriesName;
 
     /**
-     * 分卷封面
+     * 系列封面
      */
-    private String volumeImg;
+    private String seriesImg;
 }

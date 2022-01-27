@@ -27,8 +27,8 @@
             uc.collection_type AS collectionType,
             uc.catalog_name AS catalogName,
             uc.parent_id AS parentId,
-            uc.volume_id AS volumeId,
             uc.novel_id AS novelId,
+            uc.series_id AS seriesId,
             uc.create_time AS createTime,
             uc.create_by AS createBy,
             uc.update_time AS updateTime,
@@ -36,11 +36,11 @@
             uc.is_delete AS isDelete,
             n.novel_name AS novelName,
             n.novel_img AS novelImg,
-            nv.volume_name AS volumeName,
-            nv.volume_img AS volumeImg
+            s.series_name AS seriesName,
+            s.series_img AS seriesImg
         FROM `user_collection` uc
         left join novel n on n.novel_id = uc.novel_id
-        left join novel_volume nv on nv.volume_id = uc.volume_id
+        left join series s on s.series_id = uc.series_id
         <trim prefix="where" prefixOverrides="and">
             <if test="user.userId != null and user.userId != ''">
                 and uc.create_by = #{user.userId}
@@ -54,7 +54,7 @@
             <if test="dto.catalogName != null and dto.catalogName != ''">
                 and (uc.catalog_name like concat('%',#{dto.catalogName},'%')
                     or n.novel_name like concat('%',#{dto.catalogName},'%')
-                    or nv.volume_name like concat('%',#{dto.catalogName},'%'))
+                    or s.series_name like concat('%',#{dto.catalogName},'%'))
             </if>
             <if test="dto.typeList != null and dto.typeList.size()>0">
                 and uc.collection_type in
@@ -92,22 +92,22 @@
             uc.collection_type AS collectionType,
             uc.catalog_name AS name,
             uc.parent_id AS parentId,
-            uc.volume_id AS volumeId,
             uc.novel_id AS novelId,
+            uc.series_id AS seriesId,
             uc.create_time AS createTime,
             uc.create_by AS createBy,
             uc.update_time AS updateTime,
             uc.update_by AS updateBy,
             uc.is_delete AS isDelete,
+            s.series_name AS seriesName,
+            s.series_img AS seriesImg,
             n.novel_name AS novelName,
             n.novel_img AS novelImg,
-            nv.volume_name AS volumeName,
-            nv.volume_img AS volumeImg,
             su.user_name AS createByName,
             uc2.catalog_name AS parentName
         FROM `user_collection` uc
+        left join series s on s.series_id = uc.series_id
         left join novel n on n.novel_id = uc.novel_id
-        left join novel_volume nv on nv.volume_id = uc.volume_id
         left join sys_user su on su.user_id = uc.create_by
         left join user_collection uc2 on uc2.collection_id = uc.parent_id
         <where>
@@ -117,7 +117,7 @@
             <if test="dto.catalogName != null and dto.catalogName != ''">
                 and (uc.catalog_name like concat('%',#{dto.catalogName},'%')
                 or n.novel_name like concat('%',#{dto.catalogName},'%')
-                or nv.volume_name like concat('%',#{dto.catalogName},'%'))
+                or s.series_name like concat('%',#{dto.catalogName},'%'))
             </if>
             <if test="dto.createByName != null and dto.createByName != ''">
                 and su.user_name = #{dto.createByName}
