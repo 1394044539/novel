@@ -12,7 +12,9 @@ import wpy.personal.novel.pojo.bo.CollectionTableBo;
 import wpy.personal.novel.pojo.dto.UserCollectionDto;
 import wpy.personal.novel.pojo.entity.SysUser;
 import wpy.personal.novel.pojo.entity.UserCollection;
+import wpy.personal.novel.pojo.vo.UserCollectionListVo;
 import wpy.personal.novel.utils.RequestUtils;
+import wpy.personal.novel.utils.pageUtils.RequestPageUtils;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -89,9 +91,9 @@ public class UserCollectionController {
 
     @PostMapping("/list")
     @SysLogs(fun = "收藏列表管理")
-    public ResponseResult list(@RequestBody UserCollectionDto userCollectionDto){
+    public ResponseResult list(@RequestBody RequestPageUtils<UserCollectionListVo> param){
         SysUser sysUser = RequestUtils.getSysUser();
-        Page<CollectionTableBo> page = userCollectionService.list(userCollectionDto,sysUser);
+        Page<CollectionTableBo> page = userCollectionService.list(param,sysUser);
         return ResponseResult.success(page);
     }
 

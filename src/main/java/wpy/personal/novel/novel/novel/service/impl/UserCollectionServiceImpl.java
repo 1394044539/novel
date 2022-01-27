@@ -14,21 +14,25 @@ import org.springframework.util.CollectionUtils;
 import wpy.personal.novel.base.constant.CharConstant;
 import wpy.personal.novel.base.constant.StrConstant;
 import wpy.personal.novel.base.enums.BusinessEnums;
+import wpy.personal.novel.base.enums.DictEnums;
 import wpy.personal.novel.base.enums.SqlEnums;
-import wpy.personal.novel.novel.novel.mapper.SeriesMapper;
 import wpy.personal.novel.novel.novel.mapper.NovelMapper;
+import wpy.personal.novel.novel.novel.mapper.SeriesMapper;
 import wpy.personal.novel.novel.novel.mapper.UserCollectionMapper;
 import wpy.personal.novel.novel.novel.service.NovelFileService;
-import wpy.personal.novel.novel.novel.service.SeriesService;
 import wpy.personal.novel.novel.novel.service.NovelService;
+import wpy.personal.novel.novel.novel.service.SeriesService;
 import wpy.personal.novel.novel.novel.service.UserCollectionService;
+import wpy.personal.novel.novel.system.service.SysUserRoleService;
 import wpy.personal.novel.pojo.bo.CollectionBo;
 import wpy.personal.novel.pojo.bo.CollectionTableBo;
 import wpy.personal.novel.pojo.dto.UserCollectionDto;
 import wpy.personal.novel.pojo.entity.*;
+import wpy.personal.novel.pojo.vo.UserCollectionListVo;
 import wpy.personal.novel.utils.FileUtils;
 import wpy.personal.novel.utils.ObjectUtils;
 import wpy.personal.novel.utils.StringUtils;
+import wpy.personal.novel.utils.pageUtils.RequestPageUtils;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -64,6 +68,8 @@ public class UserCollectionServiceImpl extends ServiceImpl<UserCollectionMapper,
     private NovelMapper novelMapper;
     @Autowired
     private NovelFileService novelFileService;
+    @Autowired
+    private SysUserRoleService sysUserRoleService;
 
     @Override
     public UserCollection addCollection(UserCollectionDto userCollectionDto, SysUser sysUser) {
@@ -194,9 +200,14 @@ public class UserCollectionServiceImpl extends ServiceImpl<UserCollectionMapper,
     }
 
     @Override
-    public Page<CollectionTableBo> list(UserCollectionDto dto, SysUser sysUser) {
-        Page<CollectionTableBo> page = new Page<>(dto.getPage(), dto.getPageSize());
-        List<CollectionTableBo> list = this.userCollectionMapper.list(dto,sysUser,page);
+    public Page<CollectionTableBo> list(RequestPageUtils<UserCollectionListVo> pageParam, SysUser sysUser) {
+        Page<CollectionTableBo> page = new Page<>(pageParam.getPage(), pageParam.getPageSize());
+        UserCollectionListVo param = pageParam.getParam();
+        if(sysUserRoleService.hasRole(sysUser.getUserId(), DictEnums.ORDINARY_USER)){
+            //非管理员只能看自己的
+            param.setCreateBy(sysUser.getUserId());
+        }
+        List<CollectionTableBo> list = this.userCollectionMapper.list(param,page);
         for (CollectionTableBo collectionTableBo : list) {
             if(SqlEnums.COLLECTION_NOVEL.getCode().equals(collectionTableBo.getCollectionType())){
                 collectionTableBo.setName(collectionTableBo.getNovelName());

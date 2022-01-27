@@ -111,8 +111,8 @@
         left join sys_user su on su.user_id = uc.create_by
         left join user_collection uc2 on uc2.collection_id = uc.parent_id
         <where>
-            <if test="user.userId != null and user.userId != ''">
-                and uc.create_by = #{user.userId}
+            <if test="dto.createBy != null and dto.createBy != ''">
+                and uc.create_by = #{dto.createBy}
             </if>
             <if test="dto.catalogName != null and dto.catalogName != ''">
                 and (uc.catalog_name like concat('%',#{dto.catalogName},'%')
@@ -124,6 +124,15 @@
             </if>
             <if test="dto.collectionType != null and dto.collectionType != ''">
                 and uc.collection_type = #{dto.collectionType}
+            </if>
+            <if test="dto.parentName != null and dto.parentName != ''">
+                and uc2.catalog_name like concat('%',#{dto.parentName},'%')
+            </if>
+            <if test="dto.createStartTime != null">
+                and uc.create_time &gt;= #{dto.createStartTime}
+            </if>
+            <if test="dto.createEndTime != null">
+                and uc.create_time &lt;= #{dto.createEndTime}
             </if>
         </where>
         order by uc.create_time desc

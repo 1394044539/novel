@@ -7,6 +7,8 @@ import wpy.personal.novel.pojo.dto.UserCollectionDto;
 import wpy.personal.novel.pojo.entity.SysUser;
 import wpy.personal.novel.pojo.entity.UserCollection;
 import com.baomidou.mybatisplus.extension.service.IService;
+import wpy.personal.novel.pojo.vo.UserCollectionListVo;
+import wpy.personal.novel.utils.pageUtils.RequestPageUtils;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -88,11 +90,11 @@ public interface UserCollectionService extends IService<UserCollection> {
 
     /**
      * 分页查询
-     * @param userCollectionDto
+     * @param param
      * @param sysUser
      * @return
      */
-    Page<CollectionTableBo> list(UserCollectionDto userCollectionDto, SysUser sysUser);
+    Page<CollectionTableBo> list(RequestPageUtils<UserCollectionListVo> param, SysUser sysUser);
 
     /**
      * 批量删除收藏

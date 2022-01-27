@@ -8,6 +8,7 @@ import wpy.personal.novel.pojo.dto.UserCollectionDto;
 import wpy.personal.novel.pojo.entity.SysUser;
 import wpy.personal.novel.pojo.entity.UserCollection;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import wpy.personal.novel.pojo.vo.UserCollectionListVo;
 
 import java.util.List;
 
@@ -40,9 +41,8 @@ public interface UserCollectionMapper extends BaseMapper<UserCollection> {
     /**
      * 分页查询
      * @param dto
-     * @param sysUser
      * @param page
      * @return
      */
-    List<CollectionTableBo> list(@Param("dto") UserCollectionDto dto,@Param("user") SysUser sysUser, Page<CollectionTableBo> page);
+    List<CollectionTableBo> list(@Param("dto") UserCollectionListVo dto, Page<CollectionTableBo> page);
 }
