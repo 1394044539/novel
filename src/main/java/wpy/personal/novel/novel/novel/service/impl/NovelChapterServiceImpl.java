@@ -259,11 +259,12 @@ public class NovelChapterServiceImpl extends ServiceImpl<NovelChapterMapper, Nov
         //html解析
         if (data != null) {
             String html = new String(data);
-            Document parse = Jsoup.parse(html);
-            Elements p = parse.getElementsByTag("p");
-            for (Element element : p) {
-                list.add(element.text());
-            }
+//            Document parse = Jsoup.parse(html);
+//            Elements p = parse.getElementsByTag("p");
+//            for (Element element : p) {
+//                list.add(element.text());
+//            }
+            list.add(html);
         }
         return list;
     }

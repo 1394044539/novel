@@ -1,6 +1,7 @@
 package wpy.personal.novel.novel.novel.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -9,12 +10,18 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.multipart.MultipartFile;
 import wpy.personal.novel.base.constant.CharConstant;
+import wpy.personal.novel.base.enums.DictEnums;
 import wpy.personal.novel.novel.novel.mapper.NovelFileMapper;
 import wpy.personal.novel.novel.novel.service.NovelFileService;
+import wpy.personal.novel.novel.system.service.SysUserRoleService;
+import wpy.personal.novel.pojo.bo.UploadListBo;
 import wpy.personal.novel.pojo.entity.NovelFile;
+import wpy.personal.novel.pojo.entity.SysUser;
+import wpy.personal.novel.pojo.vo.UploadListVo;
 import wpy.personal.novel.utils.FileUtils;
 import wpy.personal.novel.utils.ObjectUtils;
 import wpy.personal.novel.utils.StringUtils;
+import wpy.personal.novel.utils.pageUtils.RequestPageUtils;
 
 import java.util.List;
 
@@ -32,6 +39,8 @@ public class NovelFileServiceImpl extends ServiceImpl<NovelFileMapper, NovelFile
 
     @Autowired
     private NovelFileMapper novelFileMapper;
+    @Autowired
+    private SysUserRoleService sysUserRoleService;
 
     @Value("${novel.filePath.rootPath}")
     private String rootPath;
@@ -74,6 +83,19 @@ public class NovelFileServiceImpl extends ServiceImpl<NovelFileMapper, NovelFile
         }
         //2、删除数据库
         this.removeByIds(deleteFileIdList);
+    }
+
+    @Override
+    public Page<UploadListBo> list(RequestPageUtils<UploadListVo> dto, SysUser sysUser) {
+        UploadListVo param = dto.getParam();
+        if(sysUserRoleService.hasRole(sysUser.getUserId(), DictEnums.ORDINARY_USER)){
+            //非管理员只能看自己的
+            param.setCreateBy(sysUser.getUserId());
+        }
+        Page<UploadListBo> page = new Page<>(dto.getPage(),dto.getPageSize());
+        List<UploadListBo> list = this.novelFileMapper.list(param,page);
+
+        return page.setRecords(list);
     }
 
 }

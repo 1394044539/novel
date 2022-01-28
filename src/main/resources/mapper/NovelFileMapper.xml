@@ -21,5 +21,38 @@
     <sql id="Base_Column_List">
         file_id, file_name, file_path, file_type, file_md5, file_size, create_time, create_by, update_time, update_by, is_delete
     </sql>
+    <select id="list" resultType="wpy.personal.novel.pojo.bo.UploadListBo">
+        select nf.file_name,nf.file_size,nf.file_id,
+        n.novel_name,n.create_time,n.novel_id,n.create_by,
+        s.series_name,s.series_id,
+        su.user_name AS createByName
+        from novel n
+        LEFT JOIN novel_file nf on nf.file_id = n.file_id
+        left join series s on s.series_id = n.series_id
+        LEFT JOIN sys_user su on su.user_id = n.create_by
+        <where>
+            <if test="param.createBy != null and param.createBy != ''">
+                and n.create_by = #{param.createBy}
+            </if>
+            <if test="param.fileName != null and param.fileName !=''">
+                and nf.file_name like concat('%',#{param.fileName},'%')
+            </if>
+            <if test="param.novelName != null and param.novelName != ''">
+                and n.novel_name like concat('%',#{param.novelName},'%')
+            </if>
+            <if test="param.seriesName != null and param.seriesName != ''">
+                and s.series_name like concat('%',#{param.seriesName},'%')
+            </if>
+            <if test="param.createStartTime != null">
+                and n.create_time &gt;= #{param.createStartTime}
+            </if>
+            <if test="param.createEndTime != null">
+                and n.create_time &lt;= #{param.createEndTime}
+            </if>
+            <if test="param.createByName !=null and param.createByName != ''">
+                and su.user_name = #{param.createByName}
+            </if>
+        </where>
+    </select>
 
 </mapper>
