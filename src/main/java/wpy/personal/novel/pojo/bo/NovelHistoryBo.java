@@ -21,19 +21,19 @@ public class NovelHistoryBo {
     private String ip;
 
     /**
+     * 最后访问的章节id
+     */
+    private String lastChapterId;
+
+    /**
      * 最后访问小说id
      */
     private String lastNovelId;
 
     /**
-     * 最后访问的分卷id
+     * 最后访问的系列id
      */
-    private String lastVolumeId;
-
-    /**
-     * 最后访问的章节id
-     */
-    private String lastChapterId;
+    private String lastSeriesId;
 
     /**
      * 书签名
@@ -75,12 +75,22 @@ public class NovelHistoryBo {
     private Date updateTime;
 
     /**
+     * 系列名称
+     */
+    private String seriesName;
+
+    /**
      * 小说名
      */
-    private String volumeName;
+    private String novelName;
 
     /**
      * 章节名
      */
     private String chapterName;
+
+    /**
+     * 用户名
+     */
+    private String createByName;
 }

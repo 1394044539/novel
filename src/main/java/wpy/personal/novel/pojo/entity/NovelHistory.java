@@ -46,10 +46,10 @@ public class NovelHistory implements Serializable {
     private String lastNovelId;
 
     /**
-     * 最后访问的分卷id
+     * 最后访问的系列id
      */
-    @TableField("last_volume_id")
-    private String lastVolumeId;
+    @TableField("last_series_id")
+    private String lastSeriesId;
 
     /**
      * 最后访问的章节id

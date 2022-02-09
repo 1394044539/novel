@@ -15,8 +15,10 @@ import wpy.personal.novel.pojo.bo.NovelHistoryBo;
 import wpy.personal.novel.pojo.dto.HistoryDto;
 import wpy.personal.novel.pojo.entity.NovelHistory;
 import wpy.personal.novel.pojo.entity.SysUser;
+import wpy.personal.novel.pojo.vo.HistoryListVo;
 import wpy.personal.novel.utils.ObjectUtils;
 import wpy.personal.novel.utils.StringUtils;
+import wpy.personal.novel.utils.pageUtils.RequestPageUtils;
 
 import java.util.Date;
 import java.util.List;
@@ -37,9 +39,10 @@ public class NovelHistoryServiceImpl extends ServiceImpl<NovelHistoryMapper, Nov
     private NovelHistoryMapper novelHistoryMapper;
 
     @Override
-    public Page<NovelHistoryBo> getHistoryList(HistoryDto dto, SysUser sysUser) {
+    public Page<NovelHistoryBo> getHistoryList(RequestPageUtils<HistoryListVo> dto, SysUser sysUser) {
+        HistoryListVo param = dto.getParam();
         Page<NovelHistoryBo> page = new Page<>(dto.getPage(), dto.getPageSize());
-        List<NovelHistoryBo> list = this.novelHistoryMapper.getHistoryList(dto,sysUser,page);
+        List<NovelHistoryBo> list = this.novelHistoryMapper.getHistoryList(param,page);
         return page.setRecords(list);
     }
 
@@ -103,7 +106,7 @@ public class NovelHistoryServiceImpl extends ServiceImpl<NovelHistoryMapper, Nov
      */
     private NovelHistory handleHistory(HistoryDto historyDto, SysUser sysUser, String ip) {
         //这里没有id，只有分卷id
-        NovelHistory novelVolume = this.getOne(new QueryWrapper<NovelHistory>().eq("last_volume_id", historyDto.getLastVolumeId()));
+        NovelHistory novelVolume = this.getOne(new QueryWrapper<NovelHistory>().eq("last_novel_id", historyDto.getLastNovelId()));
         if(novelVolume==null){
             //说明是第一次，就插入就行
             novelVolume = ObjectUtils.newInstance(sysUser.getUserId(), NovelHistory.class);

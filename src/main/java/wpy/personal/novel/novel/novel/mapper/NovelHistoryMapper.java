@@ -7,6 +7,7 @@ import wpy.personal.novel.pojo.bo.NovelHistoryBo;
 import wpy.personal.novel.pojo.dto.HistoryDto;
 import wpy.personal.novel.pojo.entity.NovelHistory;
 import wpy.personal.novel.pojo.entity.SysUser;
+import wpy.personal.novel.pojo.vo.HistoryListVo;
 
 import java.util.List;
 
@@ -22,10 +23,9 @@ public interface NovelHistoryMapper extends BaseMapper<NovelHistory> {
 
     /**
      * 查询
-     * @param dto
-     * @param sysUser
+     * @param param
      * @param page
      * @return
      */
-    List<NovelHistoryBo> getHistoryList(@Param("dto") HistoryDto dto,@Param("user") SysUser sysUser, Page<NovelHistoryBo> page);
+    List<NovelHistoryBo> getHistoryList(@Param("param") HistoryListVo param, Page<NovelHistoryBo> page);
 }

@@ -7,7 +7,7 @@
         <id column="history_id" property="historyId" />
         <result column="ip" property="ip" />
         <result column="last_novel_id" property="lastNovelId" />
-        <result column="last_volume_id" property="lastVolumeId" />
+        <result column="last_series_id" property="lastSeriesId" />
         <result column="last_chapter_id" property="lastChapterId" />
         <result column="mark_name" property="markName" />
         <result column="record_type" property="recordType" />
@@ -20,15 +20,15 @@
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        history_id, ip, last_novel_id, last_volume_id, last_chapter_id, mark_name, record_type, record_percentage, create_by, create_time, update_by, update_time
+        history_id, ip, last_novel_id, last_series_id, last_chapter_id, mark_name, record_type, record_percentage, create_by, create_time, update_by, update_time
     </sql>
     <select id="getHistoryList" resultType="wpy.personal.novel.pojo.bo.NovelHistoryBo">
         select
             nh.history_id AS historyId,
             nh.ip AS ip,
-            nh.last_novel_id AS LastNovelId,
-            nh.last_volume_id AS LastVolumeId,
             nh.last_chapter_id AS LastChapterId,
+            n.novel_id AS LastNovelId,
+            s.series_id AS LastSeriesId,
             nh.mark_name AS markName,
             nh.record_type AS recordType,
             nh.record_percentage AS recordPercentage,
@@ -36,17 +36,36 @@
             nh.create_time AS createTime,
             nh.update_by AS updateBy,
             nh.update_time AS updateTime,
-            nv.volume_name AS volumeName,
-            nc.chapter_name AS chapterName
+            s.series_name AS seriesName,
+            n.novel_name AS novelName,
+            nc.chapter_name AS chapterName,
+            su.user_name AS createByName
         from novel_history nh
-        left join novel_volume nv on nv.volume_id = nh.last_volume_id
         left join novel_chapter nc on nc.chapter_id = nh.last_chapter_id
+        left join novel n on n.novel_id = nc.novel_id
+        left join series s on s.series_id = nc.series_id
+        left join sys_user su on su.user_id = nh.create_by
         <trim prefix="where" prefixOverrides="and">
-            <if test="user.userId !=null and user.userId != ''">
-                nh.create_by = #{user.userId}
+            <if test="param.createBy !=null and param.createBy != ''">
+                and nh.create_by = #{param.createBy}
             </if>
-            <if test="dto.recordType != null and dto.recordType != ''">
-                nh.record_type = #{dto.recordType}
+            <if test="param.recordType != null and param.recordType != ''">
+                and nh.record_type = #{param.recordType}
+            </if>
+            <if test="param.novelName != null and param.novelName != ''">
+                and n.novel_name like concat('%',#{param.novelName},'%')
+            </if>
+            <if test="param.seriesName != null and param.seriesName != ''">
+                and s.series_name like concat('%',#{param.seriesName},'%')
+            </if>
+            <if test="param.chapterName != null and param.chapterName != ''">
+                and nc.chapter_name like concat('%',#{param.chapterName},'%')
+            </if>
+            <if test="param.createByName != null and param.createByName != ''">
+                and su.user_name like concat('%',#{param.createByName},'%')
+            </if>
+            <if test="param.markName != null and param.markName != ''">
+                and nh.mark_name like concat ('%',#{param.markName},'%')
             </if>
         </trim>
         order by nh.update_time DESC

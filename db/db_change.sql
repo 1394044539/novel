@@ -68,3 +68,7 @@ CREATE TABLE `feedback` (
  ru
 -- 2022/01/11 公告表删除字段
 ALTER TABLE `sys_notice` DROP COLUMN `is_open`;
+
+-- 2022/01/30 字段修改
+ALTER TABLE novel_history`
+CHANGE COLUMN `last_volume_id` `last_series_id` varchar(32) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '最后访问的系列id' AFTER `last_novel_id`;

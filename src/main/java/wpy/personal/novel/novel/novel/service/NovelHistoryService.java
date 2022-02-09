@@ -6,6 +6,8 @@ import wpy.personal.novel.pojo.bo.NovelHistoryBo;
 import wpy.personal.novel.pojo.dto.HistoryDto;
 import wpy.personal.novel.pojo.entity.NovelHistory;
 import wpy.personal.novel.pojo.entity.SysUser;
+import wpy.personal.novel.pojo.vo.HistoryListVo;
+import wpy.personal.novel.utils.pageUtils.RequestPageUtils;
 
 /**
  * <p>
@@ -23,7 +25,7 @@ public interface NovelHistoryService extends IService<NovelHistory> {
      * @param sysUser
      * @return
      */
-    Page<NovelHistoryBo> getHistoryList(HistoryDto dto, SysUser sysUser);
+    Page<NovelHistoryBo> getHistoryList(RequestPageUtils<HistoryListVo> dto, SysUser sysUser);
 
     /**
      * 保存历史记录

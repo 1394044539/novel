@@ -9,7 +9,9 @@ import wpy.personal.novel.novel.novel.service.NovelHistoryService;
 import wpy.personal.novel.pojo.dto.HistoryDto;
 import wpy.personal.novel.pojo.entity.NovelHistory;
 import wpy.personal.novel.pojo.entity.SysUser;
+import wpy.personal.novel.pojo.vo.HistoryListVo;
 import wpy.personal.novel.utils.RequestUtils;
+import wpy.personal.novel.utils.pageUtils.RequestPageUtils;
 
 /**
  * <p>
@@ -28,7 +30,7 @@ public class NovelHistoryController {
 
     @PostMapping("/getHistoryList")
     @SysLogs(fun = "获取历史或书签列表记录")
-    public ResponseResult getHistoryList( HistoryDto dto){
+    public ResponseResult getHistoryList(@RequestBody RequestPageUtils<HistoryListVo> dto){
         SysUser sysUser = RequestUtils.getSysUser();
         return ResponseResult.success(novelHistoryService.getHistoryList(dto,sysUser));
     }

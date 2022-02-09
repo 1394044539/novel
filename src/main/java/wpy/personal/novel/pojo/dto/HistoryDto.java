@@ -28,9 +28,9 @@ public class HistoryDto extends BasePageDto implements Serializable {
     private String lastNovelId;
 
     /**
-     * 最后访问的分卷id
+     * 最后访问的系列id
      */
-    private String lastVolumeId;
+    private String lastSeriesId;
 
     /**
      * 最后访问的章节id
