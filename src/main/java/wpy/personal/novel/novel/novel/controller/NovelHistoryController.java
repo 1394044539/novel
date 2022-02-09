@@ -37,7 +37,7 @@ public class NovelHistoryController {
 
     @PutMapping("/saveHistory")
     @SysLogs(fun = "记录历史记录")
-    public ResponseResult saveHistory(HistoryDto historyDto){
+    public ResponseResult saveHistory(@RequestBody HistoryDto historyDto){
         SysUser sysUser = RequestUtils.getSysUser();
         String ip = RequestUtils.getIp(null);
         NovelHistory novelHistory = novelHistoryService.saveHistory(historyDto,sysUser,ip);

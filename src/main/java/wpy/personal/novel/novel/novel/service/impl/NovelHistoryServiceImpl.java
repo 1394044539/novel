@@ -105,24 +105,29 @@ public class NovelHistoryServiceImpl extends ServiceImpl<NovelHistoryMapper, Nov
      * @return
      */
     private NovelHistory handleHistory(HistoryDto historyDto, SysUser sysUser, String ip) {
-        //这里没有id，只有分卷id
-        NovelHistory novelVolume = this.getOne(new QueryWrapper<NovelHistory>().eq("last_novel_id", historyDto.getLastNovelId()));
-        if(novelVolume==null){
+        //历史记录是针对小说使用的，一个小说只会记录一次记录
+//        this.novelHistoryMapper.
+        NovelHistory novelHistory = this.getOne(new QueryWrapper<NovelHistory>().eq("last_novel_id", historyDto.getLastNovelId()));
+        if(novelHistory==null){
             //说明是第一次，就插入就行
-            novelVolume = ObjectUtils.newInstance(sysUser.getUserId(), NovelHistory.class);
-            ObjectUtils.copyPropertiesIgnoreNull(historyDto,novelVolume);
-            novelVolume.setIp(ip);
-            novelVolume.setHistoryId(StringUtils.getUuid32());
-            this.save(novelVolume);
+            novelHistory = new NovelHistory();
+            novelHistory.setCreateBy(sysUser.getUserId());
+            novelHistory.setCreateTime(new Date());
+            novelHistory.setUpdateBy(sysUser.getUserId());
+            novelHistory.setUpdateTime(new Date());
+            ObjectUtils.copyPropertiesIgnoreNull(historyDto,novelHistory);
+            novelHistory.setIp(ip);
+            novelHistory.setHistoryId(StringUtils.getUuid32());
+            this.save(novelHistory);
         }else {
             //说明之前已经有过记录了
-            novelVolume.setLastChapterId(historyDto.getLastChapterId());
-            novelVolume.setIp(ip);
-            novelVolume.setRecordPercentage(historyDto.getRecordPercentage());
-            novelVolume.setUpdateTime(new Date());
-            novelVolume.setUpdateBy(sysUser.getUserId());
-            this.updateById(novelVolume);
+            novelHistory.setLastChapterId(historyDto.getLastChapterId());
+            novelHistory.setIp(ip);
+            novelHistory.setRecordPercentage(historyDto.getRecordPercentage());
+            novelHistory.setUpdateTime(new Date());
+            novelHistory.setUpdateBy(sysUser.getUserId());
+            this.updateById(novelHistory);
         }
-        return novelVolume;
+        return novelHistory;
     }
 }
