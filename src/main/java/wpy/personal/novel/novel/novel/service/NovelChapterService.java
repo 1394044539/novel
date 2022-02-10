@@ -2,6 +2,7 @@ package wpy.personal.novel.novel.novel.service;
 
 import org.springframework.web.multipart.MultipartFile;
 import wpy.personal.novel.pojo.bo.ChapterBo;
+import wpy.personal.novel.pojo.bo.ChapterInfoBo;
 import wpy.personal.novel.pojo.bo.NovelChapterBo;
 import wpy.personal.novel.pojo.entity.NovelChapter;
 import com.baomidou.mybatisplus.extension.service.IService;

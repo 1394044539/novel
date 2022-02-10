@@ -72,3 +72,6 @@ ALTER TABLE `sys_notice` DROP COLUMN `is_open`;
 -- 2022/01/30 字段修改
 ALTER TABLE novel_history`
 CHANGE COLUMN `last_volume_id` `last_series_id` varchar(32) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '最后访问的系列id' AFTER `last_novel_id`;
+
+ALTER TABLE `novel_history`
+MODIFY COLUMN `record_percentage` decimal(10, 6) NULL DEFAULT NULL COMMENT '阅读进度' AFTER `record_type`;

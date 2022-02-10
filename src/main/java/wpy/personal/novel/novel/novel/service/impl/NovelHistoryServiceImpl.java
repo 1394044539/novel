@@ -9,10 +9,14 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import wpy.personal.novel.base.enums.SqlEnums;
 import wpy.personal.novel.base.exception.BusinessException;
+import wpy.personal.novel.novel.novel.mapper.NovelChapterMapper;
 import wpy.personal.novel.novel.novel.mapper.NovelHistoryMapper;
+import wpy.personal.novel.novel.novel.service.NovelChapterService;
 import wpy.personal.novel.novel.novel.service.NovelHistoryService;
+import wpy.personal.novel.pojo.bo.ChapterInfoBo;
 import wpy.personal.novel.pojo.bo.NovelHistoryBo;
 import wpy.personal.novel.pojo.dto.HistoryDto;
+import wpy.personal.novel.pojo.entity.NovelChapter;
 import wpy.personal.novel.pojo.entity.NovelHistory;
 import wpy.personal.novel.pojo.entity.SysUser;
 import wpy.personal.novel.pojo.vo.HistoryListVo;
@@ -37,6 +41,10 @@ public class NovelHistoryServiceImpl extends ServiceImpl<NovelHistoryMapper, Nov
 
     @Autowired
     private NovelHistoryMapper novelHistoryMapper;
+    @Autowired
+    private NovelChapterService novelChapterService;
+    @Autowired
+    private NovelChapterMapper novelChapterMapper;
 
     @Override
     public Page<NovelHistoryBo> getHistoryList(RequestPageUtils<HistoryListVo> dto, SysUser sysUser) {
@@ -63,6 +71,21 @@ public class NovelHistoryServiceImpl extends ServiceImpl<NovelHistoryMapper, Nov
     public NovelHistory getHistory(String historyId, SysUser sysUser) {
 
         return this.getById(historyId);
+    }
+
+    @Override
+    public void batchDelete(List<String> ids, SysUser sysUser) {
+        this.removeByIds(ids);
+    }
+
+    @Override
+    public void clearHistory(HistoryDto historyDto, SysUser sysUser) {
+        QueryWrapper<NovelHistory> qw = new QueryWrapper<>();
+        qw.eq("create_by",sysUser.getUserId());
+        if(StringUtils.isNotEmpty(historyDto.getRecordType())){
+            qw.eq("record_type",historyDto.getRecordType());
+        }
+        this.remove(qw);
     }
 
     /**
@@ -106,8 +129,8 @@ public class NovelHistoryServiceImpl extends ServiceImpl<NovelHistoryMapper, Nov
      */
     private NovelHistory handleHistory(HistoryDto historyDto, SysUser sysUser, String ip) {
         //历史记录是针对小说使用的，一个小说只会记录一次记录
-//        this.novelHistoryMapper.
-        NovelHistory novelHistory = this.getOne(new QueryWrapper<NovelHistory>().eq("last_novel_id", historyDto.getLastNovelId()));
+        NovelChapter chapter = novelChapterService.getById(historyDto.getLastChapterId());
+        NovelHistory novelHistory = this.getOne(new QueryWrapper<NovelHistory>().eq("last_novel_id", chapter.getNovelId()));
         if(novelHistory==null){
             //说明是第一次，就插入就行
             novelHistory = new NovelHistory();
@@ -118,6 +141,9 @@ public class NovelHistoryServiceImpl extends ServiceImpl<NovelHistoryMapper, Nov
             ObjectUtils.copyPropertiesIgnoreNull(historyDto,novelHistory);
             novelHistory.setIp(ip);
             novelHistory.setHistoryId(StringUtils.getUuid32());
+            //第一次需要插入小说id和系列id
+            novelHistory.setLastNovelId(chapter.getNovelId());
+            novelHistory.setLastSeriesId(chapter.getSeriesId());
             this.save(novelHistory);
         }else {
             //说明之前已经有过记录了

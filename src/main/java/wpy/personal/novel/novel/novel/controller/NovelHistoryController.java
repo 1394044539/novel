@@ -13,6 +13,8 @@ import wpy.personal.novel.pojo.vo.HistoryListVo;
 import wpy.personal.novel.utils.RequestUtils;
 import wpy.personal.novel.utils.pageUtils.RequestPageUtils;
 
+import java.util.List;
+
 /**
  * <p>
  *  前端控制器
@@ -50,5 +52,21 @@ public class NovelHistoryController {
         SysUser sysUser = RequestUtils.getSysUser();
         NovelHistory novelHistory = novelHistoryService.getHistory(historyId,sysUser);
         return ResponseResult.success(novelHistory);
+    }
+
+    @DeleteMapping("/batchDelete")
+    @SysLogs(fun = "删除历史")
+    public ResponseResult batchDelete(@RequestBody List<String> ids){
+        SysUser sysUser = RequestUtils.getSysUser();
+        novelHistoryService.batchDelete(ids,sysUser);
+        return ResponseResult.success();
+    }
+
+    @DeleteMapping("/clearHistory")
+    @SysLogs(fun = "删除历史")
+    public ResponseResult clearHistory(@RequestBody HistoryDto historyDto){
+        SysUser sysUser = RequestUtils.getSysUser();
+        novelHistoryService.clearHistory(historyDto,sysUser);
+        return ResponseResult.success();
     }
 }

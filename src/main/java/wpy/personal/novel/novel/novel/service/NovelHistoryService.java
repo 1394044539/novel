@@ -9,6 +9,8 @@ import wpy.personal.novel.pojo.entity.SysUser;
 import wpy.personal.novel.pojo.vo.HistoryListVo;
 import wpy.personal.novel.utils.pageUtils.RequestPageUtils;
 
+import java.util.List;
+
 /**
  * <p>
  *  服务类
@@ -43,4 +45,18 @@ public interface NovelHistoryService extends IService<NovelHistory> {
      * @return
      */
     NovelHistory getHistory(String historyId, SysUser sysUser);
+
+    /**
+     * 批量删除历史记录
+     * @param ids
+     * @param sysUser
+     */
+    void batchDelete(List<String> ids, SysUser sysUser);
+
+    /**
+     * 清空历史记录
+     * @param historyDto
+     * @param sysUser
+     */
+    void clearHistory(HistoryDto historyDto, SysUser sysUser);
 }
