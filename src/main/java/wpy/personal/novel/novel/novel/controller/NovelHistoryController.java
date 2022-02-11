@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.*;
 import wpy.personal.novel.base.annotation.SysLogs;
 import wpy.personal.novel.base.result.ResponseResult;
 import wpy.personal.novel.novel.novel.service.NovelHistoryService;
+import wpy.personal.novel.pojo.bo.NovelHistoryBo;
 import wpy.personal.novel.pojo.dto.HistoryDto;
 import wpy.personal.novel.pojo.entity.NovelHistory;
 import wpy.personal.novel.pojo.entity.SysUser;
@@ -48,9 +49,9 @@ public class NovelHistoryController {
 
     @GetMapping("/getHistory")
     @SysLogs(fun = "获取历史记录")
-    public ResponseResult getHistory(@RequestParam("historyId")String historyId){
+    public ResponseResult getHistory(@RequestParam("chapterId")String chapterId){
         SysUser sysUser = RequestUtils.getSysUser();
-        NovelHistory novelHistory = novelHistoryService.getHistory(historyId,sysUser);
+        NovelHistoryBo novelHistory = novelHistoryService.getHistory(chapterId,sysUser);
         return ResponseResult.success(novelHistory);
     }
 

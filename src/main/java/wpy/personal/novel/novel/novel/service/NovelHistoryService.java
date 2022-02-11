@@ -40,11 +40,11 @@ public interface NovelHistoryService extends IService<NovelHistory> {
 
     /**
      * 获取历史记录
-     * @param historyId
+     * @param chapterId
      * @param sysUser
      * @return
      */
-    NovelHistory getHistory(String historyId, SysUser sysUser);
+    NovelHistoryBo getHistory(String chapterId, SysUser sysUser);
 
     /**
      * 批量删除历史记录

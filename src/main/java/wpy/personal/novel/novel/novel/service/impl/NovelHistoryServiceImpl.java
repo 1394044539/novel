@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.apache.commons.lang.RandomStringUtils;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -13,9 +14,11 @@ import wpy.personal.novel.novel.novel.mapper.NovelChapterMapper;
 import wpy.personal.novel.novel.novel.mapper.NovelHistoryMapper;
 import wpy.personal.novel.novel.novel.service.NovelChapterService;
 import wpy.personal.novel.novel.novel.service.NovelHistoryService;
+import wpy.personal.novel.novel.novel.service.NovelService;
 import wpy.personal.novel.pojo.bo.ChapterInfoBo;
 import wpy.personal.novel.pojo.bo.NovelHistoryBo;
 import wpy.personal.novel.pojo.dto.HistoryDto;
+import wpy.personal.novel.pojo.entity.Novel;
 import wpy.personal.novel.pojo.entity.NovelChapter;
 import wpy.personal.novel.pojo.entity.NovelHistory;
 import wpy.personal.novel.pojo.entity.SysUser;
@@ -45,6 +48,8 @@ public class NovelHistoryServiceImpl extends ServiceImpl<NovelHistoryMapper, Nov
     private NovelChapterService novelChapterService;
     @Autowired
     private NovelChapterMapper novelChapterMapper;
+    @Autowired
+    private NovelService novelService;
 
     @Override
     public Page<NovelHistoryBo> getHistoryList(RequestPageUtils<HistoryListVo> dto, SysUser sysUser) {
@@ -68,9 +73,17 @@ public class NovelHistoryServiceImpl extends ServiceImpl<NovelHistoryMapper, Nov
     }
 
     @Override
-    public NovelHistory getHistory(String historyId, SysUser sysUser) {
-
-        return this.getById(historyId);
+    public NovelHistoryBo getHistory(String chapterId, SysUser sysUser) {
+        NovelHistoryBo novelHistoryBo = new NovelHistoryBo();
+        //找到章节对应的小说，根据小说id，找到上次的进度
+        NovelChapter novelChapter = this.novelChapterService.getById(chapterId);
+        NovelHistory novelHistory = this.getOne(new QueryWrapper<NovelHistory>().eq("last_novel_id", novelChapter.getNovelId()));
+        if(novelHistory==null){
+            return null;
+        }
+        BeanUtils.copyProperties(novelHistory,novelHistoryBo);
+        novelHistoryBo.setChapterName(novelChapter.getChapterName());
+        return novelHistoryBo;
     }
 
     @Override
