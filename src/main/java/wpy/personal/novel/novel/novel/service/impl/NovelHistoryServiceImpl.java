@@ -82,7 +82,8 @@ public class NovelHistoryServiceImpl extends ServiceImpl<NovelHistoryMapper, Nov
             return null;
         }
         BeanUtils.copyProperties(novelHistory,novelHistoryBo);
-        novelHistoryBo.setChapterName(novelChapter.getChapterName());
+        NovelChapter chapter = this.novelChapterService.getById(novelHistory.getLastChapterId());
+        novelHistoryBo.setChapterName(chapter.getChapterName());
         return novelHistoryBo;
     }
 
