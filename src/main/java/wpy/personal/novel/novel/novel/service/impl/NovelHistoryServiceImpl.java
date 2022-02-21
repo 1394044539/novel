@@ -77,7 +77,9 @@ public class NovelHistoryServiceImpl extends ServiceImpl<NovelHistoryMapper, Nov
         NovelHistoryBo novelHistoryBo = new NovelHistoryBo();
         //找到章节对应的小说，根据小说id，找到上次的进度
         NovelChapter novelChapter = this.novelChapterService.getById(chapterId);
-        NovelHistory novelHistory = this.getOne(new QueryWrapper<NovelHistory>().eq("last_novel_id", novelChapter.getNovelId()));
+        NovelHistory novelHistory = this.getOne(new QueryWrapper<NovelHistory>()
+                .eq("last_novel_id", novelChapter.getNovelId())
+                .eq("record_type",SqlEnums.HISTORY_RECORD.getCode()));
         if(novelHistory==null){
             return null;
         }
@@ -144,7 +146,9 @@ public class NovelHistoryServiceImpl extends ServiceImpl<NovelHistoryMapper, Nov
     private NovelHistory handleHistory(HistoryDto historyDto, SysUser sysUser, String ip) {
         //历史记录是针对小说使用的，一个小说只会记录一次记录
         NovelChapter chapter = novelChapterService.getById(historyDto.getLastChapterId());
-        NovelHistory novelHistory = this.getOne(new QueryWrapper<NovelHistory>().eq("last_novel_id", chapter.getNovelId()));
+        NovelHistory novelHistory = this.getOne(new QueryWrapper<NovelHistory>()
+                .eq("last_novel_id", chapter.getNovelId())
+                .eq("record_type",SqlEnums.HISTORY_RECORD.getCode()));
         if(novelHistory==null){
             //说明是第一次，就插入就行
             novelHistory = new NovelHistory();
